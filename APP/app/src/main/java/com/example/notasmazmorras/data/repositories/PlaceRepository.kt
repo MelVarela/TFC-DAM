@@ -3,9 +3,15 @@ package com.example.notasmazmorras.data.repositories
 import android.util.Log
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalPlace
+import com.example.notasmazmorras.data.model.local.toRemote
+import com.example.notasmazmorras.data.model.remote.RemoteCharacter
+import com.example.notasmazmorras.data.model.remote.RemotePlace
+import com.example.notasmazmorras.data.model.remote.toLocal
 import com.example.notasmazmorras.data.repositories.daos.CampaignDao
 import com.example.notasmazmorras.data.repositories.daos.PlaceDao
+import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 interface PlaceRepository {
 
@@ -26,7 +32,7 @@ interface PlaceRepository {
 
 class DefaultPlaceRepository(
     private val local : PlaceDao,
-    private val remote : Object //ApiService
+    private val remote : ApiService
 ) : PlaceRepository {
 
     final val TAG = "place_repository"
@@ -66,11 +72,59 @@ class DefaultPlaceRepository(
     }
 
     override suspend fun uploadPendingChanges(): RepositoryResult {
-        throw Exception("To Do")
+        var toSync = local.getPlacesToSync()
+
+        try{
+            toSync.first().map {
+                val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
+
+                if(it.pendingDelete){
+                    if(!(it.id.substring(0, 1) == "l")) remote.deletePlace(id)
+                    local.delete(it)
+                }else if(it.id.substring(0, 1) == "l"){
+
+                    var resposta : RemotePlace =
+                        remote.createPlace(it.toRemote())
+                    local.delete(it)
+                    local.insert(it.copy((resposta.id ?: "0"), pendingSync = false))
+
+                }else{
+
+                    remote.updatePlace(it.id, it.toRemote())
+                    local.update(it.copy(pendingSync = false))
+
+                }
+            }
+        }catch (e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+        }
+
+        return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
 
     override suspend fun syncFromServer(): RepositoryResult {
-        throw Exception("To Do")
+        try{
+            var places = remote.getPlaces()
+            var ids = local.getIds()
+
+            var placesToUpdate : List<LocalPlace> = ArrayList<LocalPlace>()
+            var placesToInsert : List<LocalPlace> = ArrayList<LocalPlace>()
+
+            places.map {
+                if(!(ids.first().contains(it.id))){
+                    placesToInsert = placesToInsert.plus(it.toLocal())
+                }else{
+                    placesToUpdate = placesToUpdate.plus(it.toLocal())
+                }
+            }
+
+            local.insertList(placesToInsert)
+            local.updateList(placesToUpdate)
+            return RepositoryResult.Success("Sicronizado con éxito")
+        }catch (e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
+        }
     }
 
 }

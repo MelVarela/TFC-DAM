@@ -31,6 +31,7 @@ data class LocalUserRelation(
     val role : String,
     val schedule : List<Date>,
 
+    @PrimaryKey val id : String,
     @PrimaryKey val user : String,
     @PrimaryKey val campaign : String,
 
@@ -44,6 +45,7 @@ fun LocalUserRelation.toRemote() : RemoteUserRelation =
         isAccepted = isAccepted,
         role = role,
         schedule = schedule,
+        id = id,
         user = user,
         campaign = campaign
     )

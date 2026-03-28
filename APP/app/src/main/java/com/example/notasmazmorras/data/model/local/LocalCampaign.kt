@@ -20,6 +20,5 @@ fun LocalCampaign.toRemote() : RemoteCampaign =
     RemoteCampaign(
         id = if (id.subSequence(0, 6) == "local_") null else id,
         name = name,
-        picture = picture,
-        users = null
+        picture = picture
     )

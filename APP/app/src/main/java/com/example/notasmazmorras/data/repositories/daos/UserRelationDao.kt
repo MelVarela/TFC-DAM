@@ -38,4 +38,7 @@ interface UserRelationDao {
     @Query("SELECT * FROM user_relations WHERE pendingDelete = 1")
     fun getRelationsToDelete(): Flow<List<LocalUserRelation>>
 
+    @Query("SELECT id FROM user_relations")
+    fun getIds(): Flow<List<String>>
+
 }

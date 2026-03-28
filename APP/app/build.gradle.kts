@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     id("com.google.devtools.ksp")
 }
 
@@ -66,4 +67,17 @@ dependencies {
     // Compilador Room con KSP - Kotlin Symbol Processing
     // (tecnología de procesamiento de anotaciones)
     ksp("androidx.room:room-compiler:2.5.0")
+
+    //Conectividad
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.squareup.retrofit)
+    implementation(libs.jakewharton.retrofit.serialization)
+    implementation(libs.squareup.okhttp)
+    implementation(libs.jetbrains.kotlinx.serialization.json)
+    implementation(libs.coil3.compose)
+    implementation(libs.coil3.network.okhttp)
+
+    //Logger retrofit
+    implementation("com.squareup.okhttp3:logging-interceptor:5.3.2")
 }
