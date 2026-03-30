@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.notasmazmorras"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -32,11 +32,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "11"
+    kotlin {
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
     }
     buildFeatures {
         compose = true
@@ -66,7 +68,7 @@ dependencies {
 
     // Compilador Room con KSP - Kotlin Symbol Processing
     // (tecnología de procesamiento de anotaciones)
-    ksp("androidx.room:room-compiler:2.5.0")
+    ksp(libs.room.compiler.ksp)
 
     //Conectividad
     implementation(libs.androidx.compose.material.icons.extended)
@@ -79,5 +81,8 @@ dependencies {
     implementation(libs.coil3.network.okhttp)
 
     //Logger retrofit
-    implementation("com.squareup.okhttp3:logging-interceptor:5.3.2")
+    implementation(libs.logging.interceptor)
+
+    //Gson
+    implementation(libs.gson)
 }

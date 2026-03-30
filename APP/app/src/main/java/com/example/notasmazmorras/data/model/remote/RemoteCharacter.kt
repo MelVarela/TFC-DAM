@@ -13,7 +13,7 @@ data class RemoteCharacter(
     val pg : Int,
     val picture : String,
 
-    val campaing : String,
+    val campaign : String,
     val objects : List<String>?,
 )
 
@@ -26,5 +26,5 @@ fun RemoteCharacter.toLocal() : LocalCharacter =
         maxPg = maxPg,
         pg = pg,
         picture = picture,
-        campaing = campaing
+        campaign = campaign
     )

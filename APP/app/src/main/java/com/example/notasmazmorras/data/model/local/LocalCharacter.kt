@@ -26,7 +26,7 @@ data class LocalCharacter(
     val pg : Int,
     val picture : String,
 
-    val campaing : String,
+    val campaign : String,
 
     // Sincronización
     val pendingSync: Boolean = false,
@@ -42,6 +42,6 @@ fun LocalCharacter.toRemote() : RemoteCharacter =
         maxPg = maxPg,
         pg = pg,
         picture = picture,
-        campaing = campaing,
+        campaign = campaign,
         objects = null
     )
