@@ -23,15 +23,15 @@ class PlaceViewmodel(
     val places : StateFlow<List<LocalPlace>> = placeRepository.getAllPlaces()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    fun insertCampaign(place: LocalPlace) = viewModelScope.launch {
+    fun insertPlace(place: LocalPlace) = viewModelScope.launch {
         systemViewmodel.processResult(placeRepository.insertPlace(place))
     }
 
-    fun updateCampaign(place: LocalPlace) = viewModelScope.launch {
+    fun updatePlace(place: LocalPlace) = viewModelScope.launch {
         systemViewmodel.processResult(placeRepository.updatePlace(place))
     }
 
-    fun deleteCampaign(place: LocalPlace) = viewModelScope.launch {
+    fun deletePlace(place: LocalPlace) = viewModelScope.launch {
         systemViewmodel.processResult(placeRepository.deletePlace(place))
     }
 
@@ -47,7 +47,7 @@ class PlaceViewmodel(
                 val placeRepository = application.container.placeRepository
                 PlaceViewmodel(
                     placeRepository = placeRepository,
-                    systemViewmodel = SystemViewmodel()
+                    systemViewmodel = SystemViewmodel.getInstance()
                 )
             }
         }

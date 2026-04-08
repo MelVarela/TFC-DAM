@@ -24,10 +24,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.local.LocalPlace
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditMap(navController: NavController) {
+fun EditMap(
+    onDone: (LocalPlace) -> Unit,
+    places: List<LocalPlace>,
+    placeId: String?,
+    campaign: String,
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -51,17 +58,32 @@ fun EditMap(navController: NavController) {
                 Text("Terminar")
             }
 
-            EditMapScreen(modifier = Modifier)
+            EditMapScreen(
+                onDone = onDone,
+                places = places,
+                placeId = placeId,
+                campaign = campaign,
+                modifier = Modifier
+            )
         }
     }
 }
 
 @Composable
 fun EditMapScreen(
+    onDone: (LocalPlace) -> Unit,
+    places: List<LocalPlace>,
+    placeId: String?,
+    campaign: String,
     modifier : Modifier
 ){
 
     var name by remember { mutableStateOf("") }
+
+    if(placeId != null){
+        val place : LocalPlace = places.first{it.id == placeId}
+        name = place.name
+    }
 
     Column(
         modifier = modifier,
@@ -76,6 +98,28 @@ fun EditMapScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
         )
+
+        Button(
+            onClick = {
+                if(placeId != null){
+                    onDone(LocalPlace(
+                        placeId,
+                        name,
+                        "",
+                        campaign,
+                        true
+                    ))
+                }else{
+                    onDone(LocalPlace(
+                        "local_${System.nanoTime()}plac",
+                        name,
+                        "",
+                        campaign,
+                        true
+                    ))
+                }
+            }
+        ) { Text("Done") }
 
     }
 

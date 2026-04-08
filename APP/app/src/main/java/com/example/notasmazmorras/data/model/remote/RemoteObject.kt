@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class RemoteObject(
     val id : String?,
     val name : String,
-    val cost : Int,
+    val cost : Float,
     val picture : String,
 
     val campaign : String,

@@ -47,7 +47,7 @@ class NoteViewmodel(
                 val noteRepository = application.container.noteRepository
                 NoteViewmodel(
                     noteRepository = noteRepository,
-                    systemViewmodel = SystemViewmodel()
+                    systemViewmodel = SystemViewmodel.getInstance()
                 )
             }
         }

@@ -24,10 +24,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.local.LocalCampaign
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateCampaign(navController: NavController) {
+fun CreateCampaign(
+    onDone: (LocalCampaign) -> Unit,
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -45,19 +49,17 @@ fun CreateCampaign(navController: NavController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Button(
-                onClick = {navController.navigate("campaign/1")}
-            ) {
-                Text("Terminar")
-            }
-
-            CreateCampaignScreen(modifier = Modifier)
+            CreateCampaignScreen(
+                onDone = onDone,
+                modifier = Modifier
+            )
         }
     }
 }
 
 @Composable
 fun CreateCampaignScreen(
+    onDone: (LocalCampaign) -> Unit,
     modifier : Modifier
 ){
 
@@ -76,6 +78,18 @@ fun CreateCampaignScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
         )
+        Button(
+            onClick = {
+                onDone(
+                    LocalCampaign(
+                        "local_${System.nanoTime()}camp",
+                        name,
+                        "",
+                        true
+                    )
+                )
+            }
+        ) { Text("Create Campaign") }
 
     }
 

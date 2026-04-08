@@ -44,7 +44,7 @@ fun Creatures(navController: NavController) {
                 Text("Ver criatura")
             }
             Button(
-                onClick = {navController.navigate("editCreature/0")}
+                onClick = {navController.navigate("editCreature")}
             ) {
                 Text("Crear criatura")
             }

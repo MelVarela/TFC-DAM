@@ -23,10 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.local.LocalObject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditObject(navController: NavController) {
+fun EditObject(
+    onDone: (LocalObject) -> Unit,
+    objects: List<LocalObject>,
+    objectId: String?,
+    campaign: String,
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -50,18 +57,34 @@ fun EditObject(navController: NavController) {
                 Text("Terminar")
             }
 
-            EditObjectScreen(modifier = Modifier)
+            EditObjectScreen(
+                onDone = onDone,
+                objects = objects,
+                objectId = objectId,
+                campaign = campaign,
+                modifier = Modifier
+            )
         }
     }
 }
 
 @Composable
 fun EditObjectScreen(
+    onDone: (LocalObject) -> Unit,
+    objects: List<LocalObject>,
+    objectId: String?,
+    campaign: String,
     modifier : Modifier
 ){
 
     var name by remember { mutableStateOf("") }
     var cost by remember { mutableStateOf("") }
+
+    if(objectId != null){
+        val obxecto : LocalObject = objects.first{it.id == objectId}
+        name = obxecto.name
+        cost = obxecto.cost.toString()
+    }
 
     Column(
         modifier = modifier,
@@ -81,9 +104,31 @@ fun EditObjectScreen(
             value = cost,
             onValueChange = {cost = it},
             label = { Text("Costo") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
         )
+
+        Button(onClick = {
+            if(objectId != null){
+                onDone(LocalObject(
+                    objectId,
+                    name,
+                    cost.toFloat(),
+                    "",
+                    campaign,
+                    true
+                ))
+            }else{
+                onDone(LocalObject(
+                    "local_${System.nanoTime()}obje",
+                    name,
+                    cost.toFloat(),
+                    "",
+                    campaign,
+                    true
+                ))
+            }
+        }) { Text("Done") }
 
     }
 

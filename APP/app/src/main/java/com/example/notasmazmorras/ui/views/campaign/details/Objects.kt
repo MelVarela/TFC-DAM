@@ -44,7 +44,7 @@ fun Objects(navController: NavController) {
                 Text("Ver objeto")
             }
             Button(
-                onClick = {navController.navigate("editObject/0")}
+                onClick = {navController.navigate("editObject")}
             ) {
                 Text("Crear objeto")
             }

@@ -47,7 +47,7 @@ class ObjectViewmodel(
                 val objectRepository = application.container.objectRepository
                 ObjectViewmodel(
                     objectRepository = objectRepository,
-                    systemViewmodel = SystemViewmodel()
+                    systemViewmodel = SystemViewmodel.getInstance()
                 )
             }
         }

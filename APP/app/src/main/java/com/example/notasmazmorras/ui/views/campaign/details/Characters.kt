@@ -43,7 +43,7 @@ fun Characters(navController: NavController) {
                 Text("Ver personaje")
             }
             Button(
-                onClick = {navController.navigate("editCharacter/0")}
+                onClick = {navController.navigate("editCharacter")}
             ) {
                 Text("Crear personaje")
             }

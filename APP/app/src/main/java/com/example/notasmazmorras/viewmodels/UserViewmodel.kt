@@ -22,15 +22,15 @@ class UserViewmodel(
     val users : StateFlow<List<LocalUser>> = userRepository.getAllUsers()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    fun insertCampaign(user: LocalUser) = viewModelScope.launch {
+    fun insertUser(user: LocalUser) = viewModelScope.launch {
         systemViewmodel.processResult(userRepository.insertUser(user))
     }
 
-    fun updateCampaign(user: LocalUser) = viewModelScope.launch {
+    fun updateUser(user: LocalUser) = viewModelScope.launch {
         systemViewmodel.processResult(userRepository.updateUser(user))
     }
 
-    fun deleteCampaign(user: LocalUser) = viewModelScope.launch {
+    fun deleteUser(user: LocalUser) = viewModelScope.launch {
         systemViewmodel.processResult(userRepository.deleteUser(user))
     }
 
@@ -46,7 +46,7 @@ class UserViewmodel(
                 val userRepository = application.container.userRepository
                 UserViewmodel(
                     userRepository = userRepository,
-                    systemViewmodel = SystemViewmodel()
+                    systemViewmodel = SystemViewmodel.getInstance()
                 )
             }
         }

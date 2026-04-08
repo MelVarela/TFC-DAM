@@ -35,7 +35,7 @@ import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
     LocalUser::class,
     LocalUserRelation::class
 
-], version = 1)
+], version = 2)
 @TypeConverters(value = [ScheduleTypeConverter::class])
 abstract class Datosbase : RoomDatabase() {
 
@@ -53,7 +53,7 @@ abstract class Datosbase : RoomDatabase() {
         @Volatile
         private var Instance : Datosbase? = null
 
-        fun getDatabase(context: Context) : Datosbase {
+        fun getDatabase(context : Context) : Datosbase {
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(
                     context,

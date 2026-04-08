@@ -47,7 +47,7 @@ class CharacterViewmodel (
                 val characterRepository = application.container.characterRepository
                 CharacterViewmodel(
                     characterRepository = characterRepository,
-                    systemViewmodel = SystemViewmodel()
+                    systemViewmodel = SystemViewmodel.getInstance()
                 )
             }
         }

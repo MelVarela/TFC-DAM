@@ -44,7 +44,7 @@ fun Map(navController: NavController) {
                 Text("Ver lugar")
             }
             Button(
-                onClick = {navController.navigate("editMap/0")}
+                onClick = {navController.navigate("editMap")}
             ) {
                 Text("Crear lugar")
             }

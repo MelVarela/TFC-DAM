@@ -24,10 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.local.LocalUser
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateAccount(navController: NavController) {
+fun CreateAccount(
+    onDone: (LocalUser) -> Unit,
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -45,19 +49,17 @@ fun CreateAccount(navController: NavController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Button(
-                onClick = {navController.navigate("home")}
-            ) {
-                Text("Crear cuenta")
-            }
-
-            CreateAccountScreen(modifier = Modifier)
+            CreateAccountScreen(
+                onDone = onDone,
+                modifier = Modifier
+            )
         }
     }
 }
 
 @Composable
 fun CreateAccountScreen(
+    onDone: (LocalUser) -> Unit,
     modifier : Modifier,
 ){
 
@@ -74,7 +76,7 @@ fun CreateAccountScreen(
         TextField(
             value = userName,
             onValueChange = {userName = it},
-            label = { Text("Email") },
+            label = { Text("User Name") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
         )
@@ -95,6 +97,18 @@ fun CreateAccountScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
         )
+
+        Button(
+            onClick = {
+                onDone(LocalUser(
+                    email,
+                    userName,
+                    password,
+                    "",
+                    true
+                ))
+            }
+        ) { Text("Crear cuenta") }
 
     }
 

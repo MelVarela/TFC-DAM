@@ -1,9 +1,7 @@
 package com.example.notasmazmorras.viewmodels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.notasmazmorras.data.repositories.RepositoryResult
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -15,17 +13,20 @@ class SystemViewmodel : ViewModel() {
     suspend fun processResult(result: RepositoryResult) {
         when (result) {
             is RepositoryResult.Success ->
-                _events.send(result.message)
+                if(result.message != "") _events.send(result.message)
 
             is RepositoryResult.Error ->
-                _events.send("${result.message} ${result.exception?.message ?: ""}".trim())
+                if(result.message != "") _events.send("${result.message} ${result.exception?.message ?: ""}".trim())
         }
     }
 
     companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SystemViewmodel()
+        private var Instance : SystemViewmodel? = null
+
+        fun getInstance() : SystemViewmodel {
+            return Instance ?: synchronized(this) {
+                Instance = SystemViewmodel()
+                return Instance!!
             }
         }
     }

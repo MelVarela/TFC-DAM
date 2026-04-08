@@ -25,10 +25,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.local.LocalCreature
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditCreature(navController: NavController) {
+fun EditCreature(
+    onDone: (LocalCreature) -> Unit,
+    creatures: List<LocalCreature>,
+    creatureId: String?,
+    campaign: String,
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -52,18 +59,34 @@ fun EditCreature(navController: NavController) {
                 Text("Terminar")
             }
 
-            EditCreatureScreen(modifier = Modifier)
+            EditCreatureScreen(
+                onDone = onDone,
+                creatures = creatures,
+                creatureId = creatureId,
+                campaign = campaign,
+                modifier = Modifier
+            )
         }
     }
 }
 
 @Composable
 fun EditCreatureScreen(
+    onDone: (LocalCreature) -> Unit,
+    creatures: List<LocalCreature>,
+    creatureId: String?,
+    campaign: String,
     modifier: Modifier
 ){
 
     var name by remember { mutableStateOf("") }
     var species by remember { mutableStateOf("") }
+
+    if(creatureId != null){
+        val creature : LocalCreature = creatures.first{it.id == creatureId}
+        name = creature.name
+        species = creature.species
+    }
 
     Column(
         modifier = modifier,
@@ -86,6 +109,30 @@ fun EditCreatureScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
         )
+
+        Button(
+            onClick = {
+                if(creatureId != null){
+                    onDone(LocalCreature(
+                        creatureId,
+                        name,
+                        species,
+                        "",
+                        campaign,
+                        true
+                    ))
+                }else{
+                    onDone(LocalCreature(
+                        "local_${System.nanoTime()}crea",
+                        name,
+                        species,
+                        "",
+                        campaign,
+                        true
+                    ))
+                }
+            }
+        ) { Text("Done") }
 
     }
 

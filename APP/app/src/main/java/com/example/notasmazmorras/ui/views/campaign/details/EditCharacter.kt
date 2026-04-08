@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign.details
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -22,12 +23,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.local.LocalCharacter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditCharacter(navController: NavController) {
+fun EditCharacter(
+    onDone: (LocalCharacter) -> Unit,
+    characters: List<LocalCharacter>,
+    characterId: String?,
+    campaign: String,
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -45,19 +52,23 @@ fun EditCharacter(navController: NavController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Button(
-                onClick = {navController.navigate("campaign/1/characters")}
-            ) {
-                Text("Terminar")
-            }
-
-            EditCharacterScreen(modifier = Modifier)
+            EditCharacterScreen(
+                onDone = onDone,
+                characterId = characterId,
+                characters = characters,
+                campaign = campaign,
+                modifier = Modifier
+            )
         }
     }
 }
 
 @Composable
 fun EditCharacterScreen(
+    onDone: (LocalCharacter) -> Unit,
+    characters: List<LocalCharacter>,
+    characterId : String?,
+    campaign: String,
     modifier: Modifier
 ){
 
@@ -66,6 +77,15 @@ fun EditCharacterScreen(
     var subclase by remember { mutableStateOf("") }
     var maxPg by remember { mutableStateOf("") }
     var pg by remember { mutableStateOf("") }
+
+    if(characterId != null){
+        val character : LocalCharacter = characters.first {it.id == characterId}
+        name = character.name
+        clase = character.clase
+        subclase = character.subClase
+        maxPg = character.maxPg.toString()
+        pg = character.pg.toString()
+    }
 
     Column(
         modifier = modifier,
@@ -101,7 +121,7 @@ fun EditCharacterScreen(
             value = maxPg,
             onValueChange = {maxPg = it},
             label = { Text("PG Maximos") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
         )
 
@@ -109,9 +129,39 @@ fun EditCharacterScreen(
             value = pg,
             onValueChange = {pg = it},
             label = { Text("Pg") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             singleLine = true,
         )
+
+        Button(
+            onClick = {
+                if(characterId != null){
+                    onDone(LocalCharacter(
+                        characterId,
+                        name,
+                        clase,
+                        subclase,
+                        maxPg.toInt(),
+                        pg.toInt(),
+                        "",
+                        campaign,
+                        true
+                    ))
+                }else{
+                    onDone(LocalCharacter(
+                        "local_${System.nanoTime()}char",
+                        name,
+                        clase,
+                        subclase,
+                        maxPg.toInt(),
+                        pg.toInt(),
+                        "",
+                        campaign,
+                        true
+                    ))
+                }
+            }
+        ) { Text("Done") }
 
     }
 

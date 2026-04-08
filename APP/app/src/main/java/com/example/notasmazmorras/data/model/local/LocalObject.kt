@@ -20,7 +20,7 @@ import com.example.notasmazmorras.data.model.remote.RemoteObject
 data class LocalObject(
     @PrimaryKey val id : String,
     val name : String,
-    val cost : Int,
+    val cost : Float,
     val picture : String,
 
     val campaign : String,

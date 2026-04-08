@@ -22,6 +22,8 @@ class CampaignViewmodel (
     val campaigns : StateFlow<List<LocalCampaign>> = campaignRepository.getAllCampaigns()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
+    var currentCampaign : String = ""
+
     fun insertCampaign(campaign: LocalCampaign) = viewModelScope.launch {
         systemViewmodel.processResult(campaignRepository.insertCampaign(campaign))
     }
@@ -46,7 +48,7 @@ class CampaignViewmodel (
                 val campaignRepository = application.container.campaignRepository
                 CampaignViewmodel(
                     campaignRepository = campaignRepository,
-                    systemViewmodel = SystemViewmodel()
+                    systemViewmodel = SystemViewmodel.getInstance()
                 )
             }
         }

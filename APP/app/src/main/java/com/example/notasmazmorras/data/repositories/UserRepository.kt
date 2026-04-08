@@ -22,6 +22,8 @@ interface UserRepository {
 
     suspend fun deleteUser(user: LocalUser): RepositoryResult
 
+    suspend fun checkEmailExists(email: String) : Boolean
+
     // Sincronización
 
     suspend fun uploadPendingChanges(): RepositoryResult
@@ -41,8 +43,12 @@ class DefaultUserRepository(
 
     override suspend fun insertUser(user: LocalUser): RepositoryResult {
         try{
-            local.insert(user.copy(pendingSync = true))
-            return RepositoryResult.Success("")
+            if(!checkEmailExists(user.email)){
+                local.insert(user.copy(pendingSync = true))
+                return RepositoryResult.Success("Usuario creado con éxito")
+            }else{
+                return RepositoryResult.Error("Ya existe un usuario con este email")
+            }
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("")
@@ -67,6 +73,11 @@ class DefaultUserRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("")
         }
+    }
+
+    override suspend fun checkEmailExists(email: String): Boolean {
+        return false
+        TODO("Not yet implemented")
     }
 
     override suspend fun uploadPendingChanges(): RepositoryResult {

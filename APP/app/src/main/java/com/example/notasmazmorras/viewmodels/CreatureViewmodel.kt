@@ -46,7 +46,7 @@ class CreatureViewmodel(
                 val creatureRepository = application.container.creatureRepository
                 CreatureViewmodel(
                     creatureRepository = creatureRepository,
-                    systemViewmodel = SystemViewmodel()
+                    systemViewmodel = SystemViewmodel.getInstance()
                 )
             }
         }
