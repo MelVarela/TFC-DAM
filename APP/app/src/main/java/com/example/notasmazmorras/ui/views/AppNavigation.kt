@@ -79,7 +79,16 @@ fun AppNavigation() {
         }
 
         composable(route = "home"){
-            Home(navController)
+            Home(
+                campaigns = campaigns,
+                onDelete = {
+                    campaign -> campaignViewmodel.deleteCampaign(campaign)
+                },
+                onSelect = {
+                    id -> navController.navigate("campaign/${id}")
+                },
+                navController
+            )
         }
 
         composable(route = "invitations"){
@@ -87,7 +96,7 @@ fun AppNavigation() {
         }
 
         composable(
-            route = "reportingSugestions/{action}",
+            route = "reportingSuggestions/{action}",
             arguments = listOf(navArgument("action"){type = NavType.StringType})
         ){
             ReportSuggest(navController)
@@ -104,7 +113,7 @@ fun AppNavigation() {
             Account(navController)
         }
 
-        composable(route = "createCampaing"){
+        composable(route = "createCampaign"){
             CreateCampaign(
                 onDone = {
                     campaign -> campaignViewmodel.insertCampaign(campaign)
@@ -159,7 +168,19 @@ fun AppNavigation() {
             route = "campaign/{id}/characters",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){
-            Characters(navController)
+            Characters(
+                characters = characters,
+                onDelete = {
+                    character -> characterViewmodel.deleteCharacter(character)
+                },
+                onSelect = {
+                    id -> navController.navigate("details/char/{detailId}")
+                },
+                onEdit = {
+                    id -> navController.navigate("editCharacter/${id}")
+                },
+                navController
+            )
         }
 
         composable(
@@ -309,6 +330,15 @@ fun AppNavigation() {
                 campaign = campaignViewmodel.currentCampaign,
                 navController
             )
+        }
+
+        composable(
+            route = "details/char/{detailId}",
+            arguments = listOf(
+                navArgument("detailId"){type = NavType.StringType}
+            )
+        ){
+            Details(navController)
         }
 
         composable(

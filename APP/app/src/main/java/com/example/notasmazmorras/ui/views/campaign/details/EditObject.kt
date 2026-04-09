@@ -86,50 +86,51 @@ fun EditObjectScreen(
         cost = obxecto.cost.toString()
     }
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ){
+    Scaffold { contentPadding ->
+        Column(
+            modifier = modifier
+                .padding(contentPadding),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
 
-        TextField(
-            value = name,
-            onValueChange = {name = it},
-            label = { Text("Nombre") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-        )
+            TextField(
+                value = name,
+                onValueChange = {name = it},
+                label = { Text("Nombre") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+            )
 
-        TextField(
-            value = cost,
-            onValueChange = {cost = it},
-            label = { Text("Costo") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-        )
+            TextField(
+                value = cost,
+                onValueChange = {cost = it},
+                label = { Text("Costo") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+            )
 
-        Button(onClick = {
-            if(objectId != null){
-                onDone(LocalObject(
-                    objectId,
-                    name,
-                    cost.toFloat(),
-                    "",
-                    campaign,
-                    true
-                ))
-            }else{
-                onDone(LocalObject(
-                    "local_${System.nanoTime()}obje",
-                    name,
-                    cost.toFloat(),
-                    "",
-                    campaign,
-                    true
-                ))
-            }
-        }) { Text("Done") }
-
+            Button(onClick = {
+                if(objectId != null){
+                    onDone(LocalObject(
+                        objectId,
+                        name,
+                        cost.toFloat(),
+                        "",
+                        campaign,
+                        true
+                    ))
+                }else{
+                    onDone(LocalObject(
+                        "local_${System.nanoTime()}obje",
+                        name,
+                        cost.toFloat(),
+                        "",
+                        campaign,
+                        true
+                    ))
+                }
+            }) { Text("Done") }
+        }
     }
-
 }

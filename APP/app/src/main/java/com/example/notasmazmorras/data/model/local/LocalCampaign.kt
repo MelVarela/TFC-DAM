@@ -1,6 +1,5 @@
 package com.example.notasmazmorras.data.model.local
 
-import androidx.compose.ui.text.substring
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign

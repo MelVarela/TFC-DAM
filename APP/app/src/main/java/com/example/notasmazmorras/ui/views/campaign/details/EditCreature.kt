@@ -88,52 +88,53 @@ fun EditCreatureScreen(
         species = creature.species
     }
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ){
+    Scaffold { contentPadding ->
+        Column(
+            modifier = modifier
+                .padding(contentPadding),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
 
-        TextField(
-            value = name,
-            onValueChange = {name = it},
-            label = { Text("Nombre") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-        )
+            TextField(
+                value = name,
+                onValueChange = {name = it},
+                label = { Text("Nombre") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+            )
 
-        TextField(
-            value = species,
-            onValueChange = {species = it},
-            label = { Text("Especie") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-        )
+            TextField(
+                value = species,
+                onValueChange = {species = it},
+                label = { Text("Especie") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+            )
 
-        Button(
-            onClick = {
-                if(creatureId != null){
-                    onDone(LocalCreature(
-                        creatureId,
-                        name,
-                        species,
-                        "",
-                        campaign,
-                        true
-                    ))
-                }else{
-                    onDone(LocalCreature(
-                        "local_${System.nanoTime()}crea",
-                        name,
-                        species,
-                        "",
-                        campaign,
-                        true
-                    ))
+            Button(
+                onClick = {
+                    if(creatureId != null){
+                        onDone(LocalCreature(
+                            creatureId,
+                            name,
+                            species,
+                            "",
+                            campaign,
+                            true
+                        ))
+                    }else{
+                        onDone(LocalCreature(
+                            "local_${System.nanoTime()}crea",
+                            name,
+                            species,
+                            "",
+                            campaign,
+                            true
+                        ))
+                    }
                 }
-            }
-        ) { Text("Done") }
-
+            ) { Text("Done") }
+        }
     }
-
 }

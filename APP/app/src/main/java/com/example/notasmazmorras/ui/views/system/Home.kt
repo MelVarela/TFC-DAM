@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -13,10 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.local.LocalCampaign
+import com.example.notasmazmorras.ui.components.CampaignCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(navController: NavController) {
+fun Home(
+    campaigns: List<LocalCampaign>,
+    onDelete: (LocalCampaign) -> Unit,
+    onSelect: (String) -> Unit,
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Home") })
@@ -28,7 +36,7 @@ fun Home(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Button(
-                onClick = {navController.navigate("createCampaing")}
+                onClick = {navController.navigate("createCampaign")}
             ) {
                 Text("Crear campaña")
             }
@@ -38,17 +46,12 @@ fun Home(navController: NavController) {
                 Text("Ver cuenta")
             }
             Button(
-                onClick = {navController.navigate("campaign/1")}
-            ) {
-                Text("Ver campaña")
-            }
-            Button(
                 onClick = {navController.navigate("invitations")}
             ) {
                 Text("Ver invitaciones")
             }
             Button(
-                onClick = {navController.navigate("reportingSugestions/report")}
+                onClick = {navController.navigate("reportingSuggestions/report")}
             ) {
                 Text("Reportar sugerencia")
             }
@@ -56,6 +59,19 @@ fun Home(navController: NavController) {
                 onClick = {navController.navigate("options")}
             ) {
                 Text("Opciones")
+            }
+
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ){
+                items(campaigns) { campaign ->
+                    CampaignCard(
+                        campaign = campaign,
+                        onDelete = onDelete,
+                        onSelect = onSelect
+                    )
+                }
             }
         }
     }

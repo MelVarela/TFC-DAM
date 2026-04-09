@@ -17,6 +17,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -63,6 +64,7 @@ fun EditCharacter(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditCharacterScreen(
     onDone: (LocalCharacter) -> Unit,
@@ -75,94 +77,100 @@ fun EditCharacterScreen(
     var name by remember { mutableStateOf("") }
     var clase by remember { mutableStateOf("") }
     var subclase by remember { mutableStateOf("") }
-    var maxPg by remember { mutableStateOf("") }
-    var pg by remember { mutableStateOf("") }
+    var maxPg by remember { mutableIntStateOf(0) }
+    var pg by remember { mutableIntStateOf(0) }
 
     if(characterId != null){
         val character : LocalCharacter = characters.first {it.id == characterId}
         name = character.name
         clase = character.clase
         subclase = character.subClase
-        maxPg = character.maxPg.toString()
-        pg = character.pg.toString()
+        maxPg = character.maxPg
+        pg = character.pg
     }
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ){
+    Scaffold(
+    ){ contentPadding ->
+        Column(
+            modifier = modifier
+                .padding(contentPadding),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
 
-        TextField(
-            value = name,
-            onValueChange = {name = it},
-            label = { Text("Nombre") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-        )
+            TextField(
+                value = name,
+                onValueChange = {name = it},
+                label = { Text("Nombre") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+            )
 
-        TextField(
-            value = clase,
-            onValueChange = {clase = it},
-            label = { Text("Clase") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-        )
+            TextField(
+                value = clase,
+                onValueChange = {clase = it},
+                label = { Text("Clase") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+            )
 
-        TextField(
-            value = subclase,
-            onValueChange = {subclase = it},
-            label = { Text("Subclase") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-        )
+            TextField(
+                value = subclase,
+                onValueChange = {subclase = it},
+                label = { Text("Subclase") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+            )
 
-        TextField(
-            value = maxPg,
-            onValueChange = {maxPg = it},
-            label = { Text("PG Maximos") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-        )
+            TextField(
+                value = maxPg.toString(),
+                onValueChange = {maxPg = Integer.parseInt(if(it != "") it else "0")},
+                label = { Text("PG Maximos") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+            )
 
-        TextField(
-            value = pg,
-            onValueChange = {pg = it},
-            label = { Text("Pg") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-        )
+            TextField(
+                value = pg.toString(),
+                onValueChange = {pg = Integer.parseInt(if(it != "") it else "0")},
+                label = { Text("Pg") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true,
+            )
 
-        Button(
-            onClick = {
-                if(characterId != null){
-                    onDone(LocalCharacter(
-                        characterId,
-                        name,
-                        clase,
-                        subclase,
-                        maxPg.toInt(),
-                        pg.toInt(),
-                        "",
-                        campaign,
-                        true
-                    ))
-                }else{
-                    onDone(LocalCharacter(
-                        "local_${System.nanoTime()}char",
-                        name,
-                        clase,
-                        subclase,
-                        maxPg.toInt(),
-                        pg.toInt(),
-                        "",
-                        campaign,
-                        true
-                    ))
+            Button(
+                onClick = {
+                    if(characterId != null){
+                        onDone(LocalCharacter(
+                            characterId,
+                            name,
+                            clase,
+                            subclase,
+                            maxPg.toInt(),
+                            pg.toInt(),
+                            "",
+                            campaign,
+                            true
+                        ))
+                    }else{
+                        onDone(LocalCharacter(
+                            "local_${System.nanoTime()}char",
+                            name,
+                            clase,
+                            subclase,
+                            maxPg.toInt(),
+                            pg.toInt(),
+                            "",
+                            campaign,
+                            true
+                        ))
+                    }
                 }
-            }
-        ) { Text("Done") }
+            ) { Text("Done") }
 
+        }
     }
+
+
 
 }

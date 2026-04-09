@@ -85,42 +85,43 @@ fun EditMapScreen(
         name = place.name
     }
 
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ){
+    Scaffold { contentPadding ->
+        Column(
+            modifier = modifier
+                .padding(contentPadding),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
 
-        TextField(
-            value = name,
-            onValueChange = {name = it},
-            label = { Text("Nombre") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
-        )
+            TextField(
+                value = name,
+                onValueChange = {name = it},
+                label = { Text("Nombre") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                singleLine = true,
+            )
 
-        Button(
-            onClick = {
-                if(placeId != null){
-                    onDone(LocalPlace(
-                        placeId,
-                        name,
-                        "",
-                        campaign,
-                        true
-                    ))
-                }else{
-                    onDone(LocalPlace(
-                        "local_${System.nanoTime()}plac",
-                        name,
-                        "",
-                        campaign,
-                        true
-                    ))
+            Button(
+                onClick = {
+                    if(placeId != null){
+                        onDone(LocalPlace(
+                            placeId,
+                            name,
+                            "",
+                            campaign,
+                            true
+                        ))
+                    }else{
+                        onDone(LocalPlace(
+                            "local_${System.nanoTime()}plac",
+                            name,
+                            "",
+                            campaign,
+                            true
+                        ))
+                    }
                 }
-            }
-        ) { Text("Done") }
-
+            ) { Text("Done") }
+        }
     }
-
 }
