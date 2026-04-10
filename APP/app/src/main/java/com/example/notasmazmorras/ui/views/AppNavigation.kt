@@ -174,11 +174,12 @@ fun AppNavigation() {
                     character -> characterViewmodel.deleteCharacter(character)
                 },
                 onSelect = {
-                    id -> navController.navigate("details/char/{detailId}")
+                    id -> navController.navigate("details/char/${id}")
                 },
                 onEdit = {
                     id -> navController.navigate("editCharacter/${id}")
                 },
+                onBack = { navController.navigate("campaign/${campaignViewmodel.currentCampaign}") },
                 navController
             )
         }
@@ -187,21 +188,60 @@ fun AppNavigation() {
             route = "campaign/{id}/objects",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){
-            Objects(navController)
+            Objects(
+                obxectos = objects,
+                onDelete = {
+                    obxecto -> objectViewmodel.deleteObject(obxecto)
+                },
+                onSelect = {
+                    id -> navController.navigate("details/obje/${id}")
+                },
+                onEdit = {
+                    id -> navController.navigate("editObject/${id}")
+                },
+                onBack = { navController.navigate("campaign/${campaignViewmodel.currentCampaign}") },
+                navController
+            )
         }
 
         composable(
             route = "campaign/{id}/creatures",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){
-            Creatures(navController)
+            Creatures(
+                creatures = creatures,
+                onDelete = {
+                    creature -> creatureViewmodel.deleteCreature(creature)
+                },
+                onSelect = {
+                    id -> navController.navigate("details/crea/${id}")
+                },
+                onEdit = {
+                    id -> navController.navigate("editCreature/${id}")
+                },
+                onBack = { navController.navigate("campaign/${campaignViewmodel.currentCampaign}") },
+                navController
+            )
         }
 
         composable(
             route = "campaign/{id}/map",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){
-            Map(navController)
+            Map(
+                places = places,
+                onDelete = {
+                    place -> placeViewmodel.deletePlace(place)
+                },
+                onSelect = {
+                    id -> navController.navigate("details/plac/${id}")
+                },
+                onEdit = {
+                    id -> navController.navigate("editMap/${id}")
+                },
+                onBack = { navController.navigate("campaign/${campaignViewmodel.currentCampaign}") },
+                navController
+            )
         }
 
         composable(
@@ -243,7 +283,7 @@ fun AppNavigation() {
             val id = backStackEntry.arguments?.getString("id")
             EditObject(
                 onDone = {
-                    obxecto -> objectViewmodel.insertObject(obxecto)
+                    obxecto -> objectViewmodel.updateObject(obxecto)
                     navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/objects")
                 },
                 objects = objects,
@@ -275,7 +315,7 @@ fun AppNavigation() {
             val id = backStackEntry.arguments?.getString("id")
             EditCreature(
                 onDone = {
-                    creature -> creatureViewmodel.insertCreature(creature)
+                    creature -> creatureViewmodel.updateCreature(creature)
                     navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/creatures")
                 },
                 creatures = creatures,
@@ -307,7 +347,7 @@ fun AppNavigation() {
             val id = backStackEntry.arguments?.getString("id")
             EditMap(
                 onDone = {
-                    place -> placeViewmodel.insertPlace(place)
+                    place -> placeViewmodel.updatePlace(place)
                     navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/map")
                 },
                 places = places,
@@ -342,9 +382,26 @@ fun AppNavigation() {
         }
 
         composable(
-            route = "details/{detailType}/{detailId}",
+            route = "details/crea/{detailId}",
             arguments = listOf(
-                navArgument("detailType"){type = NavType.StringType},
+                navArgument("detailId"){type = NavType.StringType}
+            )
+        ){
+            Details(navController)
+        }
+
+        composable(
+            route = "details/obje/{detailId}",
+            arguments = listOf(
+                navArgument("detailId"){type = NavType.StringType}
+            )
+        ){
+            Details(navController)
+        }
+
+        composable(
+            route = "details/plac/{detailId}",
+            arguments = listOf(
                 navArgument("detailId"){type = NavType.StringType}
             )
         ){

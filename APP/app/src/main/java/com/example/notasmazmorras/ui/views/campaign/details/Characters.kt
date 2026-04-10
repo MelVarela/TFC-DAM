@@ -28,6 +28,7 @@ fun Characters(
     onDelete: (LocalCharacter) -> Unit,
     onSelect: (String) -> Unit,
     onEdit: (String) -> Unit,
+    onBack: () -> Unit,
     navController: NavController
 ) {
     Scaffold(
@@ -35,7 +36,7 @@ fun Characters(
             TopAppBar(
                 title = { Text("Characters") },
                 navigationIcon = {
-                    IconButton(onClick = {navController.popBackStack()}) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 }
@@ -47,11 +48,6 @@ fun Characters(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Button(
-                onClick = {navController.navigate("details/char/1")}
-            ) {
-                Text("Ver personaje")
-            }
             Button(
                 onClick = {navController.navigate("editCharacter")}
             ) {
