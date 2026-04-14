@@ -9,6 +9,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.notasmazmorras.data.model.local.LocalCharacter
+import com.example.notasmazmorras.data.model.local.LocalCreature
+import com.example.notasmazmorras.data.model.local.LocalObject
+import com.example.notasmazmorras.data.model.local.LocalPlace
 import com.example.notasmazmorras.ui.views.campaign.Calendar
 import com.example.notasmazmorras.ui.views.campaign.Campaign
 import com.example.notasmazmorras.ui.views.campaign.CreateCampaign
@@ -22,7 +26,7 @@ import com.example.notasmazmorras.ui.views.campaign.details.EditCharacter
 import com.example.notasmazmorras.ui.views.campaign.details.EditCreature
 import com.example.notasmazmorras.ui.views.campaign.details.EditMap
 import com.example.notasmazmorras.ui.views.campaign.details.EditObject
-import com.example.notasmazmorras.ui.views.campaign.details.Map
+import com.example.notasmazmorras.ui.views.campaign.details.MapComponent
 import com.example.notasmazmorras.ui.views.campaign.details.Objects
 import com.example.notasmazmorras.ui.views.system.Account
 import com.example.notasmazmorras.ui.views.system.CreateAccount
@@ -228,7 +232,7 @@ fun AppNavigation() {
             route = "campaign/{id}/map",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){
-            Map(
+            MapComponent(
                 places = places,
                 onDelete = {
                     place -> placeViewmodel.deletePlace(place)
@@ -377,8 +381,24 @@ fun AppNavigation() {
             arguments = listOf(
                 navArgument("detailId"){type = NavType.StringType}
             )
-        ){
-            Details(navController)
+        ){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("detailId")
+            val chara : LocalCharacter = characters.first { it.id == id }
+
+            val map = HashMap<String, String>()
+
+            map.put("Clase", chara.clase)
+            map.put("Subclase", chara.subClase)
+
+            Details(
+                caracteristicas = map.toMap(),
+                title = chara.name,
+                maxPg = chara.maxPg,
+                pg = chara.pg,
+                picture = chara.picture,
+                onNotes = { navController.navigate("notes/char/${chara.id}/notes") },
+                navController
+            )
         }
 
         composable(
@@ -386,8 +406,23 @@ fun AppNavigation() {
             arguments = listOf(
                 navArgument("detailId"){type = NavType.StringType}
             )
-        ){
-            Details(navController)
+        ){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("detailId")
+            val creature : LocalCreature = creatures.first{ it.id == id }
+
+            val map = HashMap<String, String>()
+
+            map.put("Especie", creature.species)
+
+            Details(
+                caracteristicas = map.toMap(),
+                title = creature.name,
+                maxPg = null,
+                pg = null,
+                picture = creature.picture,
+                onNotes = { navController.navigate("notes/crea/${creature.id}/notes") },
+                navController
+            )
         }
 
         composable(
@@ -395,8 +430,23 @@ fun AppNavigation() {
             arguments = listOf(
                 navArgument("detailId"){type = NavType.StringType}
             )
-        ){
-            Details(navController)
+        ){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("detailId")
+            val obxecto : LocalObject = objects.first { it.id == id }
+
+            val map = HashMap<String, String>()
+
+            map.put("Precio", obxecto.cost.toString())
+
+            Details(
+                caracteristicas = map.toMap(),
+                title = obxecto.name,
+                maxPg = null,
+                pg = null,
+                picture = obxecto.picture,
+                onNotes = { navController.navigate("notes/obje/${obxecto.id}/notes") },
+                navController
+            )
         }
 
         composable(
@@ -404,8 +454,21 @@ fun AppNavigation() {
             arguments = listOf(
                 navArgument("detailId"){type = NavType.StringType}
             )
-        ){
-            Details(navController)
+        ){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("detailId")
+            val place : LocalPlace = places.first { it.id == id }
+
+            val map = HashMap<String, String>()
+
+            Details(
+                caracteristicas = map.toMap(),
+                title = place.name,
+                maxPg = null,
+                pg = null,
+                picture = place.picture,
+                onNotes = { navController.navigate("notes/plac/${place.id}/notes") },
+                navController
+            )
         }
 
     }

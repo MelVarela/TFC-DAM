@@ -23,7 +23,7 @@ import com.example.notasmazmorras.ui.components.GenericCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Map(
+fun MapComponent(
     places: List<LocalPlace>,
     onDelete: (LocalPlace) -> Unit,
     onSelect: (String) -> Unit,
