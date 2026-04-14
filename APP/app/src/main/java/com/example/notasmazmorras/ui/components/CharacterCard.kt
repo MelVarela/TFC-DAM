@@ -48,68 +48,59 @@ fun CharacterCard(
             .fillMaxWidth()
             .padding(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        shape = CardDefaults.elevatedShape
+        shape = CardDefaults.elevatedShape,
+        onClick = { onSelect(character.id) }
     ) {
         Column (
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.Start
         ){
-            Button(
-                onClick = { onSelect(character.id) },
-                colors = ButtonColors(
-                    containerColor = Color(0f, 0f, 0f, 0f),
-                    disabledContainerColor = Color(0f, 0f, 0f, 0f),
-                    contentColor = Color.Black,
-                    disabledContentColor = Color.Gray,
-                )
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
 
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(character.picture)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = character.name,
-                        //error = painterResource(id = R.drawable.screen_background_dark),
-                        //placeholder = painterResource(id = R.drawable.screen_background_light),
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .padding(end = 2.dp)
-                            .size(80.dp)
-                            .clip(CircleShape)
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(character.picture)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = character.name,
+                    //error = painterResource(id = R.drawable.screen_background_dark),
+                    //placeholder = painterResource(id = R.drawable.screen_background_light),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .padding(end = 2.dp)
+                        .size(80.dp)
+                        .clip(CircleShape)
+                )
+
+                Text(character.name)
+
+                Box(
+                    modifier = Modifier.width(120.dp)
+                        .padding(8.dp)
+                ){
+                    LinearProgressIndicator(
+                        progress = { (character.pg.toFloat() / character.maxPg.toFloat()) },
+                        color = Color.Red,
+                        trackColor = Color.Black,
+                        gapSize = 0.dp
                     )
+                }
 
-                    Text(character.name)
-
-                    Box(
-                        modifier = Modifier.width(120.dp)
-                            .padding(8.dp)
-                    ){
-                        LinearProgressIndicator(
-                            progress = { (character.pg.toFloat() / character.maxPg.toFloat()) },
-                            color = Color.Red,
-                            trackColor = Color.Black,
-                            gapSize = 0.dp
-                        )
+                Column(
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalAlignment = Alignment.End ,
+                    modifier = Modifier.weight(0.2f)
+                ) {
+                    IconButton(onClick = { onEdit(character.id) }) {
+                        Icon(Icons.Outlined.Edit, contentDescription = "Editar")
                     }
-
-                    Column(
-                        verticalArrangement = Arrangement.SpaceAround,
-                        horizontalAlignment = Alignment.End ,
-                        modifier = Modifier.weight(0.2f)
-                    ) {
-                        IconButton(onClick = { onEdit(character.id) }) {
-                            Icon(Icons.Outlined.Edit, contentDescription = "Editar")
-                        }
-                        IconButton(onClick = { onDelete(character) }) {
-                            Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
-                        }
+                    IconButton(onClick = { onDelete(character) }) {
+                        Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
                     }
                 }
             }

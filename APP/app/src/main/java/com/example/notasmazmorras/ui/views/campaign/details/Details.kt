@@ -42,14 +42,14 @@ fun Details(
     pg: Int?,
     picture: String,
     onNotes: () -> Unit,
-    navController: NavController
+    onBack: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Details") },
                 navigationIcon = {
-                    IconButton(onClick = {navController.popBackStack()}) {
+                    IconButton(onClick = {onBack()}) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 }

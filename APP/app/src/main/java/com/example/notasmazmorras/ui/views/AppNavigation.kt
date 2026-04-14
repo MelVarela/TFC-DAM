@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -11,6 +12,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.data.model.local.LocalCreature
+import com.example.notasmazmorras.data.model.local.LocalNote
 import com.example.notasmazmorras.data.model.local.LocalObject
 import com.example.notasmazmorras.data.model.local.LocalPlace
 import com.example.notasmazmorras.ui.views.campaign.Calendar
@@ -42,6 +44,7 @@ import com.example.notasmazmorras.viewmodels.NoteViewmodel
 import com.example.notasmazmorras.viewmodels.ObjectViewmodel
 import com.example.notasmazmorras.viewmodels.PlaceViewmodel
 import com.example.notasmazmorras.viewmodels.UserViewmodel
+import kotlinx.coroutines.awaitAll
 
 @Composable
 fun AppNavigation() {
@@ -134,7 +137,11 @@ fun AppNavigation() {
         ){ backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
             campaignViewmodel.currentCampaign = id!!
-            Campaign(navController)
+
+            Campaign(
+                campaign = campaigns.first{ it.id == id },
+                navController
+            )
         }
 
         composable(
@@ -152,26 +159,75 @@ fun AppNavigation() {
         }
 
         composable(
-            route = "notes/{type}/{typeId}/notes",
+            route = "notes/{owner}/notes",
             arguments = listOf(
-                navArgument("typeId"){type = NavType.IntType},
-                navArgument("type"){type = NavType.StringType}
+                navArgument("owner"){type = NavType.StringType}
             )
-        ){
-            Notes(navController)
+        ){ backStackEntry ->
+            val ownerId = backStackEntry.arguments?.getString("owner")
+
+            Notes(
+                notes = notes.filter { it.owner == ownerId },
+                onPress = { id -> navController.navigate("note/${id}") },
+                onDelete = { note -> noteViewmodel.deleteNote(note) },
+                onNew = { navController.navigate("newNote/${ownerId}") },
+                onBack = {
+                    if(ownerId!= null){
+                        if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "camp"){
+                            navController.navigate("campaign/${ownerId}")
+                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "char"){
+                            navController.navigate("details/char/${ownerId}")
+                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "crea"){
+                            navController.navigate("details/crea/${ownerId}")
+                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "plac"){
+                            navController.navigate("details/plac/${ownerId}")
+                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "obje"){
+                            navController.navigate("details/obje/${ownerId}")
+                        }
+                    }
+
+                }
+            )
         }
 
         composable(
             route = "note/{id}",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
-        ){
-            Note(navController)
+        ){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")
+
+            Note(
+                note = notes.first{ it.id == id },
+                onBack = {
+                    note -> noteViewmodel.updateNote(note)
+                    navController.navigate("notes/${note.owner}/notes")
+                },
+                ""
+            )
+        }
+
+        composable(
+            route = "newNote/{ownerId}",
+            arguments = listOf(navArgument("ownerId"){type = NavType.StringType})
+        ){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("ownerId")
+
+            Note(
+                note = null,
+                onBack = {
+                    note -> noteViewmodel.insertNote(note)
+                    navController.navigate("notes/${note.owner}/notes")
+                },
+                owner = id!!
+            )
         }
 
         composable(
             route = "campaign/{id}/characters",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
-        ){
+        ){ backStackEntry ->
+            val campId = backStackEntry.arguments?.getString("id")
+
             Characters(
                 characters = characters,
                 onDelete = {
@@ -183,7 +239,7 @@ fun AppNavigation() {
                 onEdit = {
                     id -> navController.navigate("editCharacter/${id}")
                 },
-                onBack = { navController.navigate("campaign/${campaignViewmodel.currentCampaign}") },
+                onBack = { navController.navigate("campaign/${campId}") },
                 navController
             )
         }
@@ -191,7 +247,9 @@ fun AppNavigation() {
         composable(
             route = "campaign/{id}/objects",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
-        ){
+        ){ backStackEntry ->
+            val campId = backStackEntry.arguments?.getString("id")
+
             Objects(
                 obxectos = objects,
                 onDelete = {
@@ -203,7 +261,7 @@ fun AppNavigation() {
                 onEdit = {
                     id -> navController.navigate("editObject/${id}")
                 },
-                onBack = { navController.navigate("campaign/${campaignViewmodel.currentCampaign}") },
+                onBack = { navController.navigate("campaign/${campId}") },
                 navController
             )
         }
@@ -211,7 +269,9 @@ fun AppNavigation() {
         composable(
             route = "campaign/{id}/creatures",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
-        ){
+        ){ backStackEntry ->
+            val campId = backStackEntry.arguments?.getString("id")
+
             Creatures(
                 creatures = creatures,
                 onDelete = {
@@ -223,7 +283,7 @@ fun AppNavigation() {
                 onEdit = {
                     id -> navController.navigate("editCreature/${id}")
                 },
-                onBack = { navController.navigate("campaign/${campaignViewmodel.currentCampaign}") },
+                onBack = { navController.navigate("campaign/${campId}") },
                 navController
             )
         }
@@ -231,7 +291,9 @@ fun AppNavigation() {
         composable(
             route = "campaign/{id}/map",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
-        ){
+        ){ backStackEntry ->
+            val campId = backStackEntry.arguments?.getString("id")
+
             MapComponent(
                 places = places,
                 onDelete = {
@@ -243,7 +305,7 @@ fun AppNavigation() {
                 onEdit = {
                     id -> navController.navigate("editMap/${id}")
                 },
-                onBack = { navController.navigate("campaign/${campaignViewmodel.currentCampaign}") },
+                onBack = { navController.navigate("campaign/${campId}") },
                 navController
             )
         }
@@ -256,7 +318,7 @@ fun AppNavigation() {
             EditCharacter(
                 onDone = {
                     character -> characterViewmodel.updateCharacter(character)
-                    navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/characters")
+                    navController.navigate("campaign/${character.campaign}/characters")
                 },
                 characters = characters,
                 characterId = id,
@@ -271,7 +333,7 @@ fun AppNavigation() {
             EditCharacter(
                 onDone = {
                     character -> characterViewmodel.insertCharacter(character)
-                    navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/characters")
+                    navController.navigate("campaign/${character.campaign}/characters")
                 },
                 characters = characters,
                 characterId = null,
@@ -288,7 +350,7 @@ fun AppNavigation() {
             EditObject(
                 onDone = {
                     obxecto -> objectViewmodel.updateObject(obxecto)
-                    navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/objects")
+                    navController.navigate("campaign/${obxecto.campaign}/objects")
                 },
                 objects = objects,
                 objectId = id,
@@ -303,7 +365,7 @@ fun AppNavigation() {
             EditObject(
                 onDone = {
                     obxecto -> objectViewmodel.insertObject(obxecto)
-                    navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/objects")
+                    navController.navigate("campaign/${obxecto.campaign}/objects")
                 },
                 objects = objects,
                 objectId = null,
@@ -320,7 +382,7 @@ fun AppNavigation() {
             EditCreature(
                 onDone = {
                     creature -> creatureViewmodel.updateCreature(creature)
-                    navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/creatures")
+                    navController.navigate("campaign/${creature.campaign}/creatures")
                 },
                 creatures = creatures,
                 creatureId = id,
@@ -335,7 +397,7 @@ fun AppNavigation() {
             EditCreature(
                 onDone = {
                     creature -> creatureViewmodel.insertCreature(creature)
-                    navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/creatures")
+                    navController.navigate("campaign/${creature.campaign}/creatures")
                 },
                 creatures = creatures,
                 creatureId = null,
@@ -352,7 +414,7 @@ fun AppNavigation() {
             EditMap(
                 onDone = {
                     place -> placeViewmodel.updatePlace(place)
-                    navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/map")
+                    navController.navigate("campaign/${place.campaign}/map")
                 },
                 places = places,
                 placeId = id,
@@ -367,7 +429,7 @@ fun AppNavigation() {
             EditMap(
                 onDone = {
                     place -> placeViewmodel.insertPlace(place)
-                    navController.navigate("campaign/" + campaignViewmodel.currentCampaign + "/map")
+                    navController.navigate("campaign/${place.campaign}/map")
                 },
                 places = places,
                 placeId = null,
@@ -396,8 +458,8 @@ fun AppNavigation() {
                 maxPg = chara.maxPg,
                 pg = chara.pg,
                 picture = chara.picture,
-                onNotes = { navController.navigate("notes/char/${chara.id}/notes") },
-                navController
+                onNotes = { navController.navigate("notes/${chara.id}/notes") },
+                onBack = { navController.navigate("campaign/${chara.campaign}/characters") }
             )
         }
 
@@ -420,8 +482,8 @@ fun AppNavigation() {
                 maxPg = null,
                 pg = null,
                 picture = creature.picture,
-                onNotes = { navController.navigate("notes/crea/${creature.id}/notes") },
-                navController
+                onNotes = { navController.navigate("notes/${creature.id}/notes") },
+                onBack = { navController.navigate("campaign/${creature.campaign}/creatures") }
             )
         }
 
@@ -444,8 +506,8 @@ fun AppNavigation() {
                 maxPg = null,
                 pg = null,
                 picture = obxecto.picture,
-                onNotes = { navController.navigate("notes/obje/${obxecto.id}/notes") },
-                navController
+                onNotes = { navController.navigate("notes/${obxecto.id}/notes") },
+                onBack = { navController.navigate("campaign/${obxecto.campaign}/objects") }
             )
         }
 
@@ -466,8 +528,8 @@ fun AppNavigation() {
                 maxPg = null,
                 pg = null,
                 picture = place.picture,
-                onNotes = { navController.navigate("notes/plac/${place.id}/notes") },
-                navController
+                onNotes = { navController.navigate("notes/${place.id}/notes") },
+                onBack = { navController.navigate("campaign/${place.campaign}/map") }
             )
         }
 

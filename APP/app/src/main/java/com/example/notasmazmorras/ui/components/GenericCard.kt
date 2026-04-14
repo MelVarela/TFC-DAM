@@ -44,55 +44,46 @@ fun GenericCard(
             .fillMaxWidth()
             .padding(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        shape = CardDefaults.elevatedShape
+        shape = CardDefaults.elevatedShape,
+        onClick = { onSelect() },
     ){
         Column (
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.Start
         ){
-            Button(
-                onClick = { onSelect() },
-                colors = ButtonColors(
-                    containerColor = Color(0f, 0f, 0f, 0f),
-                    disabledContainerColor = Color(0f, 0f, 0f, 0f),
-                    contentColor = Color.Black,
-                    disabledContentColor = Color.Gray,
-                )
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ){
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ){
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(picture)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = name,
-                        //error = painterResource(id = R.drawable.screen_background_dark),
-                        //placeholder = painterResource(id = R.drawable.screen_background_light),
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .padding(end = 2.dp)
-                            .size(80.dp)
-                            .clip(CircleShape)
-                    )
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(picture)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = name,
+                    //error = painterResource(id = R.drawable.screen_background_dark),
+                    //placeholder = painterResource(id = R.drawable.screen_background_light),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .padding(end = 2.dp)
+                        .size(80.dp)
+                        .clip(CircleShape)
+                )
 
-                    Text(name)
+                Text(name)
 
-                    Column(
-                        verticalArrangement = Arrangement.SpaceAround,
-                        horizontalAlignment = Alignment.End ,
-                        modifier = Modifier.weight(0.2f)
-                    ) {
-                        IconButton(onClick = { onEdit() }) {
-                            Icon(Icons.Outlined.Edit, contentDescription = "Editar")
-                        }
-                        IconButton(onClick = { onDelete() }) {
-                            Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
-                        }
+                Column(
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalAlignment = Alignment.End ,
+                    modifier = Modifier.weight(0.2f)
+                ) {
+                    IconButton(onClick = { onEdit() }) {
+                        Icon(Icons.Outlined.Edit, contentDescription = "Editar")
+                    }
+                    IconButton(onClick = { onDelete() }) {
+                        Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
                     }
                 }
             }

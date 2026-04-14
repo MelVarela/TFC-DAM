@@ -25,7 +25,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -45,56 +44,47 @@ fun CampaignCard(
             .fillMaxWidth()
             .padding(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        shape = CardDefaults.elevatedShape
+        shape = CardDefaults.elevatedShape,
+        onClick = { onSelect(campaign.id) }
     ) {
         Column (
             modifier = Modifier.padding(12.dp),
             verticalArrangement = Arrangement.SpaceAround,
             horizontalAlignment = Alignment.Start,
         ){
-            Button(
-                onClick = { onSelect(campaign.id) },
-                colors = ButtonColors(
-                    containerColor = Color(0f, 0f, 0f, 0f),
-                    disabledContainerColor = Color(0f, 0f, 0f, 0f),
-                    contentColor = Color.Black,
-                    disabledContentColor = Color.Gray,
-                )
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
+
+                AsyncImage(
+                    model = ImageRequest.Builder(context = LocalContext.current)
+                        .data(campaign.picture)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = campaign.name,
+                    //error = painterResource(id = R.drawable.screen_background_dark),
+                    //placeholder = painterResource(id = R.drawable.screen_background_light),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .padding(end = 2.dp)
+                        .size(80.dp)
+                        .clip(CircleShape)
+                )
+
+                Text(campaign.name)
+
+                Column(
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalAlignment = Alignment.End ,
+                    modifier = Modifier.weight(0.2f)
                 ) {
-
-                    AsyncImage(
-                        model = ImageRequest.Builder(context = LocalContext.current)
-                            .data(campaign.picture)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = campaign.name,
-                        //error = painterResource(id = R.drawable.screen_background_dark),
-                        //placeholder = painterResource(id = R.drawable.screen_background_light),
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .padding(end = 2.dp)
-                            .size(80.dp)
-                            .clip(CircleShape)
-                    )
-
-                    Text(campaign.name)
-
-                    Column(
-                        verticalArrangement = Arrangement.SpaceAround,
-                        horizontalAlignment = Alignment.End ,
-                        modifier = Modifier.weight(0.2f)
-                    ) {
-                        IconButton(onClick = { onDelete(campaign) }) {
-                            Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
-                        }
+                    IconButton(onClick = { onDelete(campaign) }) {
+                        Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
                     }
-
                 }
+
             }
         }
     }

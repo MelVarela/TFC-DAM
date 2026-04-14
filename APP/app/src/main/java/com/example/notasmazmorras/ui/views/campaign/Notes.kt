@@ -3,6 +3,8 @@ package com.example.notasmazmorras.ui.views.campaign
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -16,32 +18,56 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.local.LocalNote
+import com.example.notasmazmorras.ui.components.NoteCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Notes(navController: NavController) {
+fun Notes(
+    notes: List<LocalNote>,
+    onPress: (String) -> Unit,
+    onDelete: (LocalNote) -> Unit,
+    onNew: () -> Unit,
+    onBack: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Notes") },
                 navigationIcon = {
-                    IconButton(onClick = {navController.popBackStack()}) {
+                    IconButton(onClick = {onBack()}) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 }
             )
         }
     ){ contentPadding ->
+
         Column(
             modifier = Modifier.padding(contentPadding),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Button(
-                onClick = {navController.navigate("note/1")}
+                onClick = { onNew() }
             ) {
-                Text("Ver nota")
+                Text("Nueva nota")
+            }
+
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+
+                items(notes){ note ->
+                    NoteCard(
+                        note = note,
+                        onPress = onPress,
+                        onDelete = onDelete,
+                    )
+                }
             }
         }
+
     }
 }
