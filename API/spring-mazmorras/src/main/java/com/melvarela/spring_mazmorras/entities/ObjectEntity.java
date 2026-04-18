@@ -3,6 +3,8 @@ package com.melvarela.spring_mazmorras.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,7 +33,8 @@ public class ObjectEntity {
     @Column(name = "foto")
     String picture;
 
-    @Column(name = "campanna")
-    String campaign;
+    @ManyToOne
+    @JoinColumn(name = "campanna")
+    CampaignEntity campaign;
 
 }
