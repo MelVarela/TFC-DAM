@@ -1,5 +1,7 @@
 package com.melvarela.spring_mazmorras.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -7,5 +9,7 @@ import com.melvarela.spring_mazmorras.entities.PlaceEntity;
 
 @Repository
 public interface PlaceRepository extends JpaRepository<PlaceEntity, String> {
+
+    List<PlaceEntity> findByCampaign(String campaignId);
     
 }

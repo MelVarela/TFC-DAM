@@ -51,4 +51,9 @@ public class CampaignService {
         }
     }
 
+    public List<CampaignEntity> findAllByPlayer(String playerId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findAllByPlayer'");
+    }
+
 }

@@ -47,4 +47,8 @@ public class NoteService {
         }
     }
 
+    public List<NoteEntity> findAllByOwner(String owner) {
+        return repository.findByOwner(owner);
+    }
+
 }

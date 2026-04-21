@@ -47,4 +47,8 @@ public class ObjectService {
         }
     }
 
+    public List<ObjectEntity> findAllByCampaign(String campaignId) {
+        return repository.findByCampaign(campaignId);
+    }
+
 }

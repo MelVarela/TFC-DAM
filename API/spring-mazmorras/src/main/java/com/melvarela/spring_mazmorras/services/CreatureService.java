@@ -47,4 +47,8 @@ public class CreatureService {
         }
     }
 
+    public List<CreatureEntity> findAllByCampaign(String campaignId) {
+        return repository.findByCampaign(campaignId);
+    }
+
 }
