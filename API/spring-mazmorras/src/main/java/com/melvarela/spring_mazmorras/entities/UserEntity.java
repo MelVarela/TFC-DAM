@@ -2,6 +2,7 @@ package com.melvarela.spring_mazmorras.entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import lombok.ToString;
 @ToString
 public class UserEntity {
     
+    @Id
     @Column(name = "correo")
     String email;
 

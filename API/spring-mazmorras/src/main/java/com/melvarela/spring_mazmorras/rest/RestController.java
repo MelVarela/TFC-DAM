@@ -20,6 +20,7 @@ import com.melvarela.spring_mazmorras.entities.CreatureEntity;
 import com.melvarela.spring_mazmorras.entities.NoteEntity;
 import com.melvarela.spring_mazmorras.entities.ObjectEntity;
 import com.melvarela.spring_mazmorras.entities.PlaceEntity;
+import com.melvarela.spring_mazmorras.entities.UserRelationEntity;
 import com.melvarela.spring_mazmorras.rest.dtos.CampaignDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CharacterDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CreatureDto;
@@ -27,6 +28,7 @@ import com.melvarela.spring_mazmorras.rest.dtos.NoteDto;
 import com.melvarela.spring_mazmorras.rest.dtos.ObjectDto;
 import com.melvarela.spring_mazmorras.rest.dtos.PlaceDto;
 import com.melvarela.spring_mazmorras.rest.dtos.UserDto;
+import com.melvarela.spring_mazmorras.rest.dtos.UserRelationDto;
 import com.melvarela.spring_mazmorras.rest.mappers.CampaignDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.CharacterDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.CreatureDtoMapper;
@@ -34,12 +36,14 @@ import com.melvarela.spring_mazmorras.rest.mappers.NoteDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.ObjectDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.PlaceDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.UserDtoMapper;
+import com.melvarela.spring_mazmorras.rest.mappers.UserRelationDtoMapper;
 import com.melvarela.spring_mazmorras.services.CampaignService;
 import com.melvarela.spring_mazmorras.services.CharacterService;
 import com.melvarela.spring_mazmorras.services.CreatureService;
 import com.melvarela.spring_mazmorras.services.NoteService;
 import com.melvarela.spring_mazmorras.services.ObjectService;
 import com.melvarela.spring_mazmorras.services.PlaceService;
+import com.melvarela.spring_mazmorras.services.UserRelationService;
 import com.melvarela.spring_mazmorras.services.UserService;
 
 @Controller("/api/v1/")
@@ -59,6 +63,8 @@ public class RestController {
     ObjectService objectService;
     @Autowired
     PlaceService placeService;
+    @Autowired
+    UserRelationService userRelationService;
     
     
     //Users
@@ -438,6 +444,51 @@ public class RestController {
             ), HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(new PlaceDto(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("userRelation/{campaignId}")
+    public ResponseEntity<List<UserRelationDto>> getRelationsByCampaign(@PathVariable("campaignId") String campaignId){
+        List<UserRelationDto> relationsDto = new ArrayList<>();
+        List<UserRelationEntity> relations = userRelationService.findByCampaign(campaignId);
+
+        for (UserRelationEntity relation : relations) {
+            relationsDto.add(UserRelationDtoMapper.userRelationEntityToDto(relation));
+        }
+
+        return new ResponseEntity<>(relationsDto, HttpStatus.OK);
+    }
+
+    @PostMapping("userRelation")
+    public ResponseEntity<UserRelationDto> postUserRelation(@RequestBody UserRelationDto userRelation){
+        try{
+            return new ResponseEntity<>(UserRelationDtoMapper.userRelationEntityToDto(
+                userRelationService.createUser(UserRelationDtoMapper.userRelationDtoToEntity(userRelation))
+            ), HttpStatus.CREATED);
+        }catch(Exception e){
+            return new ResponseEntity<>(new UserRelationDto(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PatchMapping("userRelation")
+    public ResponseEntity<UserRelationDto> updateUserRelation(@RequestBody UserRelationDto userRelation){
+        try{
+            return new ResponseEntity<>(UserRelationDtoMapper.userRelationEntityToDto(
+                userRelationService.updateUser(UserRelationDtoMapper.userRelationDtoToEntity(userRelation))
+            ), HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(new UserRelationDto(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("userRelation")
+    public ResponseEntity<UserRelationDto> deleteUserRelation(@RequestBody UserRelationDto userRelation){
+        try{
+            return new ResponseEntity<>(UserRelationDtoMapper.userRelationEntityToDto(
+                userRelationService.deleteUser(UserRelationDtoMapper.userRelationDtoToEntity(userRelation))
+            ), HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity<>(new UserRelationDto(), HttpStatus.BAD_REQUEST);
         }
     }
 
