@@ -72,7 +72,10 @@ fun AppNavigation() {
     ){
 
         composable(route = "login"){
-            Login(navController)
+            Login(
+                campaignViewmodel,
+                navController
+            )
         }
 
         composable(route = "createAccount"){
@@ -140,6 +143,7 @@ fun AppNavigation() {
 
             Campaign(
                 campaign = campaigns.first{ it.id == id },
+                onBack = {navController.navigate("home")},
                 navController
             )
         }

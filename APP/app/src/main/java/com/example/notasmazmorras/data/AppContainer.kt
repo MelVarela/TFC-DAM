@@ -38,7 +38,7 @@ interface AppContainer {
 
 class AppDataContainer(private val context : Context) : AppContainer {
 
-    private val urlAPI : String = "http://localhost:8080"
+    private val urlAPI : String = "http://10.0.2.2:8080/api/v1/"
 
     private val json = Json {
         ignoreUnknownKeys = true

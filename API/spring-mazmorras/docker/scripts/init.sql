@@ -10,14 +10,14 @@ CREATE TABLE usuarios(
 );
 
 CREATE TABLE campannas(
-    id VARCHAR(30) PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     foto VARCHAR(300)
 );
 
 CREATE TABLE usuarios_campannas(
     usuario VARCHAR(100),
-    campanna VARCHAR(30),
+    campanna VARCHAR(50),
     horario TEXT,
     rol CHAR NOT NULL,
     aceptada BOOLEAN NOT NULL,
@@ -29,31 +29,31 @@ CREATE TABLE usuarios_campannas(
 );
 
 CREATE TABLE personajes(
-    id VARCHAR(30) PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     clase VARCHAR(100),
     subclase VARCHAR(100),
     pg SMALLINT,
     pgmaximos SMALLINT,
     foto VARCHAR(300),
-    campanna VARCHAR(30),
+    campanna VARCHAR(50),
 
     FOREIGN KEY (campanna) REFERENCES campannas(id)
 );
 
 CREATE TABLE objetos(
-    id VARCHAR(30) PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     precio FLOAT,
     foto VARCHAR(300),
-    campanna VARCHAR(30),
+    campanna VARCHAR(50),
 
     FOREIGN KEY (campanna) REFERENCES campannas(id)
 );
 
 CREATE TABLE inventario(
-    personaje VARCHAR(30),
-    objeto VARCHAR(30),
+    personaje VARCHAR(50),
+    objeto VARCHAR(50),
 
     PRIMARY KEY (personaje, objeto),
 
@@ -62,29 +62,29 @@ CREATE TABLE inventario(
 );
 
 CREATE TABLE criaturas(
-    id VARCHAR(30) PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     raza VARCHAR(100),
     foto VARCHAR(300),
-    campanna VARCHAR(30),
+    campanna VARCHAR(50),
 
     FOREIGN KEY (campanna) REFERENCES campannas(id)
 );
 
 CREATE TABLE lugares(
-    id VARCHAR(30) PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     foto VARCHAR(300),
-    campanna VARCHAR(30),
+    campanna VARCHAR(50),
 
     FOREIGN KEY (campanna) REFERENCES campannas(id)
 );
 
 CREATE TABLE notas(
-    id VARCHAR(30) PRIMARY KEY,
+    id VARCHAR(50) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     contenido TEXT,
     dm BOOLEAN NOT NULL,
     editando BOOLEAN NOT NULL,
-    propietario VARCHAR(30)
+    propietario VARCHAR(50)
 );

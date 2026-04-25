@@ -1,5 +1,6 @@
 package com.melvarela.spring_mazmorras.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class CampaignService {
 
     @Transactional
     public CampaignEntity createCampaign(CampaignEntity campaign){
+        campaign.setId(LocalDateTime.now().toString() + "camp");
         return repository.save(campaign);
     }
 
@@ -51,9 +53,9 @@ public class CampaignService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<CampaignEntity> findAllByPlayer(String playerId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAllByPlayer'");
+        return repository.findAllByPlayer(playerId);
     }
 
 }

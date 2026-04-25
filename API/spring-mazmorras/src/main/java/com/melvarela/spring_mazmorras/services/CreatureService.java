@@ -1,5 +1,6 @@
 package com.melvarela.spring_mazmorras.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class CreatureService {
 
     @Transactional
     public CreatureEntity createCreature(CreatureEntity creature){
+        creature.setId(LocalDateTime.now().toString() + "crea");
         return repository.save(creature);
     }
 

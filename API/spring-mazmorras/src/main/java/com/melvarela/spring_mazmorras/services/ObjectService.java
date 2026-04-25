@@ -1,5 +1,6 @@
 package com.melvarela.spring_mazmorras.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class ObjectService {
 
     @Transactional
     public ObjectEntity createObject(ObjectEntity entity){
+        entity.setId(LocalDateTime.now().toString() + "obje");
         return repository.save(entity);
     }
 

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class RemoteCampaign(
     val id : String?,
     val name : String,
-    val picture : String
+    val picture : String = ""
 )
 
 fun RemoteCampaign.toLocal() : LocalCampaign =

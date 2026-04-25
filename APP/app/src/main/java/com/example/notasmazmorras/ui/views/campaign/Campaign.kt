@@ -22,6 +22,7 @@ import com.example.notasmazmorras.data.model.local.LocalCampaign
 @Composable
 fun Campaign(
     campaign: LocalCampaign,
+    onBack: () -> Unit,
     navController: NavController
 ) {
     Scaffold(
@@ -29,7 +30,7 @@ fun Campaign(
             TopAppBar(
                 title = { Text("Campaign") },
                 navigationIcon = {
-                    IconButton(onClick = {navController.popBackStack()}) {
+                    IconButton(onClick = {onBack()}) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                     }
                 }

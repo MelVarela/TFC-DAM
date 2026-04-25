@@ -20,10 +20,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.local.LocalCampaign
+import com.example.notasmazmorras.viewmodels.CampaignViewmodel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Login(navController: NavController) {
+fun Login(
+    campaignViewmodel: CampaignViewmodel,
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Login") })
@@ -43,6 +48,13 @@ fun Login(navController: NavController) {
                 onClick = {navController.navigate("createAccount")}
             ) {
                 Text("Crear cuenta")
+            }
+            Button(
+                onClick = {
+                    campaignViewmodel.sync("email");
+                }
+            ){
+                Text("Prueba sincronización")
             }
 
             LoginScreen(modifier = Modifier)

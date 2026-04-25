@@ -1,5 +1,6 @@
 package com.melvarela.spring_mazmorras.services;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class CharacterService {
 
     @Transactional
     public CharacterEntity createCharacter(CharacterEntity character){
+        character.setId(LocalDateTime.now().toString() + "char");
         return repository.save(character);
     }
 

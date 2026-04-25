@@ -2,6 +2,7 @@ package com.example.notasmazmorras.data.model.local
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.example.notasmazmorras.data.model.remote.RemotePlace
@@ -12,7 +13,8 @@ import com.example.notasmazmorras.data.model.remote.RemotePlace
         ForeignKey(
             entity = LocalCampaign::class,
             parentColumns = ["id"],
-            childColumns = ["campaign"]
+            childColumns = ["campaign"],
+            onDelete = CASCADE
         )
     ],
     indices = [Index(value = ["campaign"])]
