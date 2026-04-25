@@ -36,9 +36,9 @@ class CampaignViewmodel (
         systemViewmodel.processResult(campaignRepository.deleteCampaign(campaign))
     }
 
-    fun sync() = viewModelScope.launch {
+    fun sync(emailUser: String) = viewModelScope.launch {
         campaignRepository.uploadPendingChanges()
-        campaignRepository.syncFromServer()
+        campaignRepository.syncFromServer(emailUser)
     }
 
     companion object {

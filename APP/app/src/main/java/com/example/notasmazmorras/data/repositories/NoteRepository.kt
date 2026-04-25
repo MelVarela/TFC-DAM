@@ -27,7 +27,7 @@ interface NoteRepository {
 
     suspend fun uploadPendingChanges(): RepositoryResult
 
-    suspend fun syncFromServer(): RepositoryResult
+    suspend fun syncFromServer(owner: String): RepositoryResult
 }
 
 class DefaultNoteRepository(
@@ -79,7 +79,7 @@ class DefaultNoteRepository(
                 val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
 
                 if(it.pendingDelete){
-                    if(!(it.id.substring(0, 1) == "l")) remote.deleteCharacter(id)
+                    if(!(it.id.substring(0, 1) == "l")) remote.deleteNote(it.toRemote())
                     local.delete(it)
                 }else if(it.id.substring(0, 1) == "l"){
 
@@ -90,7 +90,7 @@ class DefaultNoteRepository(
 
                 }else{
 
-                    remote.updateNote(it.id, it.toRemote())
+                    remote.updateNote(it.toRemote())
                     local.update(it.copy(pendingSync = false))
 
                 }
@@ -102,9 +102,9 @@ class DefaultNoteRepository(
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
 
-    override suspend fun syncFromServer(): RepositoryResult {
+    override suspend fun syncFromServer(owner: String): RepositoryResult {
         try{
-            var notes = remote.getNotes()
+            var notes = remote.getNotes(owner)
             var ids = local.getIds()
 
             var notesToUpdate : List<LocalNote> = ArrayList<LocalNote>()

@@ -35,9 +35,9 @@ class ObjectViewmodel(
         systemViewmodel.processResult(objectRepository.deleteObject(obxecto))
     }
 
-    fun sync() = viewModelScope.launch {
+    fun sync(currentCampaign: String) = viewModelScope.launch {
         objectRepository.uploadPendingChanges()
-        objectRepository.syncFromServer()
+        objectRepository.syncFromServer(currentCampaign)
     }
 
     companion object {

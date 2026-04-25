@@ -35,9 +35,9 @@ class PlaceViewmodel(
         systemViewmodel.processResult(placeRepository.deletePlace(place))
     }
 
-    fun sync() = viewModelScope.launch {
+    fun sync(currentCampaign: String) = viewModelScope.launch {
         placeRepository.uploadPendingChanges()
-        placeRepository.syncFromServer()
+        placeRepository.syncFromServer(currentCampaign)
     }
 
     companion object {

@@ -34,9 +34,9 @@ class CreatureViewmodel(
         systemViewmodel.processResult(creatureRepository.deleteCreature(creature))
     }
 
-    fun sync() = viewModelScope.launch {
+    fun sync(currentCampaign: String) = viewModelScope.launch {
         creatureRepository.uploadPendingChanges()
-        creatureRepository.syncFromServer()
+        creatureRepository.syncFromServer(currentCampaign)
     }
 
     companion object {

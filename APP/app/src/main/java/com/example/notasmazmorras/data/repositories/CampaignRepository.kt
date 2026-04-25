@@ -9,7 +9,6 @@ import com.example.notasmazmorras.data.repositories.daos.CampaignDao
 import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlin.text.insert
 
 interface CampaignRepository {
 
@@ -25,7 +24,7 @@ interface CampaignRepository {
 
     suspend fun uploadPendingChanges(): RepositoryResult
 
-    suspend fun syncFromServer(): RepositoryResult
+    suspend fun syncFromServer(email: String): RepositoryResult
 }
 
 class DefaultCampaignRepository(
@@ -77,7 +76,7 @@ class DefaultCampaignRepository(
                 val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
 
                 if(it.pendingDelete){
-                    if(!(it.id.substring(0, 1) == "l")) remote.deleteCampaign(id)
+                    if(!(it.id.substring(0, 1) == "l")) remote.deleteCampaign(it.toRemote())
                     local.delete(it)
                 }else if(it.id.substring(0, 1) == "l"){
 
@@ -88,7 +87,7 @@ class DefaultCampaignRepository(
 
                 }else{
 
-                    remote.updateCampaign(it.id, it.toRemote())
+                    remote.updateCampaign(it.toRemote())
                     local.update(it.copy(pendingSync = false))
 
                 }
@@ -101,9 +100,9 @@ class DefaultCampaignRepository(
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
 
-    override suspend fun syncFromServer(): RepositoryResult {
+    override suspend fun syncFromServer(email: String): RepositoryResult {
         try{
-            var campaigns = remote.getCampaigns()
+            var campaigns = remote.getCampaigns(email)
             var ids = local.getIds()
 
             var campaignsToUpdate : List<LocalCampaign> = ArrayList<LocalCampaign>()

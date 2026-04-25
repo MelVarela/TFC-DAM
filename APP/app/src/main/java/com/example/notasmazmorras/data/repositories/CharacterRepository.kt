@@ -26,7 +26,7 @@ interface CharacterRepository {
 
     suspend fun uploadPendingChanges(): RepositoryResult
 
-    suspend fun syncFromServer(): RepositoryResult
+    suspend fun syncFromServer(campaignId : String): RepositoryResult
 }
 
 class DefaultCharacterRepository(
@@ -78,7 +78,7 @@ class DefaultCharacterRepository(
                 val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
 
                 if(it.pendingDelete){
-                    if(!(it.id.substring(0, 1) == "l")) remote.deleteCharacter(id)
+                    if(!(it.id.substring(0, 1) == "l")) remote.deleteCharacter(it.toRemote())
                     local.delete(it)
                 }else if(it.id.substring(0, 1) == "l"){
 
@@ -89,7 +89,7 @@ class DefaultCharacterRepository(
 
                 }else{
 
-                    remote.updateCharacter(it.id, it.toRemote())
+                    remote.updateCharacter(it.toRemote())
                     local.update(it.copy(pendingSync = false))
 
                 }
@@ -101,9 +101,9 @@ class DefaultCharacterRepository(
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
 
-    override suspend fun syncFromServer(): RepositoryResult {
+    override suspend fun syncFromServer(campaignId: String): RepositoryResult {
         try{
-            var characters = remote.getCharacters()
+            var characters = remote.getCharacters(campaignId)
             var ids = local.getIds()
 
             var charactersToUpdate : List<LocalCharacter> = ArrayList<LocalCharacter>()

@@ -19,114 +19,114 @@ interface ApiService {
 
     //Campañas
 
-    @GET("campaigns")
-    suspend fun getCampaigns() : List<RemoteCampaign>
+    @GET("campaigns/{email}")
+    suspend fun getCampaigns(@Path("email") email : String) : List<RemoteCampaign>
 
-    @POST("campaigns")
+    @POST("campaign")
     suspend fun createCampaign(@Body campaign: RemoteCampaign): RemoteCampaign
 
-    @DELETE("campaigns/{id}")
-    suspend fun deleteCampaign(@Path("id") id: String): RemoteCampaign
+    @DELETE("campaign")
+    suspend fun deleteCampaign(@Body campaign: RemoteCampaign): RemoteCampaign
 
-    @PUT("campaigns/{id}")
-    suspend fun updateCampaign(@Path("id") id : String, @Body campaign: RemoteCampaign): RemoteCampaign
+    @PUT("campaign")
+    suspend fun updateCampaign(@Body campaign: RemoteCampaign): RemoteCampaign
 
     //Personajes
 
-    @GET("characters")
-    suspend fun getCharacters() : List<RemoteCharacter>
+    @GET("characters/{campaignId}")
+    suspend fun getCharacters(@Path("campaignId") campaignId : String) : List<RemoteCharacter>
 
-    @POST("characters")
+    @POST("character")
     suspend fun createCharacter(@Body character: RemoteCharacter): RemoteCharacter
 
-    @DELETE("characters/{id}")
-    suspend fun deleteCharacter(@Path("id") id: String): RemoteCharacter
+    @DELETE("character")
+    suspend fun deleteCharacter(@Body character: RemoteCharacter): RemoteCharacter
 
-    @PUT("characters/{id}")
-    suspend fun updateCharacter(@Path("id") id : String, @Body character: RemoteCharacter): RemoteCharacter
+    @PUT("character")
+    suspend fun updateCharacter(@Body character: RemoteCharacter): RemoteCharacter
 
     //Criaturas
 
-    @GET("creatures")
-    suspend fun getCreatures() : List<RemoteCreature>
+    @GET("creatures/{campaignId}")
+    suspend fun getCreatures(@Path("campaignId") campaignId : String) : List<RemoteCreature>
 
-    @POST("creatures")
+    @POST("creature")
     suspend fun createCreature(@Body creature: RemoteCreature): RemoteCreature
 
-    @DELETE("creatures/{id}")
-    suspend fun deleteCreature(@Path("id") id: String): RemoteCreature
+    @DELETE("creature")
+    suspend fun deleteCreature(@Body creature: RemoteCreature): RemoteCreature
 
-    @PUT("creatures/{id}")
-    suspend fun updateCreature(@Path("id") id : String, @Body creature: RemoteCreature): RemoteCreature
+    @PUT("creature")
+    suspend fun updateCreature(@Body creature: RemoteCreature): RemoteCreature
 
     //Notas
 
-    @GET("notes")
-    suspend fun getNotes() : List<RemoteNote>
+    @GET("notes/{ownerId}")
+    suspend fun getNotes(@Path("ownerId") ownerId : String) : List<RemoteNote>
 
-    @POST("notes")
+    @POST("note")
     suspend fun createNote(@Body note: RemoteNote): RemoteNote
 
-    @DELETE("notes/{id}")
-    suspend fun deleteNote(@Path("id") id: String): RemoteNote
+    @DELETE("note")
+    suspend fun deleteNote(@Body note: RemoteNote): RemoteNote
 
-    @PUT("notes/{id}")
-    suspend fun updateNote(@Path("id") id : String, @Body note: RemoteNote): RemoteNote
+    @PUT("note")
+    suspend fun updateNote(@Body note: RemoteNote): RemoteNote
 
     //Objetos
 
-    @GET("objects")
-    suspend fun getObjects() : List<RemoteObject>
+    @GET("objects/{campaignId}")
+    suspend fun getObjects(@Path("campaignId") campaignId : String) : List<RemoteObject>
 
-    @POST("objects")
+    @POST("object")
     suspend fun createObject(@Body obxecto: RemoteObject): RemoteObject
 
-    @DELETE("objects/{id}")
-    suspend fun deleteObject(@Path("id") id: String): RemoteObject
+    @DELETE("object")
+    suspend fun deleteObject(@Body obxecto: RemoteObject): RemoteObject
 
-    @PUT("objects/{id}")
-    suspend fun updateObject(@Path("id") id : String, @Body obxecto: RemoteObject): RemoteObject
+    @PUT("object")
+    suspend fun updateObject(@Body obxecto: RemoteObject): RemoteObject
 
     //Lugares
 
-    @GET("places")
-    suspend fun getPlaces() : List<RemotePlace>
+    @GET("places/{campaignId}")
+    suspend fun getPlaces(@Path("campaignId") campaignId : String) : List<RemotePlace>
 
-    @POST("places")
+    @POST("place")
     suspend fun createPlace(@Body place: RemotePlace): RemotePlace
 
-    @DELETE("places/{id}")
-    suspend fun deletePlace(@Path("id") id: String): RemotePlace
+    @DELETE("place")
+    suspend fun deletePlace(@Body place: RemotePlace): RemotePlace
 
-    @PUT("places/{id}")
-    suspend fun updatePlace(@Path("id") id : String, @Body place: RemotePlace): RemotePlace
+    @PUT("place")
+    suspend fun updatePlace(@Body place: RemotePlace): RemotePlace
 
     //Usuarios
 
-    @GET("users")
-    suspend fun getUsers() : List<RemoteUser>
+    @GET("user/{email}")
+    suspend fun getUser(@Path("email") email : String) : RemoteUser
 
-    @POST("users")
+    @POST("user")
     suspend fun createUser(@Body remoteUser: RemoteUser): RemoteUser
 
-    @DELETE("users/{id}")
-    suspend fun deleteUser(@Path("id") id: String): RemoteUser
+    @DELETE("user")
+    suspend fun deleteUser(@Body user: RemoteUser): RemoteUser
 
-    @PUT("users/{id}")
-    suspend fun updateUser(@Path("id") id : String, @Body user: RemoteUser): RemoteUser
+    @PUT("user")
+    suspend fun updateUser(@Body user: RemoteUser): RemoteUser
 
     //Relaciones
 
-    @GET("relations")
-    suspend fun getRelations() : List<RemoteUserRelation>
+    @GET("userRelation/{campaignId}")
+    suspend fun getRelations(@Path("campaignId") campaignId: String) : List<RemoteUserRelation>
 
-    @POST("relations")
+    @POST("userRelation")
     suspend fun createRelation(@Body relation: RemoteUserRelation): RemoteUserRelation
 
-    @DELETE("relations/{id}")
-    suspend fun deleteRelation(@Path("id") id: String): RemoteUserRelation
+    @DELETE("userRelation")
+    suspend fun deleteRelation(@Body relation: RemoteUserRelation): RemoteUserRelation
 
-    @PUT("relations/{id}")
-    suspend fun updateRelation(@Path("id") id : String, @Body relation: RemoteUserRelation): RemoteUserRelation
+    @PUT("userRelation")
+    suspend fun updateRelation(@Body relation: RemoteUserRelation): RemoteUserRelation
 
 }

@@ -27,7 +27,7 @@ interface PlaceRepository {
 
     suspend fun uploadPendingChanges(): RepositoryResult
 
-    suspend fun syncFromServer(): RepositoryResult
+    suspend fun syncFromServer(campaignId: String): RepositoryResult
 }
 
 class DefaultPlaceRepository(
@@ -79,7 +79,7 @@ class DefaultPlaceRepository(
                 val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
 
                 if(it.pendingDelete){
-                    if(!(it.id.substring(0, 1) == "l")) remote.deletePlace(id)
+                    if(!(it.id.substring(0, 1) == "l")) remote.deletePlace(it.toRemote())
                     local.delete(it)
                 }else if(it.id.substring(0, 1) == "l"){
 
@@ -90,7 +90,7 @@ class DefaultPlaceRepository(
 
                 }else{
 
-                    remote.updatePlace(it.id, it.toRemote())
+                    remote.updatePlace(it.toRemote())
                     local.update(it.copy(pendingSync = false))
 
                 }
@@ -102,9 +102,9 @@ class DefaultPlaceRepository(
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
 
-    override suspend fun syncFromServer(): RepositoryResult {
+    override suspend fun syncFromServer(campaignId: String): RepositoryResult {
         try{
-            var places = remote.getPlaces()
+            var places = remote.getPlaces(campaignId)
             var ids = local.getIds()
 
             var placesToUpdate : List<LocalPlace> = ArrayList<LocalPlace>()

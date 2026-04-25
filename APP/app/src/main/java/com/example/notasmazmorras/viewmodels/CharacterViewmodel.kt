@@ -35,9 +35,9 @@ class CharacterViewmodel (
         systemViewmodel.processResult(characterRepository.deleteCharacter(character))
     }
 
-    fun sync() = viewModelScope.launch {
+    fun sync(currentCampaign: String) = viewModelScope.launch {
         characterRepository.uploadPendingChanges()
-        characterRepository.syncFromServer()
+        characterRepository.syncFromServer(currentCampaign)
     }
 
     companion object {

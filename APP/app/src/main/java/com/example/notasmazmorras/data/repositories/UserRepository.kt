@@ -28,7 +28,7 @@ interface UserRepository {
 
     suspend fun uploadPendingChanges(): RepositoryResult
 
-    suspend fun syncFromServer(): RepositoryResult
+    suspend fun syncFromServer(email: String): RepositoryResult
 }
 
 class DefaultUserRepository(
@@ -88,7 +88,7 @@ class DefaultUserRepository(
                 val id = it.email.substring(it.email.indexOf("_") + 1, it.email.length)
 
                 if(it.pendingDelete){
-                    if(!(it.email.substring(0, 1) == "l")) remote.deleteUser(id)
+                    if(!(it.email.substring(0, 1) == "l")) remote.deleteUser(it.toRemote())
                     local.delete(it)
                 }else if(it.email.substring(0, 1) == "l"){
 
@@ -99,7 +99,7 @@ class DefaultUserRepository(
 
                 }else{
 
-                    remote.updateUser(it.email, it.toRemote())
+                    remote.updateUser(it.toRemote())
                     local.update(it.copy(pendingSync = false))
 
                 }
@@ -111,24 +111,17 @@ class DefaultUserRepository(
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
 
-    override suspend fun syncFromServer(): RepositoryResult {
+    override suspend fun syncFromServer(email: String): RepositoryResult {
         try{
-            var users = remote.getUsers()
+            var user = remote.getUser(email)
             var ids = local.getUserEmails()
 
-            var usersToUpdate : List<LocalUser> = ArrayList<LocalUser>()
-            var usersToInsert : List<LocalUser> = ArrayList<LocalUser>()
-
-            users.map {
-                if(!(ids.first().contains(it.email))){
-                    usersToInsert = usersToInsert.plus(it.toLocal())
-                }else{
-                    usersToUpdate = usersToUpdate.plus(it.toLocal())
-                }
+            if(ids.first().contains(user.email)){
+                local.insert(user.toLocal())
+            }else{
+                local.update(user.toLocal())
             }
 
-            local.insertList(usersToInsert)
-            local.updateList(usersToUpdate)
             return RepositoryResult.Success("Sicronizado con éxito")
         }catch (e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)

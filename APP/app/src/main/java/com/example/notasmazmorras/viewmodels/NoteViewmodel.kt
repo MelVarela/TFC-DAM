@@ -35,9 +35,9 @@ class NoteViewmodel(
         systemViewmodel.processResult(noteRepository.deleteNote(note))
     }
 
-    fun sync() = viewModelScope.launch {
+    fun sync(owner: String) = viewModelScope.launch {
         noteRepository.uploadPendingChanges()
-        noteRepository.syncFromServer()
+        noteRepository.syncFromServer(owner)
     }
 
     companion object {

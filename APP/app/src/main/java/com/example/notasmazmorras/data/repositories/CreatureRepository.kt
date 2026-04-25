@@ -26,7 +26,7 @@ interface CreatureRepository {
 
     suspend fun uploadPendingChanges(): RepositoryResult
 
-    suspend fun syncFromServer(): RepositoryResult
+    suspend fun syncFromServer(campaignId: String): RepositoryResult
 }
 
 class DefaultCreatureRepository(
@@ -78,7 +78,7 @@ class DefaultCreatureRepository(
                 val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
 
                 if(it.pendingDelete){
-                    if(!(it.id.substring(0, 1) == "l")) remote.deleteCreature(id)
+                    if(!(it.id.substring(0, 1) == "l")) remote.deleteCreature(it.toRemote())
                     local.delete(it)
                 }else if(it.id.substring(0, 1) == "l"){
 
@@ -89,7 +89,7 @@ class DefaultCreatureRepository(
 
                 }else{
 
-                    remote.updateCreature(it.id, it.toRemote())
+                    remote.updateCreature(it.toRemote())
                     local.update(it.copy(pendingSync = false))
 
                 }
@@ -101,9 +101,9 @@ class DefaultCreatureRepository(
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
 
-    override suspend fun syncFromServer(): RepositoryResult {
+    override suspend fun syncFromServer(campaignId: String): RepositoryResult {
         try{
-            var creatures = remote.getCreatures()
+            var creatures = remote.getCreatures(campaignId)
             var ids = local.getIds()
 
             var creaturesToUpdate : List<LocalCreature> = ArrayList<LocalCreature>()

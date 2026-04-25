@@ -26,7 +26,7 @@ interface UserRelationRepository {
 
     suspend fun uploadPendingChanges(): RepositoryResult
 
-    suspend fun syncFromServer(): RepositoryResult
+    suspend fun syncFromServer(campaignId: String): RepositoryResult
 }
 
 class DefaultUserRelationRepository(
@@ -77,7 +77,7 @@ class DefaultUserRelationRepository(
                 val id = it.id
 
                 if(it.pendingDelete){
-                    if(!(it.id.substring(0, 1) == "l")) remote.deleteRelation(id)
+                    if(!(it.id.substring(0, 1) == "l")) remote.deleteRelation(it.toRemote())
                     local.delete(it)
                 }else if(it.id.substring(0, 1) == "l"){
 
@@ -88,7 +88,7 @@ class DefaultUserRelationRepository(
 
                 }else{
 
-                    remote.updateRelation(it.id, it.toRemote())
+                    remote.updateRelation(it.toRemote())
                     local.update(it.copy(pendingSync = false))
 
                 }
@@ -100,9 +100,9 @@ class DefaultUserRelationRepository(
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
 
-    override suspend fun syncFromServer(): RepositoryResult {
+    override suspend fun syncFromServer(campaignId: String): RepositoryResult {
         try{
-            var relations = remote.getRelations()
+            var relations = remote.getRelations(campaignId)
             var ids = local.getIds()
 
             var relationsToUpdate : List<LocalUserRelation> = ArrayList<LocalUserRelation>()

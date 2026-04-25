@@ -34,9 +34,9 @@ class UserViewmodel(
         systemViewmodel.processResult(userRepository.deleteUser(user))
     }
 
-    fun sync() = viewModelScope.launch {
+    fun sync(email: String) = viewModelScope.launch {
         userRepository.uploadPendingChanges()
-        userRepository.syncFromServer()
+        userRepository.syncFromServer(email)
     }
 
     companion object {
