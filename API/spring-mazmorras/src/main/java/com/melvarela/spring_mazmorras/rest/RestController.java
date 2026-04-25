@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.melvarela.spring_mazmorras.entities.CampaignEntity;
@@ -89,7 +89,7 @@ public class RestController {
         }
     }
 
-    @PatchMapping("user")
+    @PutMapping("user")
     public ResponseEntity<UserDto> updateUser(@RequestBody UserDto user){
         try{
             return new ResponseEntity<>(UserDtoMapper.userEntityToUserDto(
@@ -145,7 +145,7 @@ public class RestController {
         }
     }
 
-    @PatchMapping("campaign")
+    @PutMapping("campaign")
     public ResponseEntity<CampaignDto> updateCampaign(@RequestBody CampaignDto campaign){
         try{
             return new ResponseEntity<>(CampaignDtoMapper.campaignEntityToDto(
@@ -201,7 +201,7 @@ public class RestController {
         }
     }
 
-    @PatchMapping("character")
+    @PutMapping("character")
     public ResponseEntity<CharacterDto> updateCharacter(@RequestBody CharacterDto character){
         try{
             return new ResponseEntity<>(CharacterDtoMapper.characterEntityToDto(
@@ -257,7 +257,7 @@ public class RestController {
         }
     }
 
-    @PatchMapping("creature")
+    @PutMapping("creature")
     public ResponseEntity<CreatureDto> updateCreature(@RequestBody CreatureDto creature){
         try{
             return new ResponseEntity<>(CreatureDtoMapper.creatureEntityToDto(
@@ -313,7 +313,7 @@ public class RestController {
         }
     }
 
-    @PatchMapping("note")
+    @PutMapping("note")
     public ResponseEntity<NoteDto> updateNote(@RequestBody NoteDto note){
         try{
             return new ResponseEntity<>(NoteDtoMapper.noteEntityToDto(
@@ -369,7 +369,7 @@ public class RestController {
         }
     }
 
-    @PatchMapping("object")
+    @PutMapping("object")
     public ResponseEntity<ObjectDto> updateObject(@RequestBody ObjectDto obxecto){
         try{
             return new ResponseEntity<>(ObjectDtoMapper.objectEntityToDto(
@@ -425,7 +425,7 @@ public class RestController {
         }
     }
 
-    @PatchMapping("place")
+    @PutMapping("place")
     public ResponseEntity<PlaceDto> updatePlace(@RequestBody PlaceDto place){
         try{
             return new ResponseEntity<>(PlaceDtoMapper.placeEntityToDto(
@@ -470,7 +470,7 @@ public class RestController {
         }
     }
 
-    @PatchMapping("userRelation")
+    @PutMapping("userRelation")
     public ResponseEntity<UserRelationDto> updateUserRelation(@RequestBody UserRelationDto userRelation){
         try{
             return new ResponseEntity<>(UserRelationDtoMapper.userRelationEntityToDto(
