@@ -272,7 +272,7 @@ fun AppNavigation() {
             val campId = backStackEntry.arguments?.getString("id")
 
             Characters(
-                characters = characters,
+                characters = characters.filter { it.campaign == campId },
                 onDelete = {
                     character -> characterViewmodel.deleteCharacter(character)
                 },
@@ -297,7 +297,7 @@ fun AppNavigation() {
             val campId = backStackEntry.arguments?.getString("id")
 
             Objects(
-                obxectos = objects,
+                obxectos = objects.filter { it.campaign == campId },
                 onDelete = {
                     obxecto -> objectViewmodel.deleteObject(obxecto)
                 },
@@ -322,7 +322,7 @@ fun AppNavigation() {
             val campId = backStackEntry.arguments?.getString("id")
 
             Creatures(
-                creatures = creatures,
+                creatures = creatures.filter { it.id == campId },
                 onDelete = {
                     creature -> creatureViewmodel.deleteCreature(creature)
                 },
@@ -347,7 +347,7 @@ fun AppNavigation() {
             val campId = backStackEntry.arguments?.getString("id")
 
             MapComponent(
-                places = places,
+                places = places.filter { it.id == campId },
                 onDelete = {
                     place -> placeViewmodel.deletePlace(place)
                 },
