@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
 import com.melvarela.spring_mazmorras.entities.UserRelationEntity;
 import com.melvarela.spring_mazmorras.repositories.UserRelationRepository;
-import com.melvarela.spring_mazmorras.rest.dtos.UserRelationDto;
 
 @Service
 public class UserRelationService {
@@ -57,8 +57,8 @@ public class UserRelationService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserRelationEntity> findByCampaign(String campaignId){
-        return repository.findByCampannaEntity(campaignId);
+    public List<UserRelationEntity> findByCampaign(CampaignEntity campaign){
+        return repository.findByCampannaEntity(campaign);
     }
 
 }

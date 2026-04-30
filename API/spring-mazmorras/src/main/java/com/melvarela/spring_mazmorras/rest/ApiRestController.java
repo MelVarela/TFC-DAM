@@ -210,7 +210,9 @@ public class ApiRestController {
         System.out.println("Getting characters of: " + campaignId);
 
         List<CharacterDto> charactersDto = new ArrayList<>();
-        List<CharacterEntity> characters = characterService.findAllByCampaign(campaignId);
+        List<CharacterEntity> characters = characterService.findAllByCampaign(
+            campaignService.findById(campaignId)
+        );
 
         for (CharacterEntity character : characters) {
             charactersDto.add(CharacterDtoMapper.characterEntityToDto(character));
@@ -279,7 +281,9 @@ public class ApiRestController {
         System.out.println("Getting creatures of campaign: " + campaignId);
 
         List<CreatureDto> creaturesDto = new ArrayList<>();
-        List<CreatureEntity> creatures = creatureService.findAllByCampaign(campaignId);
+        List<CreatureEntity> creatures = creatureService.findAllByCampaign(
+            campaignService.findById(campaignId)
+        );
 
         for (CreatureEntity creature : creatures) {
             creaturesDto.add(CreatureDtoMapper.creatureEntityToDto(creature));
@@ -417,7 +421,9 @@ public class ApiRestController {
         System.out.println("Getting objects from: " + campaignId);
 
         List<ObjectDto> objectsDto = new ArrayList<>();
-        List<ObjectEntity> objects = objectService.findAllByCampaign(campaignId);
+        List<ObjectEntity> objects = objectService.findAllByCampaign(
+            campaignService.findById(campaignId)
+        );
 
         for (ObjectEntity obxecto : objects) {
             objectsDto.add(ObjectDtoMapper.objectEntityToDto(obxecto));
@@ -486,7 +492,9 @@ public class ApiRestController {
         System.out.println("Getting places from: " + campaignId);
 
         List<PlaceDto> placesDto = new ArrayList<>();
-        List<PlaceEntity> places = placeService.findAllByCampaign(campaignId);
+        List<PlaceEntity> places = placeService.findAllByCampaign(
+            campaignService.findById(campaignId)
+        );
 
         for (PlaceEntity place : places) {
             placesDto.add(PlaceDtoMapper.placeEntityToDto(place));
@@ -554,7 +562,9 @@ public class ApiRestController {
         System.out.println("Getting user relations for: " + campaignId);
 
         List<UserRelationDto> relationsDto = new ArrayList<>();
-        List<UserRelationEntity> relations = userRelationService.findByCampaign(campaignId);
+        List<UserRelationEntity> relations = userRelationService.findByCampaign(
+            campaignService.findById(campaignId)
+        );
 
         for (UserRelationEntity relation : relations) {
             relationsDto.add(UserRelationDtoMapper.userRelationEntityToDto(relation));

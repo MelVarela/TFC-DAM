@@ -15,7 +15,7 @@ public class NoteDto {
     String id;
     String name;
     String content;
-    boolean isDm;
-    boolean isEditing;
+    Boolean dm;
+    Boolean editing;
     String owner;
 }

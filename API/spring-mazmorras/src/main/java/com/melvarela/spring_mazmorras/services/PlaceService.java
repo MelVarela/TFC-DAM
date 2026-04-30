@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.PlaceEntity;
 import com.melvarela.spring_mazmorras.repositories.PlaceRepository;
 
@@ -56,8 +57,8 @@ public class PlaceService {
         }
     }
 
-    public List<PlaceEntity> findAllByCampaign(String campaignId) {
-        return repository.findByCampaign(campaignId);
+    public List<PlaceEntity> findAllByCampaign(CampaignEntity campaign) {
+        return repository.findByCampaign(campaign);
     }
 
 }

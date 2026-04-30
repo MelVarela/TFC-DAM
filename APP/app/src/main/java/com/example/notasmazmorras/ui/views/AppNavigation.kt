@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.data.model.local.LocalCreature
 import com.example.notasmazmorras.data.model.local.LocalNote
@@ -103,6 +104,18 @@ fun AppNavigation() {
                 onSelect = {
                     id -> navController.navigate("campaign/${id}")
                 },
+                onSync = {
+                    campaignViewmodel.sync(userViewmodel.currentUser)
+                    for (campaign in campaigns) {
+                        if(campaign.id.substring(0, 1) != "l"){
+                            characterViewmodel.sync(campaign.id)
+                            creatureViewmodel.sync(campaign.id)
+                            noteViewmodel.sync(campaign.id)
+                            objectViewmodel.sync(campaign.id)
+                            placeViewmodel.sync(campaign.id)
+                        }
+                    }
+                },
                 navController
             )
         }
@@ -147,9 +160,28 @@ fun AppNavigation() {
             val id = backStackEntry.arguments?.getString("id")
             campaignViewmodel.currentCampaign = id!!
 
+            Log.d("CA", id)
+            Log.d("CAS", campaigns.toString())
+
+            var campaign : LocalCampaign
+
+            try{
+                campaign = campaigns.first{ it.id == id }
+            }catch (e: Throwable){
+                navController.navigate("home")
+            }
+
             Campaign(
                 campaign = campaigns.first{ it.id == id },
                 onBack = {navController.navigate("home")},
+                onSync = {
+                    campaignViewmodel.sync(id)
+                    characterViewmodel.sync(id)
+                    creatureViewmodel.sync(id)
+                    noteViewmodel.sync(id)
+                    objectViewmodel.sync(id)
+                    placeViewmodel.sync(id)
+                },
                 navController
             )
         }
@@ -174,28 +206,29 @@ fun AppNavigation() {
                 navArgument("owner"){type = NavType.StringType}
             )
         ){ backStackEntry ->
-            val ownerId = backStackEntry.arguments?.getString("owner")
+            val ownerId = backStackEntry.arguments?.getString("owner")!!
 
             Notes(
                 notes = notes.filter { it.owner == ownerId },
                 onPress = { id -> navController.navigate("note/${id}") },
                 onDelete = { note -> noteViewmodel.deleteNote(note) },
                 onNew = { navController.navigate("newNote/${ownerId}") },
+                onSync = {
+                    noteViewmodel.sync(ownerId)
+                },
                 onBack = {
-                    if(ownerId!= null){
-                        if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "camp"){
-                            navController.navigate("campaign/${ownerId}")
-                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "char"){
-                            navController.navigate("details/char/${ownerId}")
-                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "crea"){
-                            navController.navigate("details/crea/${ownerId}")
-                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "plac"){
-                            navController.navigate("details/plac/${ownerId}")
-                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "obje"){
-                            navController.navigate("details/obje/${ownerId}")
-                        }
+                    Log.d("Nav", "Owner ID: $ownerId")
+                    if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "camp"){
+                        navController.navigate("campaign/${ownerId}")
+                    }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "char"){
+                        navController.navigate("details/char/${ownerId}")
+                    }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "crea"){
+                        navController.navigate("details/crea/${ownerId}")
+                    }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "plac"){
+                        navController.navigate("details/plac/${ownerId}")
+                    }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "obje"){
+                        navController.navigate("details/obje/${ownerId}")
                     }
-
                 }
             )
         }
@@ -250,6 +283,9 @@ fun AppNavigation() {
                     id -> navController.navigate("editCharacter/${id}")
                 },
                 onBack = { navController.navigate("campaign/${campId}") },
+                onSync = {
+                    characterViewmodel.sync(campaignViewmodel.currentCampaign)
+                },
                 navController
             )
         }
@@ -272,6 +308,9 @@ fun AppNavigation() {
                     id -> navController.navigate("editObject/${id}")
                 },
                 onBack = { navController.navigate("campaign/${campId}") },
+                onSync = {
+                    objectViewmodel.sync(campaignViewmodel.currentCampaign)
+                },
                 navController
             )
         }
@@ -294,6 +333,9 @@ fun AppNavigation() {
                     id -> navController.navigate("editCreature/${id}")
                 },
                 onBack = { navController.navigate("campaign/${campId}") },
+                onSync = {
+                    creatureViewmodel.sync(campaignViewmodel.currentCampaign)
+                },
                 navController
             )
         }
@@ -316,6 +358,9 @@ fun AppNavigation() {
                     id -> navController.navigate("editMap/${id}")
                 },
                 onBack = { navController.navigate("campaign/${campId}") },
+                onSync = {
+                    placeViewmodel.sync(campaignViewmodel.currentCampaign)
+                },
                 navController
             )
         }

@@ -83,8 +83,10 @@ class DefaultNoteRepository(
                     local.delete(it)
                 }else if(it.id.substring(0, 1) == "l"){
 
+                    Log.d("NT", "Creando nota en remoto...")
                     var resposta : RemoteNote =
                         remote.createNote(it.toRemote())
+                    Log.d("NT", "A nova nota e: "+ resposta.toString())
                     local.delete(it)
                     local.insert(it.copy((resposta.id ?: "0"), pendingSync = false))
 

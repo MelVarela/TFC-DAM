@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.melvarela.spring_mazmorras.entities.CharacterEntity;
+import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.repositories.CharacterRepository;
 
 @Service
@@ -56,8 +57,8 @@ public class CharacterService {
         }
     }
 
-    public List<CharacterEntity> findAllByCampaign(String campaignId) {
-        return repository.findByCampaign(campaignId);
+    public List<CharacterEntity> findAllByCampaign(CampaignEntity campaign) {
+        return repository.findByCampaign(campaign);
     }
 
 }

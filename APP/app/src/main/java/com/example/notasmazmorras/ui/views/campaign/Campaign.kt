@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,12 +24,13 @@ import com.example.notasmazmorras.data.model.local.LocalCampaign
 fun Campaign(
     campaign: LocalCampaign,
     onBack: () -> Unit,
+    onSync: () -> Unit,
     navController: NavController
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Campaign") },
+                title = { Text(campaign.name) },
                 navigationIcon = {
                     IconButton(onClick = {onBack()}) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
@@ -76,6 +78,11 @@ fun Campaign(
                 onClick = {navController.navigate("campaign/${campaign.id}/map")}
             ) {
                 Text("Ver mapa")
+            }
+            Button(
+                onClick = { onSync() }
+            ) {
+                Icon(Icons.Default.Sync, contentDescription = "Sync")
             }
         }
     }

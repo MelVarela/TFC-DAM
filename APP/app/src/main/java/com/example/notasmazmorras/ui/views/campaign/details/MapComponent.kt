@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,6 +30,7 @@ fun MapComponent(
     onSelect: (String) -> Unit,
     onEdit: (String) -> Unit,
     onBack: () -> Unit,
+    onSync: () -> Unit,
     navController: NavController
 ) {
     Scaffold(
@@ -52,6 +54,11 @@ fun MapComponent(
                 onClick = {navController.navigate("editMap")}
             ) {
                 Text("Crear lugar")
+            }
+            Button(
+                onClick = { onSync() }
+            ) {
+                Icon(Icons.Default.Sync, contentDescription = "Sync")
             }
 
             LazyColumn(

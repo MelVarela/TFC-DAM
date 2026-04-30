@@ -24,7 +24,7 @@ fun LocalNote.toRemote() : RemoteNote =
         id = if (id.subSequence(0, 6) == "local_") null else id,
         name = name,
         content = content,
-        isDm = isDm,
-        isEditing = isEditing,
+        dm = isDm,
+        editing = isEditing,
         owner = owner
     )

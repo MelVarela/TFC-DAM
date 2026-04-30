@@ -21,8 +21,8 @@ public class NoteDtoMapper {
             note.getId(),
             note.getName(),
             note.getContent(),
-            note.isDm(),
-            note.isEditing(),
+            note.getDm(),
+            note.getEditing(),
             note.getOwner()
         );
     }

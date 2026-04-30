@@ -71,35 +71,25 @@ class DefaultCampaignRepository(
     override suspend fun uploadPendingChanges(): RepositoryResult {
         var toSync = local.getCampaignsToSync()
 
-        Log.d("Prueba subida", toSync.first().toString())
-
         try{
             toSync.first().map {
 
-                Log.d("Prueba subida", it.toString())
-
                 if(it.pendingDelete){
 
-                    Log.d("Prueba subida", "Borrando...")
                     if(it.id.substring(0, 1) != "l") remote.deleteCampaign(it.id)
                     local.delete(it)
-                    Log.d("Prueba subida", "Borrada")
 
                 }else if(it.id.substring(0, 1) == "l"){
 
-                    Log.d("Prueba subida", "Subiendo...")
                     var resposta : RemoteCampaign =
                         remote.createCampaign(it.toRemote())
                     local.delete(it)
                     local.insert(it.copy((resposta.id ?: "0"), pendingSync = false))
-                    Log.d("Prueba subida", "Subida")
 
                 }else{
 
-                    Log.d("Prueba subida", "Actualizando...")
                     remote.updateCampaign(it.toRemote())
                     local.update(it.copy(pendingSync = false))
-                    Log.d("Prueba subida", "Actualizada")
 
                 }
             }

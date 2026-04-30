@@ -8,8 +8,8 @@ data class RemoteNote(
     val id : String?,
     val name : String,
     val content : String,
-    val isDm : Boolean,
-    val isEditing : Boolean,
+    val dm : Boolean,
+    val editing : Boolean,
 
     val owner : String,
 )
@@ -19,7 +19,7 @@ fun RemoteNote.toLocal() : LocalNote =
         id = id!!,
         name = name,
         content = content,
-        isDm = isDm,
-        isEditing = isEditing,
+        isDm = dm,
+        isEditing = editing,
         owner = owner
     )

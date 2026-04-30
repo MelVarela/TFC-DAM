@@ -5,11 +5,12 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.CharacterEntity;
 
 @Repository
 public interface CharacterRepository extends JpaRepository<CharacterEntity, String>{
 
-    List<CharacterEntity> findByCampaign(String campaignId);
+    List<CharacterEntity> findByCampaign(CampaignEntity campaign);
     
 }
