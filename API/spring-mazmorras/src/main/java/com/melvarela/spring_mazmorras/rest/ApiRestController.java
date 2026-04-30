@@ -18,14 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.CharacterEntity;
 import com.melvarela.spring_mazmorras.entities.CreatureEntity;
+import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
 import com.melvarela.spring_mazmorras.entities.NoteEntity;
 import com.melvarela.spring_mazmorras.entities.ObjectEntity;
 import com.melvarela.spring_mazmorras.entities.PlaceEntity;
 import com.melvarela.spring_mazmorras.entities.UserRelationEntity;
-import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
 import com.melvarela.spring_mazmorras.rest.dtos.CampaignDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CharacterDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CreatureDto;
+import com.melvarela.spring_mazmorras.rest.dtos.LoginDto;
 import com.melvarela.spring_mazmorras.rest.dtos.NoteDto;
 import com.melvarela.spring_mazmorras.rest.dtos.ObjectDto;
 import com.melvarela.spring_mazmorras.rest.dtos.PlaceDto;
@@ -68,6 +69,18 @@ public class ApiRestController {
     PlaceService placeService;
     @Autowired
     UserRelationService userRelationService;
+
+    //Login
+    @PostMapping("login")
+    public ResponseEntity<LoginDto> login(@RequestBody UserDto user){
+        System.out.println("Trying to login: " + user.getEmail());
+
+        if(userService.login(user)){
+            return new ResponseEntity<>(new LoginDto(true), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new LoginDto(false), HttpStatus.FORBIDDEN);
+        }
+    }
 
     //Users
     @GetMapping("user/{id}")

@@ -8,9 +8,12 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.notasmazmorras.NotasMazmorrasApplication
 import com.example.notasmazmorras.data.model.local.LocalUser
+import com.example.notasmazmorras.data.model.remote.Credentials
 import com.example.notasmazmorras.data.repositories.UserRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -18,6 +21,9 @@ class UserViewmodel(
     private val userRepository: UserRepository,
     private val systemViewmodel: SystemViewmodel
 ) : ViewModel() {
+
+    private val _authenticated = MutableStateFlow(false)
+    val authenticated : StateFlow<Boolean> = _authenticated.asStateFlow()
 
     val users : StateFlow<List<LocalUser>> = userRepository.getAllUsers()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -37,6 +43,10 @@ class UserViewmodel(
     fun sync(email: String) = viewModelScope.launch {
         userRepository.uploadPendingChanges()
         userRepository.syncFromServer(email)
+    }
+
+    fun login(email: String, password: String) = viewModelScope.launch {
+        _authenticated.value = userRepository.login(Credentials(email, password))
     }
 
     companion object {

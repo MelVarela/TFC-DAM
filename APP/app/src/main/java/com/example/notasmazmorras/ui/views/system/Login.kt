@@ -26,7 +26,9 @@ import com.example.notasmazmorras.viewmodels.CampaignViewmodel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(
-    campaignViewmodel: CampaignViewmodel,
+    authenticated: Boolean,
+    onSuccess: () -> Unit,
+    onLog: (String, String) -> Unit,
     navController: NavController
 ) {
     Scaffold(
@@ -40,35 +42,33 @@ fun Login(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Button(
-                onClick = {navController.navigate("home")}
-            ) {
-                Text("Loggearse")
-            }
-            Button(
                 onClick = {navController.navigate("createAccount")}
             ) {
                 Text("Crear cuenta")
             }
-            Button(
-                onClick = {
-                    campaignViewmodel.sync("email");
-                }
-            ){
-                Text("Prueba sincronización")
-            }
 
-            LoginScreen(modifier = Modifier)
+            LoginScreen(
+                authenticated = authenticated,
+                onSuccess = onSuccess,
+                onLog = onLog,
+                modifier = Modifier
+            )
         }
     }
 }
 
 @Composable
 fun LoginScreen(
+    authenticated: Boolean,
+    onSuccess: () -> Unit,
+    onLog: (String, String) -> Unit,
     modifier: Modifier
 ){
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    if (authenticated) { onSuccess() }
 
     Column(
         modifier = modifier,
@@ -92,6 +92,12 @@ fun LoginScreen(
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
         )
+
+        Button(
+            onClick = { onLog(email, password) }
+        ) {
+            Text("Loggearse")
+        }
 
     }
 

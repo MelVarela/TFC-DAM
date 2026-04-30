@@ -77,7 +77,7 @@ class DefaultUserRelationRepository(
                 val id = it.id
 
                 if(it.pendingDelete){
-                    if(!(it.id.substring(0, 1) == "l")) remote.deleteRelation(it.user + "-" + it.campaign)
+                    if(it.id.substring(0, 1) != "l") remote.deleteRelation(it.user + "-" + it.campaign)
                     local.delete(it)
                 }else if(it.id.substring(0, 1) == "l"){
 

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.melvarela.spring_mazmorras.entities.UserEntity;
 import com.melvarela.spring_mazmorras.repositories.UserRepository;
+import com.melvarela.spring_mazmorras.rest.dtos.UserDto;
 
 @Service
 public class UserService {
@@ -51,6 +52,18 @@ public class UserService {
             return got.get();
         }else{
             return new UserEntity(null, null, null, null);
+        }
+    }
+
+    public boolean login(UserDto user) {
+        Optional<UserEntity> realUser = repository.findById(user.getEmail());
+
+        if(realUser.isEmpty()){
+            return false;
+        }else{
+            if(user.getPassword().equals(realUser.get().getPassword())){
+                return true;
+            }else return false;
         }
     }
 

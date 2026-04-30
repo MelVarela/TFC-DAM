@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalUser
 import com.example.notasmazmorras.data.model.local.toRemote
+import com.example.notasmazmorras.data.model.remote.Credentials
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
 import com.example.notasmazmorras.data.model.remote.RemoteUser
 import com.example.notasmazmorras.data.model.remote.toLocal
@@ -29,6 +30,8 @@ interface UserRepository {
     suspend fun uploadPendingChanges(): RepositoryResult
 
     suspend fun syncFromServer(email: String): RepositoryResult
+
+    suspend fun login(credentials : Credentials) : Boolean
 }
 
 class DefaultUserRepository(
@@ -76,8 +79,8 @@ class DefaultUserRepository(
     }
 
     override suspend fun checkEmailExists(email: String): Boolean {
-        return false
-        TODO("Not yet implemented")
+        var userCheck : RemoteUser = remote.getUser(email)
+        return (userCheck.name != "")
     }
 
     override suspend fun uploadPendingChanges(): RepositoryResult {
@@ -88,7 +91,7 @@ class DefaultUserRepository(
                 val id = it.email.substring(it.email.indexOf("_") + 1, it.email.length)
 
                 if(it.pendingDelete){
-                    if(!(it.email.substring(0, 1) == "l")) remote.deleteUser(it.email)
+                    if(it.email.substring(0, 1) != "l") remote.deleteUser(it.email)
                     local.delete(it)
                 }else if(it.email.substring(0, 1) == "l"){
 
@@ -127,6 +130,10 @@ class DefaultUserRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
+    }
+
+    override suspend fun login(credentials: Credentials): Boolean {
+        return remote.login(credentials).success
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.notasmazmorras.network
 
+import com.example.notasmazmorras.data.model.remote.Credentials
+import com.example.notasmazmorras.data.model.remote.LoginResponse
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
 import com.example.notasmazmorras.data.model.remote.RemoteCreature
@@ -114,6 +116,9 @@ interface ApiService {
 
     @PUT("user")
     suspend fun updateUser(@Body user: RemoteUser): RemoteUser
+
+    @POST("login")
+    suspend fun login(@Body credentials: Credentials) : LoginResponse
 
     //Relaciones
 

@@ -9,7 +9,7 @@ public class SpringMazmorrasApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringMazmorrasApplication.class, args);
 
-		System.out.println("API is up and running!");
+		System.out.println("\nAPI is up and running!\n");
 	}
 
 }

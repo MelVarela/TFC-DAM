@@ -73,7 +73,13 @@ fun AppNavigation() {
 
         composable(route = "login"){
             Login(
-                campaignViewmodel,
+                authenticated = userViewmodel.authenticated.collectAsState().value,
+                onSuccess = {
+                    navController.navigate("home")
+                },
+                onLog = {
+                    email, password -> userViewmodel.login(email, password)
+                },
                 navController
             )
         }
