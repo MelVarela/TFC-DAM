@@ -88,7 +88,7 @@ class DefaultUserRepository(
                 val id = it.email.substring(it.email.indexOf("_") + 1, it.email.length)
 
                 if(it.pendingDelete){
-                    if(!(it.email.substring(0, 1) == "l")) remote.deleteUser(it.toRemote())
+                    if(!(it.email.substring(0, 1) == "l")) remote.deleteUser(it.email)
                     local.delete(it)
                 }else if(it.email.substring(0, 1) == "l"){
 

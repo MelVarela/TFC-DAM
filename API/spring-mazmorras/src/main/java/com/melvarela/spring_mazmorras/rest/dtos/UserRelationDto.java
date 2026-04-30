@@ -12,9 +12,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class UserRelationDto {
-    String usuario;
-    String campanna;
-    String horario;
+    String user;
+    String campaign;
+    String schedule;
     char rol;
-    boolean aceptada;
+    boolean isAccepted;
 }

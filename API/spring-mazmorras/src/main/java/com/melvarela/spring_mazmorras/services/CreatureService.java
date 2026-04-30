@@ -34,6 +34,13 @@ public class CreatureService {
         return creature;
     }
 
+    @Transactional
+    public CreatureEntity deleteCreature(String id){
+        CreatureEntity creature = repository.findById(id).get();
+        repository.delete(creature);
+        return creature;
+    }
+
     @Transactional(readOnly = true)
     public List<CreatureEntity> findAll(){
         return repository.findAll();

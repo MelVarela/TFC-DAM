@@ -14,7 +14,7 @@ import lombok.ToString;
 public class ObjectDto {
     String id;
     String name;
-    float price;
+    float cost;
     String picture;
     String campaign;
 }

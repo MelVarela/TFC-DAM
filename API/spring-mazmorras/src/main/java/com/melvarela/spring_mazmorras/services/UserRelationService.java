@@ -34,6 +34,13 @@ public class UserRelationService {
         return userRelation;
     }
 
+    @Transactional
+    public UserRelationEntity deleteUser(UserRelationId id){
+        UserRelationEntity userRelation = repository.findById(id).get();
+        repository.delete(userRelation);
+        return userRelation;
+    }
+
     @Transactional(readOnly = true)
     public List<UserRelationEntity> findAll(){
         return repository.findAll();

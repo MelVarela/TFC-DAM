@@ -20,7 +20,8 @@ public class CharacterDtoMapper {
             character.getPg(),
             character.getMaxPg(),
             character.getPicture(),
-            character.getCampaign().getId()
+            character.getCampaign().getId(),
+            null
         );
     }
 
@@ -29,7 +30,7 @@ public class CharacterDtoMapper {
             character.getId(),
             character.getName(),
             character.getClase(),
-            character.getSubclass(),
+            character.getSubClase(),
             character.getPg(),
             character.getMaxPg(),
             character.getPicture(),

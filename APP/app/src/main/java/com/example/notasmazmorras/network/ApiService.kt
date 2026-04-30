@@ -25,8 +25,8 @@ interface ApiService {
     @POST("campaign")
     suspend fun createCampaign(@Body campaign: RemoteCampaign): RemoteCampaign
 
-    @DELETE("campaign")
-    suspend fun deleteCampaign(@Body campaign: RemoteCampaign): RemoteCampaign
+    @DELETE("campaign/{id}")
+    suspend fun deleteCampaign(@Path("id") id : String): RemoteCampaign
 
     @PUT("campaign")
     suspend fun updateCampaign(@Body campaign: RemoteCampaign): RemoteCampaign
@@ -39,8 +39,8 @@ interface ApiService {
     @POST("character")
     suspend fun createCharacter(@Body character: RemoteCharacter): RemoteCharacter
 
-    @DELETE("character")
-    suspend fun deleteCharacter(@Body character: RemoteCharacter): RemoteCharacter
+    @DELETE("character/{id}")
+    suspend fun deleteCharacter(@Path("id") id : String): RemoteCharacter
 
     @PUT("character")
     suspend fun updateCharacter(@Body character: RemoteCharacter): RemoteCharacter
@@ -53,8 +53,8 @@ interface ApiService {
     @POST("creature")
     suspend fun createCreature(@Body creature: RemoteCreature): RemoteCreature
 
-    @DELETE("creature")
-    suspend fun deleteCreature(@Body creature: RemoteCreature): RemoteCreature
+    @DELETE("creature/{id}")
+    suspend fun deleteCreature(@Path("id") id : String): RemoteCreature
 
     @PUT("creature")
     suspend fun updateCreature(@Body creature: RemoteCreature): RemoteCreature
@@ -67,8 +67,8 @@ interface ApiService {
     @POST("note")
     suspend fun createNote(@Body note: RemoteNote): RemoteNote
 
-    @DELETE("note")
-    suspend fun deleteNote(@Body note: RemoteNote): RemoteNote
+    @DELETE("note/{id}")
+    suspend fun deleteNote(@Path("id") id : String): RemoteNote
 
     @PUT("note")
     suspend fun updateNote(@Body note: RemoteNote): RemoteNote
@@ -81,8 +81,8 @@ interface ApiService {
     @POST("object")
     suspend fun createObject(@Body obxecto: RemoteObject): RemoteObject
 
-    @DELETE("object")
-    suspend fun deleteObject(@Body obxecto: RemoteObject): RemoteObject
+    @DELETE("object/{id}")
+    suspend fun deleteObject(@Path("id") id : String): RemoteObject
 
     @PUT("object")
     suspend fun updateObject(@Body obxecto: RemoteObject): RemoteObject
@@ -95,8 +95,8 @@ interface ApiService {
     @POST("place")
     suspend fun createPlace(@Body place: RemotePlace): RemotePlace
 
-    @DELETE("place")
-    suspend fun deletePlace(@Body place: RemotePlace): RemotePlace
+    @DELETE("place/{id}")
+    suspend fun deletePlace(@Path("id") id : String): RemotePlace
 
     @PUT("place")
     suspend fun updatePlace(@Body place: RemotePlace): RemotePlace
@@ -109,8 +109,8 @@ interface ApiService {
     @POST("user")
     suspend fun createUser(@Body remoteUser: RemoteUser): RemoteUser
 
-    @DELETE("user")
-    suspend fun deleteUser(@Body user: RemoteUser): RemoteUser
+    @DELETE("user/{id}")
+    suspend fun deleteUser(@Path("id") id : String): RemoteUser
 
     @PUT("user")
     suspend fun updateUser(@Body user: RemoteUser): RemoteUser
@@ -123,8 +123,8 @@ interface ApiService {
     @POST("userRelation")
     suspend fun createRelation(@Body relation: RemoteUserRelation): RemoteUserRelation
 
-    @DELETE("userRelation")
-    suspend fun deleteRelation(@Body relation: RemoteUserRelation): RemoteUserRelation
+    @DELETE("userRelation/{id}")
+    suspend fun deleteRelation(@Path("id") id : String): RemoteUserRelation
 
     @PUT("userRelation")
     suspend fun updateRelation(@Body relation: RemoteUserRelation): RemoteUserRelation

@@ -27,12 +27,12 @@ public class UserRelationDtoMapper {
 
     public static UserRelationEntity userRelationDtoToEntity(UserRelationDto dto){
         return new UserRelationEntity(
-            new UserRelationId(dto.getUsuario(), dto.getCampanna()),
-            dto.getHorario(),
+            new UserRelationId(dto.getUser(), dto.getCampaign()),
+            dto.getSchedule(),
             dto.getRol(),
-            dto.isAceptada(),
-            userService.findById(dto.getUsuario()),
-            campaignService.findById(dto.getCampanna())
+            dto.isAccepted(),
+            userService.findById(dto.getUser()),
+            campaignService.findById(dto.getCampaign())
         );
     }
 

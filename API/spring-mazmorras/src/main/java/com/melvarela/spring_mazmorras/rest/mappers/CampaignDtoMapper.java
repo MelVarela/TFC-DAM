@@ -16,7 +16,7 @@ public class CampaignDtoMapper {
         return new CampaignEntity(
             campaign.getId(),
             campaign.getName(),
-            campaign.getProfilePicture()
+            campaign.getPicture()
         );
     }
 }

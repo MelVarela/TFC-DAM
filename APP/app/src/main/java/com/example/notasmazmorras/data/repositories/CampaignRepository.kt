@@ -81,7 +81,7 @@ class DefaultCampaignRepository(
                 if(it.pendingDelete){
 
                     Log.d("Prueba subida", "Borrando...")
-                    if(it.id.substring(0, 1) != "l") remote.deleteCampaign(it.toRemote())
+                    if(it.id.substring(0, 1) != "l") remote.deleteCampaign(it.id)
                     local.delete(it)
                     Log.d("Prueba subida", "Borrada")
 

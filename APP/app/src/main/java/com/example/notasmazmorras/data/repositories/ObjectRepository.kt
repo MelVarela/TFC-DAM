@@ -78,7 +78,7 @@ class DefaultObjectRepository(
                 val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
 
                 if(it.pendingDelete){
-                    if(!(it.id.substring(0, 1) == "l")) remote.deleteObject(it.toRemote())
+                    if(!(it.id.substring(0, 1) == "l")) remote.deleteObject(it.id)
                     local.delete(it)
                 }else if(it.id.substring(0, 1) == "l"){
 

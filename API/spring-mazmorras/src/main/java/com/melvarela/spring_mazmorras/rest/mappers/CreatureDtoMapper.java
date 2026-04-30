@@ -25,7 +25,7 @@ public class CreatureDtoMapper {
         return new CreatureEntity(
             creature.getId(),
             creature.getName(),
-            creature.getRace(),
+            creature.getSpecies(),
             creature.getPicture(),
             service.findById(creature.getCampaign())
         );

@@ -14,7 +14,7 @@ import lombok.ToString;
 public class CreatureDto {
     String id;
     String name;
-    String race;
+    String species;
     String picture;
     String campaign;
 }

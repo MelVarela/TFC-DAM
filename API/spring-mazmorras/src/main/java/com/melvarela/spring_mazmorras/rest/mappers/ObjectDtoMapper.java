@@ -25,7 +25,7 @@ public class ObjectDtoMapper {
         return new ObjectEntity(
             obxecto.getId(),
             obxecto.getName(),
-            obxecto.getPrice(),
+            obxecto.getCost(),
             obxecto.getPicture(),
             service.findById(obxecto.getCampaign())
         );

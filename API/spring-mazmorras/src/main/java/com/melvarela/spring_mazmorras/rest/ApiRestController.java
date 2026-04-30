@@ -22,6 +22,7 @@ import com.melvarela.spring_mazmorras.entities.NoteEntity;
 import com.melvarela.spring_mazmorras.entities.ObjectEntity;
 import com.melvarela.spring_mazmorras.entities.PlaceEntity;
 import com.melvarela.spring_mazmorras.entities.UserRelationEntity;
+import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
 import com.melvarela.spring_mazmorras.rest.dtos.CampaignDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CharacterDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CreatureDto;
@@ -71,6 +72,8 @@ public class ApiRestController {
     //Users
     @GetMapping("user/{id}")
     public ResponseEntity<UserDto> getUser(@PathVariable("id") String userId){
+        System.out.println("Getting user: " + userId);
+
         UserDto user = UserDtoMapper.userEntityToUserDto(userService.findById(userId));
         if(user.getName() != null){
             return new ResponseEntity<>(user, HttpStatus.OK);
@@ -107,14 +110,12 @@ public class ApiRestController {
         }
     }
 
-    @DeleteMapping("user")
-    public ResponseEntity<UserDto> deleteUser(@RequestBody UserDto user){
-        System.out.println("Delete user: " + user.toString());
+    @DeleteMapping("user/{id}")
+    public ResponseEntity<UserDto> deleteUser(@PathVariable("id") String id){
+        System.out.println("Delete user: " + id);
 
         try{
-            return new ResponseEntity<>(UserDtoMapper.userEntityToUserDto(
-                userService.deleteUser(UserDtoMapper.userDtoToUserEntity(user))
-            ), HttpStatus.OK);
+            return new ResponseEntity<>(UserDtoMapper.userEntityToUserDto(userService.deleteUser(id)), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
             return new ResponseEntity<>(new UserDto(), HttpStatus.BAD_REQUEST);
@@ -124,6 +125,8 @@ public class ApiRestController {
     //Campaigns
     @GetMapping("campaigns/{playerId}")
     public ResponseEntity<List<CampaignDto>> getAllCampaignsOf(@PathVariable("playerId") String playerId){
+        System.out.println("Getting player: " + playerId);
+
         List<CampaignDto> campaignsDto = new ArrayList<>();
         List<CampaignEntity> campaigns = campaignService.findAllByPlayer(playerId);
 
@@ -136,6 +139,8 @@ public class ApiRestController {
 
     @GetMapping("campaign/{id}")
     public ResponseEntity<CampaignDto> getCampaign(@PathVariable("id") String id){
+        System.out.println("Getting campaign: " + id);
+
         CampaignEntity campaign = campaignService.findById(id);
         if(campaign.getName() != null){
             return new ResponseEntity<>(CampaignDtoMapper.campaignEntityToDto(campaign), HttpStatus.OK);
@@ -172,13 +177,13 @@ public class ApiRestController {
         }
     }
 
-    @DeleteMapping("campaign")
-    public ResponseEntity<CampaignDto> deleteCampaign(@RequestBody CampaignDto campaign){
-        System.out.println("Delete campaign: " + campaign.toString());
+    @DeleteMapping("campaign/{id}")
+    public ResponseEntity<CampaignDto> deleteCampaign(@PathVariable("id") String id){
+        System.out.println("Delete campaign: " + id);
 
         try{
             return new ResponseEntity<>(CampaignDtoMapper.campaignEntityToDto(
-                campaignService.deleteCampaign(CampaignDtoMapper.campaignDtoToEntity(campaign))
+                campaignService.deleteCampaign(id)
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -189,6 +194,8 @@ public class ApiRestController {
     //Characters
     @GetMapping("characters/{campaignId}")
     public ResponseEntity<List<CharacterDto>> getAllCharactersFrom(@PathVariable("campaignId") String campaignId){
+        System.out.println("Getting characters of: " + campaignId);
+
         List<CharacterDto> charactersDto = new ArrayList<>();
         List<CharacterEntity> characters = characterService.findAllByCampaign(campaignId);
 
@@ -201,6 +208,8 @@ public class ApiRestController {
 
     @GetMapping("character/{id}")
     public ResponseEntity<CharacterDto> getCharacter(@PathVariable("id") String id){
+        System.out.println("Getting character: " + id);
+
         CharacterEntity character = characterService.findById(id);
         if(character.getName() != null){
             return new ResponseEntity<>(CharacterDtoMapper.characterEntityToDto(character), HttpStatus.OK);
@@ -237,13 +246,13 @@ public class ApiRestController {
         }
     }
 
-    @DeleteMapping("character")
-    public ResponseEntity<CharacterDto> deleteCharacter(@RequestBody CharacterDto character){
-        System.out.println("Delete character: " + character.toString());
+    @DeleteMapping("character/{id}")
+    public ResponseEntity<CharacterDto> deleteCharacter(@PathVariable("id") String id){
+        System.out.println("Delete character: " + id);
 
         try{
             return new ResponseEntity<>(CharacterDtoMapper.characterEntityToDto(
-                characterService.deleteCharacter(CharacterDtoMapper.characterDtoToEntity(character))
+                characterService.deleteCharacter(id)
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -254,6 +263,8 @@ public class ApiRestController {
     //Creatures
     @GetMapping("creatures/{campaignId}")
     public ResponseEntity<List<CreatureDto>> getAllCreatureFrom(@PathVariable("campaignId") String campaignId){
+        System.out.println("Getting creatures of campaign: " + campaignId);
+
         List<CreatureDto> creaturesDto = new ArrayList<>();
         List<CreatureEntity> creatures = creatureService.findAllByCampaign(campaignId);
 
@@ -266,6 +277,8 @@ public class ApiRestController {
 
     @GetMapping("creature/{id}")
     public ResponseEntity<CreatureDto> getCreature(@PathVariable("id") String id){
+        System.out.println("Getting creature: " + id);
+
         CreatureEntity creature = creatureService.findById(id);
         if(creature.getName() != null){
             return new ResponseEntity<>(CreatureDtoMapper.creatureEntityToDto(creature), HttpStatus.OK);
@@ -302,13 +315,13 @@ public class ApiRestController {
         }
     }
 
-    @DeleteMapping("creature")
-    public ResponseEntity<CreatureDto> deleteCreature(@RequestBody CreatureDto creature){
-        System.out.println("Delete creature: " + creature.toString());
+    @DeleteMapping("creature/{id}")
+    public ResponseEntity<CreatureDto> deleteCreature(@PathVariable("id") String id){
+        System.out.println("Delete creature: " + id);
 
         try{
             return new ResponseEntity<>(CreatureDtoMapper.creatureEntityToDto(
-                creatureService.deleteCreature(CreatureDtoMapper.creatureDtoToEntity(creature))
+                creatureService.deleteCreature(id)
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -317,8 +330,10 @@ public class ApiRestController {
     }
 
     //Notes
-    @GetMapping("notes/{ownerId}")
+    @GetMapping("notes/{owner}")
     public ResponseEntity<List<NoteDto>> getAllNotesOf(@PathVariable("owner") String owner){
+        System.out.println("Getting all notes of: " + owner);
+
         List<NoteDto> notesDto = new ArrayList<>();
         List<NoteEntity> notes = noteService.findAllByOwner(owner);
 
@@ -331,6 +346,8 @@ public class ApiRestController {
 
     @GetMapping("note/{id}")
     public ResponseEntity<NoteDto> getNote(@PathVariable("id") String id){
+        System.out.println("Getting note: " + id);
+
         NoteEntity note = noteService.findById(id);
         if(note.getName() != null){
             return new ResponseEntity<>(NoteDtoMapper.noteEntityToDto(note), HttpStatus.OK);
@@ -367,13 +384,13 @@ public class ApiRestController {
         }
     }
 
-    @DeleteMapping("note")
-    public ResponseEntity<NoteDto> deleteNote(@RequestBody NoteDto note){
-        System.out.println("Delete note: " + note.toString());
+    @DeleteMapping("note/{owner}")
+    public ResponseEntity<NoteDto> deleteNote(@PathVariable("id") String id){
+        System.out.println("Delete note: " + id);
 
         try{
             return new ResponseEntity<>(NoteDtoMapper.noteEntityToDto(
-                noteService.deleteNote(NoteDtoMapper.noteDtoToEntity(note))
+                noteService.deleteNote(id)
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -384,6 +401,8 @@ public class ApiRestController {
     //Objects
     @GetMapping("objects/{campaignId}")
     public ResponseEntity<List<ObjectDto>> getAllObjectsFrom(@PathVariable("campaignId") String campaignId){
+        System.out.println("Getting objects from: " + campaignId);
+
         List<ObjectDto> objectsDto = new ArrayList<>();
         List<ObjectEntity> objects = objectService.findAllByCampaign(campaignId);
 
@@ -396,6 +415,8 @@ public class ApiRestController {
 
     @GetMapping("object/{id}")
     public ResponseEntity<ObjectDto> getObject(@PathVariable("id") String id){
+        System.out.println("Getting object: " + id);
+
         ObjectEntity obxecto = objectService.findById(id);
         if(obxecto.getName() != null){
             return new ResponseEntity<>(ObjectDtoMapper.objectEntityToDto(obxecto), HttpStatus.OK);
@@ -432,13 +453,13 @@ public class ApiRestController {
         }
     }
 
-    @DeleteMapping("object")
-    public ResponseEntity<ObjectDto> deleteObject(@RequestBody ObjectDto obxecto){
-        System.out.println("Delete object: " + obxecto.toString());
+    @DeleteMapping("object/{id}")
+    public ResponseEntity<ObjectDto> deleteObject(@PathVariable("id") String id){
+        System.out.println("Delete object: " + id);
 
         try{
             return new ResponseEntity<>(ObjectDtoMapper.objectEntityToDto(
-                objectService.deleteObject(ObjectDtoMapper.objectDtoToEntity(obxecto))
+                objectService.deleteObject(id)
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -449,6 +470,8 @@ public class ApiRestController {
     //Places
     @GetMapping("places/{campaignId}")
     public ResponseEntity<List<PlaceDto>> getAllPlacesFrom(@PathVariable("campaignId") String campaignId){
+        System.out.println("Getting places from: " + campaignId);
+
         List<PlaceDto> placesDto = new ArrayList<>();
         List<PlaceEntity> places = placeService.findAllByCampaign(campaignId);
 
@@ -461,6 +484,8 @@ public class ApiRestController {
 
     @GetMapping("place/{id}")
     public ResponseEntity<PlaceDto> getPlace(@PathVariable("id") String id){
+        System.out.println("Getting place: " + id);
+
         PlaceEntity place = placeService.fndById(id);
         if(place.getName() != null){
             return new ResponseEntity<>(PlaceDtoMapper.placeEntityToDto(place), HttpStatus.OK);
@@ -497,13 +522,13 @@ public class ApiRestController {
         }
     }
 
-    @DeleteMapping("place")
-    public ResponseEntity<PlaceDto> deletePlace(@RequestBody PlaceDto place){
-        System.out.println("Delete place: " + place.toString());
+    @DeleteMapping("place/{id}")
+    public ResponseEntity<PlaceDto> deletePlace(@PathVariable("id") String id){
+        System.out.println("Delete place: " + id);
 
         try{
             return new ResponseEntity<>(PlaceDtoMapper.placeEntityToDto(
-                placeService.deletePlace(PlaceDtoMapper.placeDtoToEntity(place))
+                placeService.deletePlace(id)
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -513,6 +538,8 @@ public class ApiRestController {
 
     @GetMapping("userRelation/{campaignId}")
     public ResponseEntity<List<UserRelationDto>> getRelationsByCampaign(@PathVariable("campaignId") String campaignId){
+        System.out.println("Getting user relations for: " + campaignId);
+
         List<UserRelationDto> relationsDto = new ArrayList<>();
         List<UserRelationEntity> relations = userRelationService.findByCampaign(campaignId);
 
@@ -551,13 +578,15 @@ public class ApiRestController {
         }
     }
 
-    @DeleteMapping("userRelation")
-    public ResponseEntity<UserRelationDto> deleteUserRelation(@RequestBody UserRelationDto userRelation){
-        System.out.println("Delete user relation: " + userRelation.toString());
+    @DeleteMapping("userRelation/{id}")
+    public ResponseEntity<UserRelationDto> deleteUserRelation(@PathVariable("id") String id){
+        System.out.println("Delete user relation: " + id);
+
+        String[] idSplit = id.split("-");
 
         try{
             return new ResponseEntity<>(UserRelationDtoMapper.userRelationEntityToDto(
-                userRelationService.deleteUser(UserRelationDtoMapper.userRelationDtoToEntity(userRelation))
+                userRelationService.deleteUser(new UserRelationId(idSplit[0], idSplit[1]))
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());

@@ -32,6 +32,13 @@ public class UserService {
         return user;
     }
 
+    @Transactional
+    public UserEntity deleteUser(String email){
+        UserEntity user = repository.findById(email).get();
+        repository.delete(user);
+        return user;
+    }
+
     @Transactional(readOnly = true)
     public List<UserEntity> findAll(){
         return repository.findAll();

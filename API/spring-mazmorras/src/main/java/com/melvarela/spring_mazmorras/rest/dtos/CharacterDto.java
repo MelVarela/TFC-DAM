@@ -1,5 +1,7 @@
 package com.melvarela.spring_mazmorras.rest.dtos;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +17,10 @@ public class CharacterDto {
     String id;
     String name;
     String clase;
-    String subclass;
+    String subClase;
     int pg;
     int maxPg;
     String picture;
     String campaign;
+    List<String> objects;
 }

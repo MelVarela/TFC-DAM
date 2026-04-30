@@ -34,6 +34,13 @@ public class PlaceService {
         return place;
     }
 
+    @Transactional
+    public PlaceEntity deletePlace(String id){
+        PlaceEntity place = repository.findById(id).get();
+        repository.delete(place);
+        return place;
+    }
+
     @Transactional(readOnly = true)
     public List<PlaceEntity> findAll(){
         return repository.findAll();

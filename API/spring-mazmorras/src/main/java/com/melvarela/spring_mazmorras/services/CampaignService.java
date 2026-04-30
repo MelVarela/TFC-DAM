@@ -34,6 +34,13 @@ public class CampaignService {
         return campaign;
     }
 
+    @Transactional
+    public CampaignEntity deleteCampaign(String id){
+        CampaignEntity campaign = repository.findById(id).get();
+        repository.delete(campaign);
+        return campaign;
+    }
+
     @Transactional(readOnly = true)
     public List<CampaignEntity> findAll(){
         return repository.findAll();

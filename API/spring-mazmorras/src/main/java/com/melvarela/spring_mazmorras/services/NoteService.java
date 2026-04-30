@@ -34,6 +34,13 @@ public class NoteService {
         return note;
     }
 
+    @Transactional
+    public NoteEntity deleteNote(String id){
+        NoteEntity note = repository.findById(id).get();
+        repository.delete(note);
+        return note;
+    }
+
     @Transactional(readOnly = true)
     public List<NoteEntity> findAll(){
         return repository.findAll();

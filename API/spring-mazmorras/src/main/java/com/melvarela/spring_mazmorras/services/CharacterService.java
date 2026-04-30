@@ -34,6 +34,13 @@ public class CharacterService {
         return character;
     }
 
+    @Transactional
+    public CharacterEntity deleteCharacter(String id){
+        CharacterEntity character = repository.findById(id).get();
+        repository.delete(character);
+        return character;
+    }
+
     @Transactional(readOnly = true)
     public List<CharacterEntity> findAll(){
         return repository.findAll();

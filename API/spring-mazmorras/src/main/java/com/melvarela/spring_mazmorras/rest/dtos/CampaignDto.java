@@ -14,5 +14,5 @@ import lombok.ToString;
 public class CampaignDto {
     String id;
     String name;
-    String profilePicture;
+    String picture;
 }

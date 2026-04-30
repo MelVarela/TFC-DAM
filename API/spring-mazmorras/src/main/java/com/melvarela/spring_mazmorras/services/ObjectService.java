@@ -34,6 +34,13 @@ public class ObjectService {
         return entity;
     }
 
+    @Transactional
+    public ObjectEntity deleteObject(String id){
+        ObjectEntity entity = repository.findById(id).get();
+        repository.delete(entity);
+        return entity;
+    }
+
     @Transactional(readOnly = true)
     public List<ObjectEntity> findAll(){
         return repository.findAll();
