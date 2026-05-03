@@ -15,12 +15,14 @@ import com.example.notasmazmorras.data.model.local.LocalPlace
 import com.example.notasmazmorras.data.model.local.LocalUser
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
 import com.example.notasmazmorras.data.model.local.ScheduleTypeConverter
+import com.example.notasmazmorras.data.model.local.SysTable
 import com.example.notasmazmorras.data.repositories.daos.CampaignDao
 import com.example.notasmazmorras.data.repositories.daos.CharacterDao
 import com.example.notasmazmorras.data.repositories.daos.CreatureDao
 import com.example.notasmazmorras.data.repositories.daos.NoteDao
 import com.example.notasmazmorras.data.repositories.daos.ObjectDao
 import com.example.notasmazmorras.data.repositories.daos.PlaceDao
+import com.example.notasmazmorras.data.repositories.daos.SysTableDao
 import com.example.notasmazmorras.data.repositories.daos.UserDao
 import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
 
@@ -33,9 +35,10 @@ import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
     LocalObject::class,
     LocalPlace::class,
     LocalUser::class,
-    LocalUserRelation::class
+    LocalUserRelation::class,
+    SysTable::class,
 
-], version = 3)
+], version = 4)
 @TypeConverters(value = [ScheduleTypeConverter::class])
 abstract class Datosbase : RoomDatabase() {
 
@@ -47,6 +50,7 @@ abstract class Datosbase : RoomDatabase() {
     abstract fun placeDao() : PlaceDao
     abstract fun userDao() : UserDao
     abstract fun userRelationDao() : UserRelationDao
+    abstract fun sysTableDao() : SysTableDao
 
     companion object {
 

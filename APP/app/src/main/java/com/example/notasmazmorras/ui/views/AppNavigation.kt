@@ -44,6 +44,7 @@ import com.example.notasmazmorras.viewmodels.CreatureViewmodel
 import com.example.notasmazmorras.viewmodels.NoteViewmodel
 import com.example.notasmazmorras.viewmodels.ObjectViewmodel
 import com.example.notasmazmorras.viewmodels.PlaceViewmodel
+import com.example.notasmazmorras.viewmodels.SystemViewmodel
 import com.example.notasmazmorras.viewmodels.UserViewmodel
 import kotlinx.coroutines.awaitAll
 
@@ -58,6 +59,7 @@ fun AppNavigation() {
     val noteViewmodel : NoteViewmodel = viewModel(factory = NoteViewmodel.Factory)
     val objectViewmodel : ObjectViewmodel = viewModel(factory = ObjectViewmodel.Factory)
     val placeViewmodel : PlaceViewmodel = viewModel(factory = PlaceViewmodel.Factory)
+    val systemViewmodel : SystemViewmodel = viewModel(factory = SystemViewmodel.Factory)
 
     val users by userViewmodel.users.collectAsState()
     val campaigns by campaignViewmodel.campaigns.collectAsState()
@@ -72,10 +74,14 @@ fun AppNavigation() {
         startDestination = "login"
     ){
 
+        systemViewmodel.firstTimeOpened()
+        systemViewmodel.checkIfStillAuthenticated()
+
         composable(route = "login"){
             Login(
-                authenticated = userViewmodel.authenticated.collectAsState().value,
-                onSuccess = {
+                authenticated = (userViewmodel.authenticated.collectAsState().value || systemViewmodel.authenticated.collectAsState().value),
+                onSuccess = { email ->
+                    systemViewmodel.setLastSigned(email)
                     navController.navigate("home")
                 },
                 onLog = {

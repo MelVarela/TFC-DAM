@@ -18,8 +18,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class UserViewmodel(
-    private val userRepository: UserRepository,
-    private val systemViewmodel: SystemViewmodel
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _authenticated = MutableStateFlow(false)
@@ -31,15 +30,15 @@ class UserViewmodel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun insertUser(user: LocalUser) = viewModelScope.launch {
-        systemViewmodel.processResult(userRepository.insertUser(user))
+        userRepository.insertUser(user)
     }
 
     fun updateUser(user: LocalUser) = viewModelScope.launch {
-        systemViewmodel.processResult(userRepository.updateUser(user))
+        userRepository.updateUser(user)
     }
 
     fun deleteUser(user: LocalUser) = viewModelScope.launch {
-        systemViewmodel.processResult(userRepository.deleteUser(user))
+        userRepository.deleteUser(user)
     }
 
     fun sync(email: String) = viewModelScope.launch {
@@ -58,8 +57,7 @@ class UserViewmodel(
                 val application = (this[APPLICATION_KEY] as NotasMazmorrasApplication)
                 val userRepository = application.container.userRepository
                 UserViewmodel(
-                    userRepository = userRepository,
-                    systemViewmodel = SystemViewmodel.getInstance()
+                    userRepository = userRepository
                 )
             }
         }

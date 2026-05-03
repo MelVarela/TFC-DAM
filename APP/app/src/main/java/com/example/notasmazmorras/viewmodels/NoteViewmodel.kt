@@ -16,23 +16,22 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class NoteViewmodel(
-    private val noteRepository: NoteRepository,
-    private val systemViewmodel: SystemViewmodel
+    private val noteRepository: NoteRepository
 ) : ViewModel() {
 
     val notes : StateFlow<List<LocalNote>> = noteRepository.getAllNotes()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun insertNote(note: LocalNote) = viewModelScope.launch {
-        systemViewmodel.processResult(noteRepository.insertNote(note))
+        noteRepository.insertNote(note)
     }
 
     fun updateNote(note: LocalNote) = viewModelScope.launch {
-        systemViewmodel.processResult(noteRepository.updateNote(note))
+        noteRepository.updateNote(note)
     }
 
     fun deleteNote(note: LocalNote) = viewModelScope.launch {
-        systemViewmodel.processResult(noteRepository.deleteNote(note))
+        noteRepository.deleteNote(note)
     }
 
     fun sync(owner: String) = viewModelScope.launch {
@@ -46,8 +45,7 @@ class NoteViewmodel(
                 val application = (this[APPLICATION_KEY] as NotasMazmorrasApplication)
                 val noteRepository = application.container.noteRepository
                 NoteViewmodel(
-                    noteRepository = noteRepository,
-                    systemViewmodel = SystemViewmodel.getInstance()
+                    noteRepository = noteRepository
                 )
             }
         }

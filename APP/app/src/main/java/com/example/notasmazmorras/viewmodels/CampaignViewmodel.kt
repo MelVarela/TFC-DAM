@@ -15,8 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class CampaignViewmodel (
-    private val campaignRepository: CampaignRepository,
-    private val systemViewmodel: SystemViewmodel,
+    private val campaignRepository: CampaignRepository
 ) : ViewModel() {
 
     val campaigns : StateFlow<List<LocalCampaign>> = campaignRepository.getAllCampaigns()
@@ -25,15 +24,15 @@ class CampaignViewmodel (
     var currentCampaign : String = ""
 
     fun insertCampaign(campaign: LocalCampaign) = viewModelScope.launch {
-        systemViewmodel.processResult(campaignRepository.insertCampaign(campaign))
+        campaignRepository.insertCampaign(campaign)
     }
 
     fun updateCampaign(campaign: LocalCampaign) = viewModelScope.launch {
-        systemViewmodel.processResult(campaignRepository.updateCampaign(campaign))
+        campaignRepository.updateCampaign(campaign)
     }
 
     fun deleteCampaign(campaign: LocalCampaign) = viewModelScope.launch {
-        systemViewmodel.processResult(campaignRepository.deleteCampaign(campaign))
+        campaignRepository.deleteCampaign(campaign)
     }
 
     fun sync(emailUser: String) = viewModelScope.launch {
@@ -47,8 +46,7 @@ class CampaignViewmodel (
                 val application = (this[APPLICATION_KEY] as NotasMazmorrasApplication)
                 val campaignRepository = application.container.campaignRepository
                 CampaignViewmodel(
-                    campaignRepository = campaignRepository,
-                    systemViewmodel = SystemViewmodel.getInstance()
+                    campaignRepository = campaignRepository
                 )
             }
         }

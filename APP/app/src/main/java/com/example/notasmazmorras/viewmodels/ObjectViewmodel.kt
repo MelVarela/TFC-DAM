@@ -16,23 +16,22 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ObjectViewmodel(
-    private val objectRepository: ObjectRepository,
-    private val systemViewmodel: SystemViewmodel
+    private val objectRepository: ObjectRepository
 ) : ViewModel() {
 
     val objects : StateFlow<List<LocalObject>> = objectRepository.getAllObjects()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun insertObject(obxecto: LocalObject) = viewModelScope.launch {
-        systemViewmodel.processResult(objectRepository.insertObject(obxecto))
+        objectRepository.insertObject(obxecto)
     }
 
     fun updateObject(obxecto: LocalObject) = viewModelScope.launch {
-        systemViewmodel.processResult(objectRepository.updateObject(obxecto))
+        objectRepository.updateObject(obxecto)
     }
 
     fun deleteObject(obxecto: LocalObject) = viewModelScope.launch {
-        systemViewmodel.processResult(objectRepository.deleteObject(obxecto))
+        objectRepository.deleteObject(obxecto)
     }
 
     fun sync(currentCampaign: String) = viewModelScope.launch {
@@ -46,8 +45,7 @@ class ObjectViewmodel(
                 val application = (this[APPLICATION_KEY] as NotasMazmorrasApplication)
                 val objectRepository = application.container.objectRepository
                 ObjectViewmodel(
-                    objectRepository = objectRepository,
-                    systemViewmodel = SystemViewmodel.getInstance()
+                    objectRepository = objectRepository
                 )
             }
         }

@@ -27,7 +27,7 @@ import com.example.notasmazmorras.viewmodels.CampaignViewmodel
 @Composable
 fun Login(
     authenticated: Boolean,
-    onSuccess: () -> Unit,
+    onSuccess: (String) -> Unit,
     onLog: (String, String) -> Unit,
     navController: NavController
 ) {
@@ -60,7 +60,7 @@ fun Login(
 @Composable
 fun LoginScreen(
     authenticated: Boolean,
-    onSuccess: () -> Unit,
+    onSuccess: (String) -> Unit,
     onLog: (String, String) -> Unit,
     modifier: Modifier
 ){
@@ -68,7 +68,7 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    if (authenticated) { onSuccess() }
+    if (authenticated) { onSuccess(email) }
 
     Column(
         modifier = modifier,

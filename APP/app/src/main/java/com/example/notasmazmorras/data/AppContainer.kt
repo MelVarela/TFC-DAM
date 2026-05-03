@@ -10,11 +10,13 @@ import com.example.notasmazmorras.data.repositories.DefaultCreatureRepository
 import com.example.notasmazmorras.data.repositories.DefaultNoteRepository
 import com.example.notasmazmorras.data.repositories.DefaultObjectRepository
 import com.example.notasmazmorras.data.repositories.DefaultPlaceRepository
+import com.example.notasmazmorras.data.repositories.DefaultSystemRepository
 import com.example.notasmazmorras.data.repositories.DefaultUserRelationRepository
 import com.example.notasmazmorras.data.repositories.DefaultUserRepository
 import com.example.notasmazmorras.data.repositories.NoteRepository
 import com.example.notasmazmorras.data.repositories.ObjectRepository
 import com.example.notasmazmorras.data.repositories.PlaceRepository
+import com.example.notasmazmorras.data.repositories.SystemRepository
 import com.example.notasmazmorras.data.repositories.UserRelationRepository
 import com.example.notasmazmorras.data.repositories.UserRepository
 import com.example.notasmazmorras.network.ApiService
@@ -34,6 +36,7 @@ interface AppContainer {
     val placeRepository : PlaceRepository
     val userRelationRepository : UserRelationRepository
     val userRepository : UserRepository
+    val systemRepository : SystemRepository
 }
 
 class AppDataContainer(private val context : Context) : AppContainer {
@@ -87,6 +90,10 @@ class AppDataContainer(private val context : Context) : AppContainer {
 
     override val userRelationRepository : UserRelationRepository by lazy {
         DefaultUserRelationRepository(Datosbase.getDatabase(context).userRelationDao(), retrofitService)
+    }
+
+    override val systemRepository : SystemRepository by lazy {
+        DefaultSystemRepository(Datosbase.getDatabase(context).sysTableDao())
     }
 
 }

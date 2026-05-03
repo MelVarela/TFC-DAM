@@ -15,23 +15,22 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class CreatureViewmodel(
-    private val creatureRepository: CreatureRepository,
-    private val systemViewmodel: SystemViewmodel
+    private val creatureRepository: CreatureRepository
 ) : ViewModel() {
 
     val creatures : StateFlow<List<LocalCreature>> = creatureRepository.getAllCreatures()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun insertCreature(creature: LocalCreature) = viewModelScope.launch {
-        systemViewmodel.processResult(creatureRepository.insertCreature(creature))
+        creatureRepository.insertCreature(creature)
     }
 
     fun updateCreature(creature: LocalCreature) = viewModelScope.launch {
-        systemViewmodel.processResult(creatureRepository.updateCreature(creature))
+        creatureRepository.updateCreature(creature)
     }
 
     fun deleteCreature(creature: LocalCreature) = viewModelScope.launch {
-        systemViewmodel.processResult(creatureRepository.deleteCreature(creature))
+        creatureRepository.deleteCreature(creature)
     }
 
     fun sync(currentCampaign: String) = viewModelScope.launch {
@@ -45,8 +44,7 @@ class CreatureViewmodel(
                 val application = (this[APPLICATION_KEY] as NotasMazmorrasApplication)
                 val creatureRepository = application.container.creatureRepository
                 CreatureViewmodel(
-                    creatureRepository = creatureRepository,
-                    systemViewmodel = SystemViewmodel.getInstance()
+                    creatureRepository = creatureRepository
                 )
             }
         }
