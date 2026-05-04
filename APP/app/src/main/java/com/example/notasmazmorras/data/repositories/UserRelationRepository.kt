@@ -16,6 +16,8 @@ interface UserRelationRepository {
 
     fun getAllUserRelations(): Flow<List<LocalUserRelation>>
 
+    fun getRelationsForCampaign(campaign: String): Flow<List<LocalUserRelation>>
+
     suspend fun insertUserRelation(userRelation: LocalUserRelation): RepositoryResult
 
     suspend fun updateUserRelation(userRelation: LocalUserRelation): RepositoryResult
@@ -38,6 +40,8 @@ class DefaultUserRelationRepository(
     final val NO_ERR = "No se proporcionó mensaje de error."
 
     override fun getAllUserRelations(): Flow<List<LocalUserRelation>> = local.getAllRelations()
+
+    override fun getRelationsForCampaign(campaign: String): Flow<List<LocalUserRelation>> = local.getRelationsForCampaign(campaign)
 
     override suspend fun insertUserRelation(userRelation: LocalUserRelation): RepositoryResult {
         try{
@@ -74,17 +78,15 @@ class DefaultUserRelationRepository(
 
         try{
             toSync.first().map {
-                val id = it.id
-
                 if(it.pendingDelete){
-                    if(it.id.substring(0, 1) != "l") remote.deleteRelation(it.user + "-" + it.campaign)
+                    remote.deleteRelation(it.user + "-" + it.campaign)
                     local.delete(it)
-                }else if(it.id.substring(0, 1) == "l"){
+                }else if(!it.existsRemote){
 
                     var resposta : RemoteUserRelation =
                         remote.createRelation(it.toRemote())
                     local.delete(it)
-                    local.insert(it.copy(pendingSync = false))
+                    local.insert(it.copy(pendingSync = false, existsRemote = true))
 
                 }else{
 
@@ -102,14 +104,14 @@ class DefaultUserRelationRepository(
 
     override suspend fun syncFromServer(campaignId: String): RepositoryResult {
         try{
-            var relations = remote.getRelations(campaignId)
-            var ids = local.getIds()
+            var relationsRemote = remote.getRelations(campaignId)
+            var relationsLocal = local.getRelationsForCampaign(campaignId)
 
             var relationsToUpdate : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
             var relationsToInsert : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
 
-            relations.map {
-                if(!(ids.first().contains(it.id))){
+            relationsRemote.map {
+                if(relationsLocal.first().contains(it.toLocal())){
                     relationsToInsert = relationsToInsert.plus(it.toLocal())
                 }else{
                     relationsToUpdate = relationsToUpdate.plus(it.toLocal())

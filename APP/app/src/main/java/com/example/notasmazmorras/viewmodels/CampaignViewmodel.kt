@@ -9,22 +9,41 @@ import com.example.notasmazmorras.data.repositories.CampaignRepository
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
 import com.example.notasmazmorras.data.model.local.LocalCampaign
+import com.example.notasmazmorras.data.model.local.LocalUser
+import com.example.notasmazmorras.data.model.local.LocalUserRelation
+import com.example.notasmazmorras.data.repositories.UserRelationRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class CampaignViewmodel (
-    private val campaignRepository: CampaignRepository
+    private val campaignRepository: CampaignRepository,
+    private val userRelationRepository: UserRelationRepository
 ) : ViewModel() {
+
+    private val _currentCampaign = MutableStateFlow("")
+    val currentCampaign : StateFlow<String> = _currentCampaign.asStateFlow()
 
     val campaigns : StateFlow<List<LocalCampaign>> = campaignRepository.getAllCampaigns()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    var userRelations : StateFlow<List<LocalUserRelation>> = userRelationRepository.getRelationsForCampaign(currentCampaign.value)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    var currentCampaign : String = ""
-
-    fun insertCampaign(campaign: LocalCampaign) = viewModelScope.launch {
+    fun insertCampaign(campaign: LocalCampaign, user: String) = viewModelScope.launch {
         campaignRepository.insertCampaign(campaign)
+        userRelationRepository.insertUserRelation(
+            LocalUserRelation(
+                isAccepted = true,
+                role = "D",
+                schedule = emptyList(),
+                user = user,
+                campaign = campaign.id
+            )
+        )
     }
 
     fun updateCampaign(campaign: LocalCampaign) = viewModelScope.launch {
@@ -35,9 +54,28 @@ class CampaignViewmodel (
         campaignRepository.deleteCampaign(campaign)
     }
 
+    fun deleteRelation(relation: LocalUserRelation) = viewModelScope.launch {
+        if(relation.role != "D"){
+            userRelationRepository.deleteUserRelation(relation)
+        }
+    }
+
     fun sync(emailUser: String) = viewModelScope.launch {
         campaignRepository.uploadPendingChanges()
         campaignRepository.syncFromServer(emailUser)
+
+    }
+
+    fun syncRelations(campaign: String) = viewModelScope.launch {
+        userRelationRepository.uploadPendingChanges()
+        userRelationRepository.syncFromServer(campaign)
+    }
+
+    fun setCurrentCampaign(campaign: String){
+        _currentCampaign.value = campaign
+
+        userRelations = userRelationRepository.getRelationsForCampaign(campaign)
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     }
 
     companion object {
@@ -45,8 +83,10 @@ class CampaignViewmodel (
             initializer {
                 val application = (this[APPLICATION_KEY] as NotasMazmorrasApplication)
                 val campaignRepository = application.container.campaignRepository
+                val userRelationRepository = application.container.userRelationRepository
                 CampaignViewmodel(
-                    campaignRepository = campaignRepository
+                    campaignRepository = campaignRepository,
+                    userRelationRepository = userRelationRepository
                 )
             }
         }

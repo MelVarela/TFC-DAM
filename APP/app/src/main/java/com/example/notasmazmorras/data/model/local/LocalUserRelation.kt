@@ -32,31 +32,29 @@ import java.util.Date
         Index(value = ["campaign"])
     ],
     primaryKeys = [
-        "id",
         "user",
         "campaign"
     ]
 )
 data class LocalUserRelation(
     val isAccepted : Boolean,
-    val role : String,
+    val role : String, //D -> Dm, P -> Player
     val schedule : List<LocalDateTime>,
 
-    val id : String,
     val user : String,
     val campaign : String,
 
     // Sincronización
     val pendingSync: Boolean = false,
-    val pendingDelete: Boolean = false
+    val pendingDelete: Boolean = false,
+    val existsRemote: Boolean = false
 )
 
 fun LocalUserRelation.toRemote() : RemoteUserRelation =
     RemoteUserRelation(
-        isAccepted = isAccepted,
+        accepted = isAccepted,
         role = role,
-        schedule = listLocalDateTimeToLong(schedule),
-        id = id,
+        schedule = listLocalDateTimeToLong(schedule).toString(),
         user = user,
         campaign = campaign
     )

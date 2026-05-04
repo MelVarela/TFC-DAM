@@ -32,13 +32,13 @@ interface UserRelationDao {
     @Query("SELECT * FROM user_relations WHERE pendingDelete = 0")
     fun getAllRelations(): Flow<List<LocalUserRelation>>
 
+    @Query("SELECT * FROM user_relations WHERE campaign = :campaign")
+    fun getRelationsForCampaign(campaign: String): Flow<List<LocalUserRelation>>
+
     @Query("SELECT * FROM user_relations WHERE pendingSync = 1")
     fun getRelationsToSync(): Flow<List<LocalUserRelation>>
 
     @Query("SELECT * FROM user_relations WHERE pendingDelete = 1")
     fun getRelationsToDelete(): Flow<List<LocalUserRelation>>
-
-    @Query("SELECT id FROM user_relations")
-    fun getIds(): Flow<List<String>>
 
 }

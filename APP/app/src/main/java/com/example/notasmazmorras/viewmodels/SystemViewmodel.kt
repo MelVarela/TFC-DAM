@@ -77,10 +77,28 @@ class SystemViewmodel(
             LocalDateTime.ofEpochSecond(sysData.lastSinged, 0, ZoneOffset.UTC)
             .isBefore(LocalDateTime.now().minusDays(7))
         ){
+            systemRepository.update(
+                sysData.copy(
+                    authenticated = false
+                )
+            )
             _authenticated.value = false
         }else{
             _authenticated.value = true
         }
+    }
+
+    fun logOut() = viewModelScope.launch {
+        _authenticated.value = false
+        val sysDataUpdated = systemRepository.getData()
+        val sysData = sysDataUpdated.first()
+        systemRepository.update(
+            sysData.copy(
+                lastUser = "",
+                authenticated = false,
+                language = sysData.language
+            )
+        )
     }
 
     /*

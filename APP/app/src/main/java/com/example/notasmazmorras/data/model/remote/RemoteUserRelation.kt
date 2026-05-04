@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.data.model.remote
 
+import android.util.Log
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
@@ -14,27 +15,31 @@ import java.util.Date
 
 @Serializable
 data class RemoteUserRelation(
-    val isAccepted : Boolean,
+    val accepted : Boolean,
     val role : String,
-    val schedule : List<Long>,
+    val schedule : String,
 
-    val id : String,
     val user : String,
     val campaign : String
 )
 
 fun RemoteUserRelation.toLocal() : LocalUserRelation =
     LocalUserRelation(
-        isAccepted = isAccepted,
+        isAccepted = accepted,
         role = role,
-        schedule = listLongToDate(schedule),
-        id = id,
+        schedule = listLongToDate(jsonToList(schedule)),
         user = user,
-        campaign = campaign
+        campaign = campaign,
+        existsRemote = true
     )
 
 private fun listLongToDate(list : List<Long>) : List<LocalDateTime> {
     var dev : ArrayList<LocalDateTime> = ArrayList<LocalDateTime>()
     list.forEach { dev.add(LocalDateTime.ofEpochSecond(it, 0, ZoneOffset.UTC)) }
     return dev.toList()
+}
+
+private fun jsonToList(json: String) : List<Long> {
+    Log.d("JSON", "Received $json")
+    return emptyList()
 }

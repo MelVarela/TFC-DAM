@@ -51,6 +51,10 @@ class UserViewmodel(
         _authenticated.value = userRepository.login(Credentials(email, password))
     }
 
+    fun logOut() = viewModelScope.launch {
+        _authenticated.value = false
+    }
+
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {

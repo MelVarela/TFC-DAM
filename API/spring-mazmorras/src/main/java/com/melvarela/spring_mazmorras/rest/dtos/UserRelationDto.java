@@ -15,6 +15,6 @@ public class UserRelationDto {
     String user;
     String campaign;
     String schedule;
-    char rol;
-    boolean isAccepted;
+    char role;
+    boolean accepted;
 }

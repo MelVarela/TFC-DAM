@@ -61,7 +61,7 @@ fun AppNavigation() {
     val placeViewmodel : PlaceViewmodel = viewModel(factory = PlaceViewmodel.Factory)
     val systemViewmodel : SystemViewmodel = viewModel(factory = SystemViewmodel.Factory)
 
-    val users by userViewmodel.users.collectAsState()
+    val userRelations by campaignViewmodel.userRelations.collectAsState()
     val campaigns by campaignViewmodel.campaigns.collectAsState()
     val characters by characterViewmodel.characters.collectAsState()
     val creatures by creatureViewmodel.creatures.collectAsState()
@@ -119,6 +119,7 @@ fun AppNavigation() {
                             noteViewmodel.sync(campaign.id)
                             objectViewmodel.sync(campaign.id)
                             placeViewmodel.sync(campaign.id)
+                            campaignViewmodel.syncRelations(campaign.id)
                         }
                     }
                 },
@@ -138,7 +139,16 @@ fun AppNavigation() {
         }
 
         composable(route = "options"){
-            Options(navController)
+            Options(
+                onLogOut = {
+                    systemViewmodel.logOut()
+                    userViewmodel.logOut()
+                    userViewmodel.currentUser = ""
+                    campaignViewmodel.setCurrentCampaign("")
+                    navController.navigate("login")
+                },
+                navController
+            )
         }
 
         composable(
@@ -151,8 +161,8 @@ fun AppNavigation() {
         composable(route = "createCampaign"){
             CreateCampaign(
                 onDone = {
-                    campaign -> campaignViewmodel.insertCampaign(campaign)
-                    campaignViewmodel.currentCampaign = campaign.id
+                    campaign -> campaignViewmodel.insertCampaign(campaign, userViewmodel.currentUser)
+                    campaignViewmodel.setCurrentCampaign(campaign.id)
                     navController.navigate("campaign/" + campaign.id)
                          },
                 navController
@@ -164,10 +174,7 @@ fun AppNavigation() {
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){ backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            campaignViewmodel.currentCampaign = id!!
-
-            Log.d("CA", id)
-            Log.d("CAS", campaigns.toString())
+            campaignViewmodel.setCurrentCampaign(id!!)
 
             var campaign : LocalCampaign
 
@@ -182,6 +189,7 @@ fun AppNavigation() {
                 onBack = {navController.navigate("home")},
                 onSync = {
                     campaignViewmodel.sync(id)
+                    campaignViewmodel.syncRelations(id)
                     characterViewmodel.sync(id)
                     creatureViewmodel.sync(id)
                     noteViewmodel.sync(id)
@@ -203,7 +211,16 @@ fun AppNavigation() {
             route = "campaign/{id}/players",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){
-            Players(navController)
+            Players(
+                userRelations = userRelations,
+                onDelete = {
+                    relation -> campaignViewmodel.deleteRelation(relation)
+                },
+                onUserSelected = {
+                    user -> navController.navigate("account/$user")
+                },
+                navController
+            )
         }
 
         composable(
@@ -290,7 +307,7 @@ fun AppNavigation() {
                 },
                 onBack = { navController.navigate("campaign/${campId}") },
                 onSync = {
-                    characterViewmodel.sync(campaignViewmodel.currentCampaign)
+                    characterViewmodel.sync(campaignViewmodel.currentCampaign.value)
                 },
                 navController
             )
@@ -315,7 +332,7 @@ fun AppNavigation() {
                 },
                 onBack = { navController.navigate("campaign/${campId}") },
                 onSync = {
-                    objectViewmodel.sync(campaignViewmodel.currentCampaign)
+                    objectViewmodel.sync(campaignViewmodel.currentCampaign.value)
                 },
                 navController
             )
@@ -340,7 +357,7 @@ fun AppNavigation() {
                 },
                 onBack = { navController.navigate("campaign/${campId}") },
                 onSync = {
-                    creatureViewmodel.sync(campaignViewmodel.currentCampaign)
+                    creatureViewmodel.sync(campaignViewmodel.currentCampaign.value)
                 },
                 navController
             )
@@ -365,7 +382,7 @@ fun AppNavigation() {
                 },
                 onBack = { navController.navigate("campaign/${campId}") },
                 onSync = {
-                    placeViewmodel.sync(campaignViewmodel.currentCampaign)
+                    placeViewmodel.sync(campaignViewmodel.currentCampaign.value)
                 },
                 navController
             )
@@ -383,7 +400,7 @@ fun AppNavigation() {
                 },
                 characters = characters,
                 characterId = id,
-                campaign = campaignViewmodel.currentCampaign,
+                campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController
             )
         }
@@ -398,7 +415,7 @@ fun AppNavigation() {
                 },
                 characters = characters,
                 characterId = null,
-                campaign = campaignViewmodel.currentCampaign,
+                campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController
             )
         }
@@ -415,7 +432,7 @@ fun AppNavigation() {
                 },
                 objects = objects,
                 objectId = id,
-                campaign = campaignViewmodel.currentCampaign,
+                campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController
             )
         }
@@ -430,7 +447,7 @@ fun AppNavigation() {
                 },
                 objects = objects,
                 objectId = null,
-                campaign = campaignViewmodel.currentCampaign,
+                campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController
             )
         }
@@ -447,7 +464,7 @@ fun AppNavigation() {
                 },
                 creatures = creatures,
                 creatureId = id,
-                campaign = campaignViewmodel.currentCampaign,
+                campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController
             )
         }
@@ -462,7 +479,7 @@ fun AppNavigation() {
                 },
                 creatures = creatures,
                 creatureId = null,
-                campaign = campaignViewmodel.currentCampaign,
+                campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController
             )
         }
@@ -479,7 +496,7 @@ fun AppNavigation() {
                 },
                 places = places,
                 placeId = id,
-                campaign = campaignViewmodel.currentCampaign,
+                campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController
             )
         }
@@ -494,7 +511,7 @@ fun AppNavigation() {
                 },
                 places = places,
                 placeId = null,
-                campaign = campaignViewmodel.currentCampaign,
+                campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController
             )
         }
