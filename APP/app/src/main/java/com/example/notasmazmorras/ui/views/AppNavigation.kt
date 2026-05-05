@@ -108,7 +108,9 @@ fun AppNavigation() {
                     campaign -> campaignViewmodel.deleteCampaign(campaign)
                 },
                 onSelect = {
-                    id -> navController.navigate("campaign/${id}")
+                    id ->
+                        campaignViewmodel.setCurrentCampaign(id)
+                        navController.navigate("campaign/${id}")
                 },
                 onSync = {
                     campaignViewmodel.sync(userViewmodel.currentUser)
@@ -196,6 +198,10 @@ fun AppNavigation() {
                     objectViewmodel.sync(id)
                     placeViewmodel.sync(id)
                 },
+                onUserRelations = {
+                    url ->
+                        navController.navigate(url)
+                },
                 navController
             )
         }
@@ -212,7 +218,7 @@ fun AppNavigation() {
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){
             Players(
-                userRelations = userRelations,
+                userRelations = userRelations.filter { it.campaign == campaignViewmodel.currentCampaign.value },
                 onDelete = {
                     relation -> campaignViewmodel.deleteRelation(relation)
                 },

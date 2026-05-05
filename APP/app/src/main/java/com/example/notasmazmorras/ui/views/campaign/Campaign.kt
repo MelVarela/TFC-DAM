@@ -25,6 +25,7 @@ fun Campaign(
     campaign: LocalCampaign,
     onBack: () -> Unit,
     onSync: () -> Unit,
+    onUserRelations: (String) -> Unit,
     navController: NavController
 ) {
     Scaffold(
@@ -50,7 +51,7 @@ fun Campaign(
                 Text("Ver calendario")
             }
             Button(
-                onClick = {navController.navigate("campaign/${campaign.id}/players")}
+                onClick = {onUserRelations("campaign/${campaign.id}/players")}
             ) {
                 Text("Ver jugadores")
             }

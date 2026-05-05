@@ -38,7 +38,7 @@ import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
     LocalUserRelation::class,
     SysTable::class,
 
-], version = 5)
+], version = 6)
 @TypeConverters(value = [ScheduleTypeConverter::class])
 abstract class Datosbase : RoomDatabase() {
 

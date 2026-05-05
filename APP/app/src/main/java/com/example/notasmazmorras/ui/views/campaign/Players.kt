@@ -1,6 +1,7 @@
 package com.example.notasmazmorras.ui.views.campaign
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -39,18 +40,24 @@ fun Players(
             )
         }
     ){ contentPadding ->
-        LazyColumn(
+        Column(
             modifier = Modifier.padding(contentPadding),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            items(userRelations){ relation ->
-                RelationCard(
-                    userRelation = relation,
-                    onDelete = onDelete,
-                    onUserSelected = onUserSelected,
-                    modifier = Modifier
-                )
+            LazyColumn(
+                modifier = Modifier.padding(contentPadding),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                items(userRelations){ relation ->
+                    RelationCard(
+                        userRelation = relation,
+                        onDelete = onDelete,
+                        onUserSelected = onUserSelected,
+                        modifier = Modifier
+                    )
+                }
             }
         }
     }

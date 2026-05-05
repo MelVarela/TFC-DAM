@@ -29,7 +29,7 @@ fun RelationCard(
             .padding(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = CardDefaults.elevatedShape,
-        onClick = {onUserSelected}
+        onClick = {onUserSelected(userRelation.user)}
     ) {
         Column {
             Text(userRelation.user)

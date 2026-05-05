@@ -1,5 +1,9 @@
 package com.example.notasmazmorras.viewmodels
 
+import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
@@ -16,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -30,7 +35,8 @@ class CampaignViewmodel (
 
     val campaigns : StateFlow<List<LocalCampaign>> = campaignRepository.getAllCampaigns()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    var userRelations : StateFlow<List<LocalUserRelation>> = userRelationRepository.getRelationsForCampaign(currentCampaign.value)
+
+    val userRelations : StateFlow<List<LocalUserRelation>> = userRelationRepository.getAllUserRelations()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun insertCampaign(campaign: LocalCampaign, user: String) = viewModelScope.launch {
@@ -55,7 +61,7 @@ class CampaignViewmodel (
     }
 
     fun deleteRelation(relation: LocalUserRelation) = viewModelScope.launch {
-        if(relation.role != "D"){
+        if(relation.role != "d"){
             userRelationRepository.deleteUserRelation(relation)
         }
     }
@@ -71,11 +77,8 @@ class CampaignViewmodel (
         userRelationRepository.syncFromServer(campaign)
     }
 
-    fun setCurrentCampaign(campaign: String){
+    fun setCurrentCampaign(campaign: String) = viewModelScope.launch {
         _currentCampaign.value = campaign
-
-        userRelations = userRelationRepository.getRelationsForCampaign(campaign)
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     }
 
     companion object {

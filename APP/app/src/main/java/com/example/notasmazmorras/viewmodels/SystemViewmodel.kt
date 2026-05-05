@@ -28,7 +28,20 @@ class SystemViewmodel(
     val authenticated : StateFlow<Boolean> = _authenticated.asStateFlow()
 
     fun firstTimeOpened() = viewModelScope.launch {
-        if(systemRepository.getIsDataPresent().first() == 0){
+        try {
+            if(systemRepository.getIsDataPresent().first() == 0){
+                systemRepository.insert(
+                    SysTable(
+                        "1",
+                        "",
+                        LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
+                        "esp"
+                    )
+                )
+            }else{
+                changeLastTimeSigned()
+            }
+        }catch (e: Throwable){
             systemRepository.insert(
                 SysTable(
                     "1",
@@ -37,8 +50,6 @@ class SystemViewmodel(
                     "esp"
                 )
             )
-        }else{
-            changeLastTimeSigned()
         }
     }
 

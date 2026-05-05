@@ -17,11 +17,6 @@ import java.util.Date
     tableName = "user_relations",
     foreignKeys = [
         ForeignKey(
-            entity = LocalUser::class,
-            parentColumns = ["email"],
-            childColumns = ["user"]
-        ),
-        ForeignKey(
             entity = LocalCampaign::class,
             parentColumns = ["id"],
             childColumns = ["campaign"]
