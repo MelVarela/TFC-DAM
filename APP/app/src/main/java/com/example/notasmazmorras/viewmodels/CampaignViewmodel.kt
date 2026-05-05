@@ -81,6 +81,10 @@ class CampaignViewmodel (
         _currentCampaign.value = campaign
     }
 
+    fun invitePlayer(userRelation: LocalUserRelation) = viewModelScope.launch {
+        userRelationRepository.invitePlayer(userRelation)
+    }
+
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {

@@ -19,6 +19,7 @@ import com.example.notasmazmorras.data.model.local.LocalPlace
 import com.example.notasmazmorras.ui.views.campaign.Calendar
 import com.example.notasmazmorras.ui.views.campaign.Campaign
 import com.example.notasmazmorras.ui.views.campaign.CreateCampaign
+import com.example.notasmazmorras.ui.views.campaign.InvitePlayer
 import com.example.notasmazmorras.ui.views.campaign.Note
 import com.example.notasmazmorras.ui.views.campaign.Notes
 import com.example.notasmazmorras.ui.views.campaign.Players
@@ -225,6 +226,22 @@ fun AppNavigation() {
                 onUserSelected = {
                     user -> navController.navigate("account/$user")
                 },
+                onBack = {
+                    navController.navigate("campaign/${campaignViewmodel.currentCampaign.value}")
+                },
+                navController
+            )
+        }
+
+        composable(
+            route = "invitePlayer"
+        ){
+            InvitePlayer(
+                onDone = { relation ->
+                    campaignViewmodel.invitePlayer(relation)
+                    navController.navigate("campaign/${campaignViewmodel.currentCampaign.value}")
+                },
+                campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController
             )
         }

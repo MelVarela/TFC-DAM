@@ -1,19 +1,12 @@
 package com.melvarela.spring_mazmorras.rest.mappers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
+import com.melvarela.spring_mazmorras.entities.UserEntity;
 import com.melvarela.spring_mazmorras.entities.UserRelationEntity;
 import com.melvarela.spring_mazmorras.rest.dtos.UserRelationDto;
-import com.melvarela.spring_mazmorras.services.CampaignService;
-import com.melvarela.spring_mazmorras.services.UserService;
 
 public class UserRelationDtoMapper {
-
-    @Autowired
-    private static CampaignService campaignService;
-    @Autowired
-    private static UserService userService;
     
     public static UserRelationDto userRelationEntityToDto(UserRelationEntity entity){
         return new UserRelationDto(
@@ -25,14 +18,14 @@ public class UserRelationDtoMapper {
         );
     }
 
-    public static UserRelationEntity userRelationDtoToEntity(UserRelationDto dto){
+    public static UserRelationEntity userRelationDtoToEntity(UserRelationDto dto, CampaignEntity campaign, UserEntity user){
         return new UserRelationEntity(
             new UserRelationId(dto.getUser(), dto.getCampaign()),
             dto.getSchedule(),
             dto.getRole(),
             dto.isAccepted(),
-            userService.findById(dto.getUser()),
-            campaignService.findById(dto.getCampaign())
+            user,
+            campaign
         );
     }
 

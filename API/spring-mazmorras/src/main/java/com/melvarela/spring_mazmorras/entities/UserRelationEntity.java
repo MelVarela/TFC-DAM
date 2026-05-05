@@ -5,6 +5,7 @@ import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
@@ -37,9 +38,11 @@ public class UserRelationEntity {
 
     @MapsId("usuario")
     @ManyToOne
+    @JoinColumn(name = "usuario")
     UserEntity usuarioEntity;
 
     @MapsId("campanna")
     @ManyToOne
+    @JoinColumn(name = "campanna")
     CampaignEntity campannaEntity;
 }

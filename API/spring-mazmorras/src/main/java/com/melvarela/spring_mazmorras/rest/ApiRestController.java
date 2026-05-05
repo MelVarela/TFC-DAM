@@ -239,7 +239,7 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(CharacterDtoMapper.characterEntityToDto(
-                characterService.createCharacter(CharacterDtoMapper.characterDtoToEntity(character))
+                characterService.createCharacter(CharacterDtoMapper.characterDtoToEntity(character, campaignService.findById(character.getCampaign())))
             ), HttpStatus.CREATED);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -253,7 +253,7 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(CharacterDtoMapper.characterEntityToDto(
-                characterService.updateCharacter(CharacterDtoMapper.characterDtoToEntity(character))
+                characterService.updateCharacter(CharacterDtoMapper.characterDtoToEntity(character, campaignService.findById(character.getCampaign())))
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -310,7 +310,7 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(CreatureDtoMapper.creatureEntityToDto(
-                creatureService.createCreature(CreatureDtoMapper.creatureDtoToEntity(creature))
+                creatureService.createCreature(CreatureDtoMapper.creatureDtoToEntity(creature, campaignService.findById(creature.getCampaign())))
             ), HttpStatus.CREATED);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -324,7 +324,7 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(CreatureDtoMapper.creatureEntityToDto(
-                creatureService.updateCreature(CreatureDtoMapper.creatureDtoToEntity(creature))
+                creatureService.updateCreature(CreatureDtoMapper.creatureDtoToEntity(creature, campaignService.findById(creature.getCampaign())))
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -450,7 +450,7 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(ObjectDtoMapper.objectEntityToDto(
-                objectService.createObject(ObjectDtoMapper.objectDtoToEntity(obxecto))
+                objectService.createObject(ObjectDtoMapper.objectDtoToEntity(obxecto, campaignService.findById(obxecto.getCampaign())))
             ), HttpStatus.CREATED);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -464,7 +464,7 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(ObjectDtoMapper.objectEntityToDto(
-                objectService.updateObject(ObjectDtoMapper.objectDtoToEntity(obxecto))
+                objectService.updateObject(ObjectDtoMapper.objectDtoToEntity(obxecto, campaignService.findById(obxecto.getCampaign())))
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -521,7 +521,7 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(PlaceDtoMapper.placeEntityToDto(
-                placeService.createPlace(PlaceDtoMapper.placeDtoToEntity(place))
+                placeService.createPlace(PlaceDtoMapper.placeDtoToEntity(place, campaignService.findById(place.getCampaign())))
             ), HttpStatus.CREATED);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -535,7 +535,7 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(PlaceDtoMapper.placeEntityToDto(
-                placeService.updatePlace(PlaceDtoMapper.placeDtoToEntity(place))
+                placeService.updatePlace(PlaceDtoMapper.placeDtoToEntity(place, campaignService.findById(place.getCampaign())))
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -579,7 +579,8 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(UserRelationDtoMapper.userRelationEntityToDto(
-                userRelationService.createUser(UserRelationDtoMapper.userRelationDtoToEntity(userRelation))
+                userRelationService.createUser(UserRelationDtoMapper.userRelationDtoToEntity(userRelation,
+                    campaignService.findById(userRelation.getCampaign()), userService.findById(userRelation.getUser())))
             ), HttpStatus.CREATED);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
@@ -593,7 +594,8 @@ public class ApiRestController {
 
         try{
             return new ResponseEntity<>(UserRelationDtoMapper.userRelationEntityToDto(
-                userRelationService.updateUser(UserRelationDtoMapper.userRelationDtoToEntity(userRelation))
+                userRelationService.updateUser(UserRelationDtoMapper.userRelationDtoToEntity(userRelation,
+                    campaignService.findById(userRelation.getCampaign()), userService.findById(userRelation.getUser())))
             ), HttpStatus.OK);
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());

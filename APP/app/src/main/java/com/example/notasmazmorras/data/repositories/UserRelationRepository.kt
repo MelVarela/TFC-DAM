@@ -5,6 +5,7 @@ import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
 import com.example.notasmazmorras.data.model.local.toRemote
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
+import com.example.notasmazmorras.data.model.remote.RemoteUser
 import com.example.notasmazmorras.data.model.remote.RemoteUserRelation
 import com.example.notasmazmorras.data.model.remote.toLocal
 import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
@@ -23,6 +24,8 @@ interface UserRelationRepository {
     suspend fun updateUserRelation(userRelation: LocalUserRelation): RepositoryResult
 
     suspend fun deleteUserRelation(userRelation: LocalUserRelation): RepositoryResult
+
+    suspend fun invitePlayer(userRelation: LocalUserRelation): RepositoryResult
 
     // Sincronización
 
@@ -71,6 +74,25 @@ class DefaultUserRelationRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("")
         }
+    }
+
+    override suspend fun invitePlayer(userRelation: LocalUserRelation): RepositoryResult {
+        try{
+            if(checkEmailExists(userRelation.user)){
+                local.insert(userRelation)
+                remote.createRelation(userRelation.toRemote())
+                return RepositoryResult.Success("")
+            }
+            return RepositoryResult.Error("")
+        }catch (e: Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return RepositoryResult.Error("")
+        }
+    }
+
+    suspend fun checkEmailExists(email: String): Boolean {
+        var userCheck : RemoteUser = remote.getUser(email)
+        return (userCheck.name != "")
     }
 
     override suspend fun uploadPendingChanges(): RepositoryResult {
