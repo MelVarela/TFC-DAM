@@ -24,8 +24,6 @@ class UserViewmodel(
     private val _authenticated = MutableStateFlow(false)
     val authenticated : StateFlow<Boolean> = _authenticated.asStateFlow()
 
-    var currentUser : String = ""
-
     val users : StateFlow<List<LocalUser>> = userRepository.getAllUsers()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -47,7 +45,6 @@ class UserViewmodel(
     }
 
     fun login(email: String, password: String) = viewModelScope.launch {
-        currentUser = email
         _authenticated.value = userRepository.login(Credentials(email, password))
     }
 

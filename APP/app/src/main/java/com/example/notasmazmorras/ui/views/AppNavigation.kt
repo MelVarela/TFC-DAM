@@ -82,7 +82,7 @@ fun AppNavigation() {
             Login(
                 authenticated = (userViewmodel.authenticated.collectAsState().value || systemViewmodel.authenticated.collectAsState().value),
                 onSuccess = { email ->
-                    systemViewmodel.setLastSigned(email)
+                    if(!systemViewmodel.authenticated.value) systemViewmodel.setLastSigned(email)
                     navController.navigate("home")
                 },
                 onLog = {
@@ -114,7 +114,7 @@ fun AppNavigation() {
                         navController.navigate("campaign/${id}")
                 },
                 onSync = {
-                    campaignViewmodel.sync(userViewmodel.currentUser)
+                    campaignViewmodel.sync(systemViewmodel.currentUser.value)
                     for (campaign in campaigns) {
                         if(campaign.id.substring(0, 1) != "l"){
                             characterViewmodel.sync(campaign.id)
@@ -126,12 +126,26 @@ fun AppNavigation() {
                         }
                     }
                 },
+                onInvitations = {
+                    campaignViewmodel.syncPending(systemViewmodel.currentUser.value)
+                    navController.navigate("invitations")
+                },
+                name = systemViewmodel.currentUser.collectAsState().value,
                 navController
             )
         }
 
         composable(route = "invitations"){
-            Invitations(navController)
+            Invitations(
+                invitations = userRelations.filter { !it.isAccepted },
+                onAccepted = {
+                    userRelation -> campaignViewmodel.accept(userRelation)
+                },
+                onRejected = {
+                        userRelation -> campaignViewmodel.reject(userRelation)
+                },
+                navController
+            )
         }
 
         composable(
@@ -146,7 +160,6 @@ fun AppNavigation() {
                 onLogOut = {
                     systemViewmodel.logOut()
                     userViewmodel.logOut()
-                    userViewmodel.currentUser = ""
                     campaignViewmodel.setCurrentCampaign("")
                     navController.navigate("login")
                 },
@@ -164,7 +177,7 @@ fun AppNavigation() {
         composable(route = "createCampaign"){
             CreateCampaign(
                 onDone = {
-                    campaign -> campaignViewmodel.insertCampaign(campaign, userViewmodel.currentUser)
+                    campaign -> campaignViewmodel.insertCampaign(campaign, systemViewmodel.currentUser.value)
                     campaignViewmodel.setCurrentCampaign(campaign.id)
                     navController.navigate("campaign/" + campaign.id)
                          },

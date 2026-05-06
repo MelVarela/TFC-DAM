@@ -27,11 +27,13 @@ fun Home(
     onDelete: (LocalCampaign) -> Unit,
     onSelect: (String) -> Unit,
     onSync: () -> Unit,
+    onInvitations: () -> Unit,
+    name: String,
     navController: NavController
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Home") })
+            TopAppBar(title = { Text("Welcome, $name") })
         }
     ){ contentPadding ->
         Column(
@@ -50,7 +52,7 @@ fun Home(
                 Text("Ver cuenta")
             }
             Button(
-                onClick = {navController.navigate("invitations")}
+                onClick = {onInvitations()}
             ) {
                 Text("Ver invitaciones")
             }

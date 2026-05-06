@@ -573,6 +573,20 @@ public class ApiRestController {
         return new ResponseEntity<>(relationsDto, HttpStatus.OK);
     }
 
+    @GetMapping("userRelation/invites/{playerId}")
+    public ResponseEntity<List<UserRelationDto>> getPendingInvitesFor(@PathVariable("playerId") String playerId){
+        System.out.println("Getting invites for: " + playerId);
+
+        List<UserRelationDto> relationsDto = new ArrayList<>();
+        List<UserRelationEntity> relations = userRelationService.findByUserPending(playerId);
+
+        for (UserRelationEntity relation : relations) {
+            relationsDto.add(UserRelationDtoMapper.userRelationEntityToDto(relation));
+        }
+
+        return new ResponseEntity<>(relationsDto, HttpStatus.OK);
+    }
+
     @PostMapping("userRelation")
     public ResponseEntity<UserRelationDto> postUserRelation(@RequestBody UserRelationDto userRelation){
         System.out.println("Create user relation: " + userRelation.toString());

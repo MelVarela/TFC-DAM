@@ -61,4 +61,9 @@ public class UserRelationService {
         return repository.findByCampannaEntity(campaign);
     }
 
+    @Transactional(readOnly = true)
+    public List<UserRelationEntity> findByUserPending(String playerId) {
+        return repository.findByPlayerPending(playerId);
+    }
+
 }

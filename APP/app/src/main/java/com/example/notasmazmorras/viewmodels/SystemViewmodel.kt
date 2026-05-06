@@ -27,13 +27,17 @@ class SystemViewmodel(
     private val _authenticated = MutableStateFlow(false)
     val authenticated : StateFlow<Boolean> = _authenticated.asStateFlow()
 
+    val _currentUser = MutableStateFlow("")
+    val currentUser : StateFlow<String> = _currentUser.asStateFlow()
+
     fun firstTimeOpened() = viewModelScope.launch {
         try {
             if(systemRepository.getIsDataPresent().first() == 0){
+                Log.d("DB", "No data detected")
                 systemRepository.insert(
                     SysTable(
                         "1",
-                        "",
+                        lastUser = "",
                         LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
                         "esp"
                     )
@@ -42,20 +46,24 @@ class SystemViewmodel(
                 changeLastTimeSigned()
             }
         }catch (e: Throwable){
+            Log.d("DB", "No data detected")
             systemRepository.insert(
                 SysTable(
                     "1",
-                    "",
+                    lastUser = "",
                     LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                    "esp"
+                    "esp",
+                    false
                 )
             )
         }
     }
 
     fun setLastSigned(email: String) = viewModelScope.launch {
+        Log.d("DB", "Setting last time signed as now")
         val sysDataUpdated = systemRepository.getData()
         val sysData = sysDataUpdated.first()
+        _currentUser.value = email
         systemRepository.update(
             sysData.copy(
                 lastSinged = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
@@ -67,19 +75,19 @@ class SystemViewmodel(
     }
 
     fun changeLastTimeSigned() = viewModelScope.launch {
+        Log.d("DB", "Reseting last time signed as now")
         val sysDataUpdated = systemRepository.getData()
         val sysData = sysDataUpdated.first()
+        _currentUser.value = sysData.lastUser
         systemRepository.update(
             sysData.copy(
-                lastSinged = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                lastUser = sysData.lastUser,
-                authenticated = sysData.authenticated,
-                language = sysData.language
+                lastSinged = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
             )
         )
     }
 
     fun checkIfStillAuthenticated() = viewModelScope.launch {
+        Log.d("DB", "Checking if user still has auth")
         val sysDataUpdated = systemRepository.getData()
         val sysData = sysDataUpdated.first()
         if(!sysData.authenticated){
@@ -100,14 +108,15 @@ class SystemViewmodel(
     }
 
     fun logOut() = viewModelScope.launch {
+        Log.d("DB", "Logging out")
         _authenticated.value = false
         val sysDataUpdated = systemRepository.getData()
         val sysData = sysDataUpdated.first()
+        _currentUser.value = ""
         systemRepository.update(
             sysData.copy(
                 lastUser = "",
-                authenticated = false,
-                language = sysData.language
+                authenticated = false
             )
         )
     }

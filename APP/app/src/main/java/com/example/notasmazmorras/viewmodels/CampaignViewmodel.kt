@@ -77,12 +77,30 @@ class CampaignViewmodel (
         userRelationRepository.syncFromServer(campaign)
     }
 
+    fun syncPending(user: String) = viewModelScope.launch {
+        userRelationRepository.syncPending(user)
+    }
+
     fun setCurrentCampaign(campaign: String) = viewModelScope.launch {
         _currentCampaign.value = campaign
     }
 
     fun invitePlayer(userRelation: LocalUserRelation) = viewModelScope.launch {
         userRelationRepository.invitePlayer(userRelation)
+    }
+
+    fun accept(invite: LocalUserRelation) = viewModelScope.launch {
+        userRelationRepository.updateUserRelation(
+            invite.copy(
+                isAccepted = true
+            )
+        )
+        syncRelations(invite.campaign)
+    }
+
+    fun reject(invite: LocalUserRelation) = viewModelScope.launch {
+        userRelationRepository.deleteUserRelation(invite)
+        syncRelations(invite.campaign)
     }
 
     companion object {

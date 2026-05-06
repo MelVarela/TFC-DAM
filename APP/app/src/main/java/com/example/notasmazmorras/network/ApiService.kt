@@ -134,4 +134,7 @@ interface ApiService {
     @PUT("userRelation")
     suspend fun updateRelation(@Body relation: RemoteUserRelation): RemoteUserRelation
 
+    @GET("userRelation/invites/{playerId}")
+    suspend fun getPendingInvites(@Path("playerId") user: String) : List<RemoteUserRelation>
+
 }

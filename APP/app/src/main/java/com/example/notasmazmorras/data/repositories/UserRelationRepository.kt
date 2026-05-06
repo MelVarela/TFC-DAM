@@ -32,6 +32,8 @@ interface UserRelationRepository {
     suspend fun uploadPendingChanges(): RepositoryResult
 
     suspend fun syncFromServer(campaignId: String): RepositoryResult
+
+    suspend fun syncPending(user: String) : RepositoryResult
 }
 
 class DefaultUserRelationRepository(
@@ -58,7 +60,7 @@ class DefaultUserRelationRepository(
 
     override suspend fun updateUserRelation(userRelation: LocalUserRelation): RepositoryResult {
         try{
-            local.update(userRelation)
+            local.update(userRelation.copy(pendingSync = true))
             return RepositoryResult.Success("")
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)
@@ -128,6 +130,39 @@ class DefaultUserRelationRepository(
         try{
             var relationsRemote = remote.getRelations(campaignId)
             var relationsLocal = local.getRelationsForCampaign(campaignId)
+
+            var relationsToUpdate : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
+            var relationsToInsert : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
+
+            Log.d("SYNC", relationsRemote.toString())
+
+            relationsRemote.map {
+                Log.d("SYNC", it.toString())
+                if(!relationsLocal.first().contains(it.toLocal())){
+                    Log.d("SYNC", "Insert")
+                    relationsToInsert = relationsToInsert.plus(it.toLocal())
+                }else{
+                    Log.d("SYNC", "Update")
+                    relationsToUpdate = relationsToUpdate.plus(it.toLocal())
+                }
+            }
+
+            Log.d("SYNC I", relationsToInsert.toString())
+            Log.d("SYNC U", relationsToUpdate.toString())
+
+            local.insertList(relationsToInsert)
+            local.updateList(relationsToUpdate)
+            return RepositoryResult.Success("Sicronizado con éxito")
+        }catch (e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
+        }
+    }
+
+    override suspend fun syncPending(user: String): RepositoryResult{
+        try{
+            var relationsRemote = remote.getPendingInvites(user)
+            var relationsLocal = local.getAllRelations()
 
             var relationsToUpdate : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
             var relationsToInsert : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
