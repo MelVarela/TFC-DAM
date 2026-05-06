@@ -110,7 +110,7 @@ fun AppNavigation() {
                 },
                 onSelect = {
                     id ->
-                        campaignViewmodel.setCurrentCampaign(id)
+                        campaignViewmodel.setCurrentCampaign(id, systemViewmodel.currentUser.value)
                         navController.navigate("campaign/${id}")
                 },
                 onSync = {
@@ -160,7 +160,7 @@ fun AppNavigation() {
                 onLogOut = {
                     systemViewmodel.logOut()
                     userViewmodel.logOut()
-                    campaignViewmodel.setCurrentCampaign("")
+                    campaignViewmodel.setCurrentCampaign("", "")
                     navController.navigate("login")
                 },
                 navController
@@ -178,7 +178,7 @@ fun AppNavigation() {
             CreateCampaign(
                 onDone = {
                     campaign -> campaignViewmodel.insertCampaign(campaign, systemViewmodel.currentUser.value)
-                    campaignViewmodel.setCurrentCampaign(campaign.id)
+                    campaignViewmodel.setCurrentCampaign(campaign.id, systemViewmodel.currentUser.value)
                     navController.navigate("campaign/" + campaign.id)
                          },
                 navController
@@ -190,7 +190,7 @@ fun AppNavigation() {
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){ backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
-            campaignViewmodel.setCurrentCampaign(id!!)
+            campaignViewmodel.setCurrentCampaign(id!!, systemViewmodel.currentUser.collectAsState().value)
 
             var campaign : LocalCampaign
 
@@ -266,9 +266,16 @@ fun AppNavigation() {
             )
         ){ backStackEntry ->
             val ownerId = backStackEntry.arguments?.getString("owner")!!
+            Log.d("ISDM", campaignViewmodel.isDm.collectAsState().value.toString())
 
             Notes(
-                notes = notes.filter { it.owner == ownerId },
+                notes = notes.filter {
+                    it.owner == ownerId &&
+                        (
+                            it.isDm == campaignViewmodel.isDm.value ||
+                            !it.isDm
+                        )
+                                     },
                 onPress = { id -> navController.navigate("note/${id}") },
                 onDelete = { note -> noteViewmodel.deleteNote(note) },
                 onNew = { navController.navigate("newNote/${ownerId}") },
@@ -277,16 +284,21 @@ fun AppNavigation() {
                 },
                 onBack = {
                     Log.d("Nav", "Owner ID: $ownerId")
-                    if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "camp"){
-                        navController.navigate("campaign/${ownerId}")
-                    }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "char"){
-                        navController.navigate("details/char/${ownerId}")
-                    }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "crea"){
-                        navController.navigate("details/crea/${ownerId}")
-                    }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "plac"){
-                        navController.navigate("details/plac/${ownerId}")
-                    }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "obje"){
-                        navController.navigate("details/obje/${ownerId}")
+                    try{
+                        if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "camp"){
+                            navController.navigate("campaign/${ownerId}")
+                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "char"){
+                            navController.navigate("details/char/${ownerId}")
+                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "crea"){
+                            navController.navigate("details/crea/${ownerId}")
+                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "plac"){
+                            navController.navigate("details/plac/${ownerId}")
+                        }else if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "obje"){
+                            navController.navigate("details/obje/${ownerId}")
+                        }
+                    }catch (e: Throwable){
+                        Log.e("ERROR", e.message.toString())
+                        navController.navigate("home")
                     }
                 }
             )
@@ -298,13 +310,18 @@ fun AppNavigation() {
         ){ backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
 
+            val noteR : LocalNote = notes.first{ it.id == id }
+
             Note(
-                note = notes.first{ it.id == id },
+                note = noteR,
+                onLoad = { noteViewmodel.setEditing(noteR, true) },
                 onBack = {
                     note -> noteViewmodel.updateNote(note)
+                    noteViewmodel.setEditing(note, false)
                     navController.navigate("notes/${note.owner}/notes")
                 },
-                ""
+                owner = "",
+                isDm = campaignViewmodel.isDm.collectAsState().value
             )
         }
 
@@ -316,11 +333,13 @@ fun AppNavigation() {
 
             Note(
                 note = null,
+                onLoad = {},
                 onBack = {
                     note -> noteViewmodel.insertNote(note)
                     navController.navigate("notes/${note.owner}/notes")
                 },
-                owner = id!!
+                owner = id!!,
+                isDm = campaignViewmodel.isDm.collectAsState().value
             )
         }
 

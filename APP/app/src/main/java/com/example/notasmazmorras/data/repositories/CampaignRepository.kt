@@ -49,7 +49,7 @@ class DefaultCampaignRepository(
 
     override suspend fun updateCampaign(campaign: LocalCampaign): RepositoryResult {
         try{
-            local.update(campaign)
+            local.update(campaign.copy(pendingSync = true))
             return RepositoryResult.Success("Campaña '${campaign.name}' actualizada con éxito.")
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)

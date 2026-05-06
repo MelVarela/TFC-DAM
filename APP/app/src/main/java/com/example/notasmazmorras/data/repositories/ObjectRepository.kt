@@ -51,7 +51,7 @@ class DefaultObjectRepository(
 
     override suspend fun updateObject(obxecto: LocalObject): RepositoryResult {
         try{
-            local.update(obxecto)
+            local.update(obxecto.copy(pendingSync = true))
             return RepositoryResult.Success("Objeto '${obxecto.name}' actualizado con éxito.")
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)

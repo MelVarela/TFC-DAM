@@ -52,7 +52,7 @@ class DefaultPlaceRepository(
 
     override suspend fun updatePlace(place: LocalPlace): RepositoryResult {
         try{
-            local.update(place)
+            local.update(place.copy(pendingSync = true))
             return RepositoryResult.Success("Lugar '${place.name}' actualizado con éxito.")
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)

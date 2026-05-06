@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -37,6 +38,11 @@ class NoteViewmodel(
     fun sync(owner: String) = viewModelScope.launch {
         noteRepository.uploadPendingChanges()
         noteRepository.syncFromServer(owner)
+    }
+
+    fun setEditing(note: LocalNote, state: Boolean) = viewModelScope.launch {
+        Log.d("DB", "Setting editing $state")
+        noteRepository.setEditing(note, state)
     }
 
     companion object {

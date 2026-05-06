@@ -23,6 +23,8 @@ interface NoteRepository {
 
     suspend fun deleteNote(note: LocalNote): RepositoryResult
 
+    suspend fun setEditing(note: LocalNote, state: Boolean)
+
     // Sincronización
 
     suspend fun uploadPendingChanges(): RepositoryResult
@@ -52,7 +54,7 @@ class DefaultNoteRepository(
 
     override suspend fun updateNote(note: LocalNote): RepositoryResult {
         try{
-            local.update(note)
+            local.update(note.copy(pendingSync = true))
             return RepositoryResult.Success("Nota '${note.name}' actualizada con éxito.")
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)
@@ -69,6 +71,12 @@ class DefaultNoteRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("Error eliminando la nota '${note.name}'.")
         }
+    }
+
+    override suspend fun setEditing(note: LocalNote, state: Boolean) {
+        remote.updateNote(
+            note.copy(isEditing = state).toRemote()
+        )
     }
 
     override suspend fun uploadPendingChanges(): RepositoryResult {

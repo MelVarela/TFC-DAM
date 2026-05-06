@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,7 +31,8 @@ fun NoteCard(
             .padding(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = CardDefaults.elevatedShape,
-        onClick = { onPress(note.id) }
+        onClick = { onPress(note.id) },
+        enabled = !note.isEditing
     ){
         Row(
             horizontalArrangement = Arrangement.Start,

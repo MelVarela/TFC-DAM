@@ -33,6 +33,9 @@ class CampaignViewmodel (
     private val _currentCampaign = MutableStateFlow("")
     val currentCampaign : StateFlow<String> = _currentCampaign.asStateFlow()
 
+    private val _isDm = MutableStateFlow(false)
+    val isDm : StateFlow<Boolean> = _isDm.asStateFlow()
+
     val campaigns : StateFlow<List<LocalCampaign>> = campaignRepository.getAllCampaigns()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -81,8 +84,18 @@ class CampaignViewmodel (
         userRelationRepository.syncPending(user)
     }
 
-    fun setCurrentCampaign(campaign: String) = viewModelScope.launch {
+    fun setCurrentCampaign(campaign: String, user: String) = viewModelScope.launch {
         _currentCampaign.value = campaign
+        if(campaign != ""){
+            Log.d("SETDM", "Setting if is dm")
+            val relation : LocalUserRelation = userRelations.first().first {
+                it.campaign == campaign && it.user == user
+            }
+            Log.d("DB", "Relation found: ${relation.toString()}")
+            if(relation.role == "d"){
+                _isDm.value = true
+            }
+        }
     }
 
     fun invitePlayer(userRelation: LocalUserRelation) = viewModelScope.launch {

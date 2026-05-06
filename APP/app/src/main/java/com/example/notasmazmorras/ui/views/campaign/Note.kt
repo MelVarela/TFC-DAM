@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,12 +29,21 @@ import com.example.notasmazmorras.data.model.local.LocalNote
 @Composable
 fun Note(
     note: LocalNote?,
+    onLoad: () -> Unit,
     onBack: (LocalNote) -> Unit,
     owner: String,
+    isDm: Boolean
 ) {
+
+    var firstLoad by remember { mutableStateOf(true) };
+    if(firstLoad){
+        onLoad()
+        firstLoad = false
+    }
 
     var name by remember { mutableStateOf("Nueva nota") }
     var content by remember { mutableStateOf("") }
+    var dmOnly by remember { mutableStateOf(false) }
 
     if(note != null){
         name = note.name
@@ -52,7 +62,7 @@ fun Note(
                                 id = "local_${System.nanoTime()}note",
                                 name = name,
                                 content = content,
-                                isDm = false,
+                                isDm = dmOnly,
                                 isEditing = false,
                                 owner = owner,
                                 pendingSync = true
@@ -62,7 +72,7 @@ fun Note(
                                 id = note.id,
                                 name = name,
                                 content = content,
-                                isDm = note.isDm,
+                                isDm = dmOnly,
                                 isEditing = false,
                                 owner = note.owner,
                                 pendingSync = true
@@ -81,6 +91,13 @@ fun Note(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
+            if(isDm){
+                Checkbox(
+                    checked = dmOnly,
+                    onCheckedChange = { dmOnly = it }
+                )
+                Text("Make note only visible to DM")
+            }
             TextField(
                 value = name,
                 onValueChange = {name = it},

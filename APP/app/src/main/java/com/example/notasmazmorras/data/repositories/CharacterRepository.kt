@@ -51,7 +51,7 @@ class DefaultCharacterRepository(
 
     override suspend fun updateCharacter(character: LocalCharacter): RepositoryResult {
         try{
-            local.update(character)
+            local.update(character.copy(pendingSync = true))
             return RepositoryResult.Success("Personaje '${character.name}' actualizado con éxito.")
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)

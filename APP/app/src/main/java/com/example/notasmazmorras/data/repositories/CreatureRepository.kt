@@ -51,7 +51,7 @@ class DefaultCreatureRepository(
 
     override suspend fun updateCreature(creature: LocalCreature): RepositoryResult {
         try{
-            local.update(creature)
+            local.update(creature.copy(pendingSync = true))
             return RepositoryResult.Success("Criatura '${creature.name}' actualizada con éxito.")
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)

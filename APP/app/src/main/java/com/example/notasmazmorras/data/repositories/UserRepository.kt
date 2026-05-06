@@ -60,7 +60,7 @@ class DefaultUserRepository(
 
     override suspend fun updateUser(user: LocalUser): RepositoryResult {
         try{
-            local.update(user)
+            local.update(user.copy(pendingSync = true))
             return RepositoryResult.Success("")
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)
