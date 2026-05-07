@@ -5,7 +5,6 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      #testdb
       MYSQL_DATABASE: mazmorras
       MYSQL_USER: testuser
       MYSQL_PASSWORD: testpass
@@ -36,3 +35,38 @@ services:
       DB_URL: jdbc:mariadb://mariadb:3306/mazmorras
       DB_USER: testuser
       DB_PASS: testpass
+
+  mongo:
+    image: mongo:7
+    container_name: mongo-container
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./src/docker/scripts:/docker-entrypoint-initdb.d
+      - mongo_data:/data/
+    command: mongod --bind_ip_all
+
+
+  mongo-express:
+    image: mongo-express:1.0.0-20-alpine3.18
+    container_name: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+
+      ME_CONFIG_BASICAUTH: "true"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
+
+      ME_CONFIG_OPTIONS_EDITORTHEME: "default"
+      ME_CONFIG_SITE_BASEURL: "/"
+      ME_CONFIG_SITE_COOKIESECRET: "secret"
+    depends_on:
+      - mongo
+
+volumes:
+  mongo_data:
