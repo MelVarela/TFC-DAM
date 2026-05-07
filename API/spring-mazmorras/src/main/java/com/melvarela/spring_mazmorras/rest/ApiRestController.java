@@ -22,6 +22,7 @@ import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
 import com.melvarela.spring_mazmorras.entities.NoteEntity;
 import com.melvarela.spring_mazmorras.entities.ObjectEntity;
 import com.melvarela.spring_mazmorras.entities.PlaceEntity;
+import com.melvarela.spring_mazmorras.entities.SuggestionEntity;
 import com.melvarela.spring_mazmorras.entities.UserRelationEntity;
 import com.melvarela.spring_mazmorras.rest.dtos.CampaignDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CharacterDto;
@@ -30,6 +31,7 @@ import com.melvarela.spring_mazmorras.rest.dtos.LoginDto;
 import com.melvarela.spring_mazmorras.rest.dtos.NoteDto;
 import com.melvarela.spring_mazmorras.rest.dtos.ObjectDto;
 import com.melvarela.spring_mazmorras.rest.dtos.PlaceDto;
+import com.melvarela.spring_mazmorras.rest.dtos.SuggestionDto;
 import com.melvarela.spring_mazmorras.rest.dtos.UserDto;
 import com.melvarela.spring_mazmorras.rest.dtos.UserRelationDto;
 import com.melvarela.spring_mazmorras.rest.mappers.CampaignDtoMapper;
@@ -38,6 +40,7 @@ import com.melvarela.spring_mazmorras.rest.mappers.CreatureDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.NoteDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.ObjectDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.PlaceDtoMapper;
+import com.melvarela.spring_mazmorras.rest.mappers.SuggestionDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.UserDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.UserRelationDtoMapper;
 import com.melvarela.spring_mazmorras.services.CampaignService;
@@ -46,6 +49,7 @@ import com.melvarela.spring_mazmorras.services.CreatureService;
 import com.melvarela.spring_mazmorras.services.NoteService;
 import com.melvarela.spring_mazmorras.services.ObjectService;
 import com.melvarela.spring_mazmorras.services.PlaceService;
+import com.melvarela.spring_mazmorras.services.SuggestionService;
 import com.melvarela.spring_mazmorras.services.UserRelationService;
 import com.melvarela.spring_mazmorras.services.UserService;
 
@@ -69,6 +73,8 @@ public class ApiRestController {
     PlaceService placeService;
     @Autowired
     UserRelationService userRelationService;
+    @Autowired
+    SuggestionService suggestionService;
 
     //Login
     @PostMapping("login")
@@ -487,6 +493,7 @@ public class ApiRestController {
     }
 
     //Places
+
     @GetMapping("places/{campaignId}")
     public ResponseEntity<List<PlaceDto>> getAllPlacesFrom(@PathVariable("campaignId") String campaignId){
         System.out.println("Getting places from: " + campaignId);
@@ -556,6 +563,8 @@ public class ApiRestController {
             return new ResponseEntity<>(new PlaceDto(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    //User relations
 
     @GetMapping("userRelation/{campaignId}")
     public ResponseEntity<List<UserRelationDto>> getRelationsByCampaign(@PathVariable("campaignId") String campaignId){
@@ -644,6 +653,50 @@ public class ApiRestController {
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
             return new ResponseEntity<>(new UserRelationDto(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //Suggestions
+
+    @GetMapping("suggestions")
+    public ResponseEntity<List<SuggestionDto>> getAllSuggestions(){
+        System.out.println("Getting suggestions.");
+        
+        List<SuggestionEntity> suggestions = suggestionService.findAll();
+        List<SuggestionDto> listDto = new ArrayList<>();
+
+        for (SuggestionEntity suggestion : suggestions) {
+            listDto.add(SuggestionDtoMapper.entityToDto(suggestion));
+        }
+
+        return new ResponseEntity<>(listDto, HttpStatus.OK);
+    }
+
+    @PostMapping("suggestion")
+    public ResponseEntity<SuggestionDto> postSuggestion(@RequestBody SuggestionDto suggestion){
+        System.out.println("Creating suggestion: " + suggestion.toString());
+
+        try{
+            return new ResponseEntity<>(SuggestionDtoMapper.entityToDto(
+                suggestionService.createSuggestion(SuggestionDtoMapper.dtoToEntity(suggestion))
+            ), HttpStatus.OK);
+        }catch(Exception e){
+            System.err.println("Error: " + e.getMessage());
+            return new ResponseEntity<>(new SuggestionDto(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("suggestion/{id}")
+    public ResponseEntity<SuggestionDto> deleteSuggestion(@PathVariable("id") int id){
+        System.out.println("Deleting suggestion: " + id);
+
+        try{
+            return new ResponseEntity<>(SuggestionDtoMapper.entityToDto(
+                suggestionService.deleteSuggestion(id)
+            ), HttpStatus.OK);
+        }catch(Exception e){
+            System.err.println("Error: " + e.getMessage());
+            return new ResponseEntity<>(new SuggestionDto(), HttpStatus.BAD_REQUEST);
         }
     }
 
