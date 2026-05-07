@@ -57,9 +57,14 @@ fun Home(
                 Text("Ver invitaciones")
             }
             Button(
-                onClick = {navController.navigate("reportingSuggestions/report")}
+                onClick = {navController.navigate("reportingSuggestions/R")}
             ) {
-                Text("Reportar sugerencia")
+                Text("Reportar error")
+            }
+            Button(
+                onClick = {navController.navigate("reportingSuggestions/S")}
+            ) {
+                Text("Sugerir un cambio")
             }
             Button(
                 onClick = {navController.navigate("options")}

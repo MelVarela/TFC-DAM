@@ -93,7 +93,7 @@ class AppDataContainer(private val context : Context) : AppContainer {
     }
 
     override val systemRepository : SystemRepository by lazy {
-        DefaultSystemRepository(Datosbase.getDatabase(context).sysTableDao())
+        DefaultSystemRepository(Datosbase.getDatabase(context).sysTableDao(), retrofitService)
     }
 
 }

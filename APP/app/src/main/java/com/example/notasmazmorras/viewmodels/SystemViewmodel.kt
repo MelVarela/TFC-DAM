@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.notasmazmorras.NotasMazmorrasApplication
 import com.example.notasmazmorras.data.model.local.SysTable
+import com.example.notasmazmorras.data.model.remote.Suggestion
 import com.example.notasmazmorras.data.repositories.SystemRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -27,13 +28,14 @@ class SystemViewmodel(
     private val _authenticated = MutableStateFlow(false)
     val authenticated : StateFlow<Boolean> = _authenticated.asStateFlow()
 
-    val _currentUser = MutableStateFlow("")
+    private val _currentUser = MutableStateFlow("")
     val currentUser : StateFlow<String> = _currentUser.asStateFlow()
 
     fun firstTimeOpened() = viewModelScope.launch {
+        Log.d("LAUNCH", "Getting sys data")
         try {
             if(systemRepository.getIsDataPresent().first() == 0){
-                Log.d("DB", "No data detected")
+                Log.d("LAUNCH", "No data detected, creating")
                 systemRepository.insert(
                     SysTable(
                         "1",
@@ -46,7 +48,7 @@ class SystemViewmodel(
                 changeLastTimeSigned()
             }
         }catch (e: Throwable){
-            Log.d("DB", "No data detected")
+            Log.d("DB", "No data detected by error, creating...")
             systemRepository.insert(
                 SysTable(
                     "1",
@@ -88,22 +90,26 @@ class SystemViewmodel(
 
     fun checkIfStillAuthenticated() = viewModelScope.launch {
         Log.d("DB", "Checking if user still has auth")
-        val sysDataUpdated = systemRepository.getData()
-        val sysData = sysDataUpdated.first()
-        if(!sysData.authenticated){
-            _authenticated.value = false
-        }else if(
-            LocalDateTime.ofEpochSecond(sysData.lastSinged, 0, ZoneOffset.UTC)
-            .isBefore(LocalDateTime.now().minusDays(7))
-        ){
-            systemRepository.update(
-                sysData.copy(
-                    authenticated = false
+        try{
+            val sysDataUpdated = systemRepository.getData()
+            val sysData = sysDataUpdated.first()
+            if(!sysData.authenticated){
+                _authenticated.value = false
+            }else if(
+                LocalDateTime.ofEpochSecond(sysData.lastSinged, 0, ZoneOffset.UTC)
+                    .isBefore(LocalDateTime.now().minusDays(7))
+            ){
+                systemRepository.update(
+                    sysData.copy(
+                        authenticated = false
+                    )
                 )
-            )
+                _authenticated.value = false
+            }else{
+                _authenticated.value = true
+            }
+        }catch (e: Throwable){
             _authenticated.value = false
-        }else{
-            _authenticated.value = true
         }
     }
 
@@ -119,6 +125,10 @@ class SystemViewmodel(
                 authenticated = false
             )
         )
+    }
+
+    fun sendReport(report: Suggestion) = viewModelScope.launch {
+        systemRepository.sendReport(report)
     }
 
     /*

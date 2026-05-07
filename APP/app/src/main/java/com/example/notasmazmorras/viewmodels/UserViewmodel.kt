@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.notasmazmorras.NotasMazmorrasApplication
+import com.example.notasmazmorras.data.model.UserAccount
 import com.example.notasmazmorras.data.model.local.LocalUser
 import com.example.notasmazmorras.data.model.remote.Credentials
 import com.example.notasmazmorras.data.repositories.UserRepository
@@ -27,7 +29,7 @@ class UserViewmodel(
     val users : StateFlow<List<LocalUser>> = userRepository.getAllUsers()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
-    fun insertUser(user: LocalUser) = viewModelScope.launch {
+    fun insertUser(user: UserAccount) = viewModelScope.launch {
         userRepository.insertUser(user)
     }
 
@@ -39,16 +41,19 @@ class UserViewmodel(
         userRepository.deleteUser(user)
     }
 
+    /*
     fun sync(email: String) = viewModelScope.launch {
         userRepository.uploadPendingChanges()
         userRepository.syncFromServer(email)
     }
+    */
 
     fun login(email: String, password: String) = viewModelScope.launch {
         _authenticated.value = userRepository.login(Credentials(email, password))
     }
 
     fun logOut() = viewModelScope.launch {
+        userRepository.reset()
         _authenticated.value = false
     }
 

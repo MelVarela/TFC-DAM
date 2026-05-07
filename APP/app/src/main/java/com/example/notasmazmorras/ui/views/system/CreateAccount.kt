@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.system
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -24,12 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
+import com.example.notasmazmorras.data.model.UserAccount
 import com.example.notasmazmorras.data.model.local.LocalUser
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAccount(
-    onDone: (LocalUser) -> Unit,
+    onDone: (UserAccount) -> Unit,
     navController: NavController
 ) {
     Scaffold(
@@ -59,7 +61,7 @@ fun CreateAccount(
 
 @Composable
 fun CreateAccountScreen(
-    onDone: (LocalUser) -> Unit,
+    onDone: (UserAccount) -> Unit,
     modifier : Modifier,
 ){
 
@@ -100,12 +102,11 @@ fun CreateAccountScreen(
 
         Button(
             onClick = {
-                onDone(LocalUser(
-                    email,
-                    userName,
-                    password,
-                    "",
-                    true
+                onDone(UserAccount(
+                    email = email,
+                    password = password,
+                    name = userName,
+                    profilePicture = ""
                 ))
             }
         ) { Text("Crear cuenta") }

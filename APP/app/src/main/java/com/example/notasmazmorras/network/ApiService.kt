@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.network
 
+import com.example.notasmazmorras.data.model.UserAccount
 import com.example.notasmazmorras.data.model.remote.Credentials
 import com.example.notasmazmorras.data.model.remote.LoginResponse
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign
@@ -10,6 +11,7 @@ import com.example.notasmazmorras.data.model.remote.RemoteObject
 import com.example.notasmazmorras.data.model.remote.RemotePlace
 import com.example.notasmazmorras.data.model.remote.RemoteUser
 import com.example.notasmazmorras.data.model.remote.RemoteUserRelation
+import com.example.notasmazmorras.data.model.remote.Suggestion
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -109,7 +111,7 @@ interface ApiService {
     suspend fun getUser(@Path("email") email : String) : RemoteUser
 
     @POST("user")
-    suspend fun createUser(@Body remoteUser: RemoteUser): RemoteUser
+    suspend fun createUser(@Body remoteUser: UserAccount): UserAccount
 
     @DELETE("user/{id}")
     suspend fun deleteUser(@Path("id") id : String): RemoteUser
@@ -139,5 +141,10 @@ interface ApiService {
 
     @GET("userRelation/invites/{playerId}")
     suspend fun getPendingInvites(@Path("playerId") user: String) : List<RemoteUserRelation>
+
+    //Report
+
+    @POST("suggestion")
+    suspend fun sendReport(@Body report: Suggestion): Suggestion
 
 }

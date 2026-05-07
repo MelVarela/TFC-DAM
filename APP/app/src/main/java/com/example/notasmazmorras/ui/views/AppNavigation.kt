@@ -97,7 +97,9 @@ fun AppNavigation() {
         composable(route = "createAccount"){
             CreateAccount(
                 onDone = {
-                    user -> userViewmodel.insertUser(user)
+                    userAccount ->
+                    userViewmodel.insertUser(userAccount)
+                    systemViewmodel.setLastSigned(userAccount.email)
                     navController.navigate("home")
                          },
                 navController
@@ -153,8 +155,17 @@ fun AppNavigation() {
         composable(
             route = "reportingSuggestions/{action}",
             arguments = listOf(navArgument("action"){type = NavType.StringType})
-        ){
-            ReportSuggest(navController)
+        ){ backStackEntry ->
+            val action = backStackEntry.arguments?.getString("action")
+
+            ReportSuggest(
+                type = action!!,
+                onDone = {
+                    report -> systemViewmodel.sendReport(report)
+                    navController.navigate("home")
+                },
+                navController
+            )
         }
 
         composable(route = "options"){

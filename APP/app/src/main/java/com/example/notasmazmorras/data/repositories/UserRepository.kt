@@ -1,6 +1,7 @@
 package com.example.notasmazmorras.data.repositories
 
 import android.util.Log
+import com.example.notasmazmorras.data.model.UserAccount
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalUser
 import com.example.notasmazmorras.data.model.local.toRemote
@@ -8,6 +9,7 @@ import com.example.notasmazmorras.data.model.remote.Credentials
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
 import com.example.notasmazmorras.data.model.remote.RemoteUser
 import com.example.notasmazmorras.data.model.remote.toLocal
+import com.example.notasmazmorras.data.model.toLocal
 import com.example.notasmazmorras.data.repositories.daos.UserDao
 import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
@@ -17,7 +19,7 @@ interface UserRepository {
 
     fun getAllUsers(): Flow<List<LocalUser>>
 
-    suspend fun insertUser(user: LocalUser): RepositoryResult
+    suspend fun insertUser(user: UserAccount): RepositoryResult
 
     suspend fun updateUser(user: LocalUser): RepositoryResult
 
@@ -27,11 +29,11 @@ interface UserRepository {
 
     // Sincronización
 
-    suspend fun uploadPendingChanges(): RepositoryResult
-
     suspend fun syncFromServer(email: String): RepositoryResult
 
     suspend fun login(credentials : Credentials) : Boolean
+
+    suspend fun reset()
 }
 
 class DefaultUserRepository(
@@ -44,10 +46,12 @@ class DefaultUserRepository(
 
     override fun getAllUsers(): Flow<List<LocalUser>> = local.getAllUsers()
 
-    override suspend fun insertUser(user: LocalUser): RepositoryResult {
+    override suspend fun insertUser(user: UserAccount): RepositoryResult {
         try{
             if(!checkEmailExists(user.email)){
-                local.insert(user.copy(pendingSync = true))
+                Log.d("DB", "Creando usuario...")
+                local.insert(user.toLocal().copy(pendingSync = false))
+                remote.createUser(user)
                 return RepositoryResult.Success("Usuario creado con éxito")
             }else{
                 return RepositoryResult.Error("Ya existe un usuario con este email")
@@ -79,10 +83,16 @@ class DefaultUserRepository(
     }
 
     override suspend fun checkEmailExists(email: String): Boolean {
-        var userCheck : RemoteUser = remote.getUser(email)
-        return (userCheck.name != "")
+        try{
+            var userCheck : RemoteUser = remote.getUser(email)
+            return (userCheck.name != "")
+        }catch (e: Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return false
+        }
     }
 
+    /*
     override suspend fun uploadPendingChanges(): RepositoryResult {
         var toSync = local.getUsersToSync()
 
@@ -113,6 +123,7 @@ class DefaultUserRepository(
 
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
+    */
 
     override suspend fun syncFromServer(email: String): RepositoryResult {
         try{
@@ -134,6 +145,10 @@ class DefaultUserRepository(
 
     override suspend fun login(credentials: Credentials): Boolean {
         return remote.login(credentials).success
+    }
+
+    override suspend fun reset() {
+        local.deleteAll()
     }
 
 }

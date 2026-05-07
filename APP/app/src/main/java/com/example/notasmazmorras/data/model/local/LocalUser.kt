@@ -8,7 +8,6 @@ import com.example.notasmazmorras.data.model.remote.RemoteUser
 data class LocalUser(
     @PrimaryKey val email : String,
     val name : String,
-    val password: String = "",
     val profilePicture : String,
 
     // Sincronización

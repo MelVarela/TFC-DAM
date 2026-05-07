@@ -26,6 +26,9 @@ interface UserDao {
     @Delete
     suspend fun delete(user : LocalUser)
 
+    @Query("DELETE FROM users")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM users WHERE email = :email")
     fun getUser(email: String): Flow<LocalUser>
 

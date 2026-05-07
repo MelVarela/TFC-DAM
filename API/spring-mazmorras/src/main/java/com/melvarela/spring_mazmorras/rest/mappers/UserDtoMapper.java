@@ -8,7 +8,7 @@ public class UserDtoMapper {
         return new UserDto(
             user.getEmail(),
             user.getName(),
-            user.getPassword(),
+            "",
             user.getProfilePicture()
         );
     }

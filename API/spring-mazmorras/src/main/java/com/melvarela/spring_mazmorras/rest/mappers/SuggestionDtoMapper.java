@@ -16,7 +16,7 @@ public class SuggestionDtoMapper {
     public static SuggestionEntity dtoToEntity(SuggestionDto suggestion){
         return new SuggestionEntity(
             suggestion.getId(),
-            suggestion.getText(),
+            suggestion.getContent(),
             suggestion.getType()
         );
     }

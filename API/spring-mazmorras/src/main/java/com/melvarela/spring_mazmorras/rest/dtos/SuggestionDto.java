@@ -16,7 +16,7 @@ import lombok.ToString;
 public class SuggestionDto {
     
     private int id;
-    private String text;
+    private String content;
     private char type; //S -> Sugerencia | E -> Error
 
 }

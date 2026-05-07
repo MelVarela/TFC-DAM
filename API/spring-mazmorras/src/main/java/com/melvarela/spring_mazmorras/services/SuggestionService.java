@@ -1,5 +1,7 @@
 package com.melvarela.spring_mazmorras.services;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,7 @@ public class SuggestionService {
 
     @Transactional
     public SuggestionEntity createSuggestion(SuggestionEntity suggestion){
+        suggestion.setId((int) LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
         return repository.save(suggestion);
     }
 
