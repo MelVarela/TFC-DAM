@@ -26,6 +26,9 @@ interface UserRelationDao {
     @Delete
     suspend fun delete(userRelation: LocalUserRelation)
 
+    @Query("DELETE FROM user_relations")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM user_relations WHERE user = :user and campaign = :campaign")
     fun getUserRelation(user: String, campaign: String): Flow<LocalUserRelation>
 
@@ -34,6 +37,9 @@ interface UserRelationDao {
 
     @Query("SELECT * FROM user_relations WHERE campaign = :campaign")
     fun getRelationsForCampaign(campaign: String): Flow<List<LocalUserRelation>>
+
+    @Query("SELECT * FROM user_relations WHERE user = :user")
+    fun getRelationsForUser(user: String): Flow<List<LocalUserRelation>>
 
     @Query("SELECT * FROM user_relations WHERE pendingSync = 1")
     fun getRelationsToSync(): Flow<List<LocalUserRelation>>

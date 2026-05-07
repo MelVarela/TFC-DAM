@@ -27,6 +27,8 @@ interface ObjectRepository {
     suspend fun uploadPendingChanges(): RepositoryResult
 
     suspend fun syncFromServer(campaignId: String): RepositoryResult
+
+    suspend fun reset()
 }
 
 class DefaultObjectRepository(
@@ -124,6 +126,10 @@ class DefaultObjectRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
+    }
+
+    override suspend fun reset() {
+        local.deleteAll()
     }
 
 }

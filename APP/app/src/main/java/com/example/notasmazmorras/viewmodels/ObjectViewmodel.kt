@@ -39,6 +39,11 @@ class ObjectViewmodel(
         objectRepository.syncFromServer(currentCampaign)
     }
 
+    fun logOut() = viewModelScope.launch {
+        objectRepository.uploadPendingChanges()
+        objectRepository.reset()
+    }
+
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {

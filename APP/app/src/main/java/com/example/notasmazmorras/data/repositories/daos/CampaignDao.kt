@@ -26,6 +26,9 @@ interface CampaignDao {
     @Delete
     suspend fun delete(campaign: LocalCampaign)
 
+    @Query("DELETE FROM campaigns")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM campaigns WHERE id = :id")
     fun getCampaign(id: Int): Flow<LocalCampaign>
 

@@ -125,6 +125,9 @@ interface ApiService {
     @GET("userRelation/{campaignId}")
     suspend fun getRelations(@Path("campaignId") campaignId: String) : List<RemoteUserRelation>
 
+    @GET("userRelation/user/{userId}")
+    suspend fun getRelationsByUser(@Path("userId") user: String) : List<RemoteUserRelation>
+
     @POST("userRelation")
     suspend fun createRelation(@Body relation: RemoteUserRelation): RemoteUserRelation
 

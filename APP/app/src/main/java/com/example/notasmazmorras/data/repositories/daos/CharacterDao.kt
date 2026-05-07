@@ -26,6 +26,9 @@ interface CharacterDao {
     @Delete
     suspend fun delete(character: LocalCharacter)
 
+    @Query("DELETE FROM characters")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM characters WHERE id = :id")
     fun getCharacter(id: Int): Flow<LocalCharacter>
 

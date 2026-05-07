@@ -38,6 +38,11 @@ class CreatureViewmodel(
         creatureRepository.syncFromServer(currentCampaign)
     }
 
+    fun logOut() = viewModelScope.launch {
+        creatureRepository.uploadPendingChanges()
+        creatureRepository.reset()
+    }
+
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {

@@ -26,6 +26,9 @@ interface PlaceDao {
     @Delete
     suspend fun delete(place : LocalPlace)
 
+    @Query("DELETE FROM places")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM places WHERE id = :id")
     fun getPlace(id: Int): Flow<LocalPlace>
 

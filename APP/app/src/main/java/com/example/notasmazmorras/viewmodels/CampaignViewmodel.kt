@@ -80,8 +80,20 @@ class CampaignViewmodel (
         userRelationRepository.syncFromServer(campaign)
     }
 
+    fun syncRelationsByUser(user: String) = viewModelScope.launch {
+        userRelationRepository.uploadPendingChanges()
+        userRelationRepository.syncFromServerByUser(user)
+    }
+
     fun syncPending(user: String) = viewModelScope.launch {
         userRelationRepository.syncPending(user)
+    }
+
+    fun logOut() = viewModelScope.launch {
+        userRelationRepository.uploadPendingChanges()
+        userRelationRepository.reset()
+        campaignRepository.uploadPendingChanges()
+        campaignRepository.reset()
     }
 
     fun setCurrentCampaign(campaign: String, user: String) = viewModelScope.launch {

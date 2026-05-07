@@ -83,6 +83,8 @@ fun AppNavigation() {
                 authenticated = (userViewmodel.authenticated.collectAsState().value || systemViewmodel.authenticated.collectAsState().value),
                 onSuccess = { email ->
                     if(!systemViewmodel.authenticated.value) systemViewmodel.setLastSigned(email)
+                    campaignViewmodel.sync(email)
+                    campaignViewmodel.syncRelationsByUser(email)
                     navController.navigate("home")
                 },
                 onLog = {
@@ -160,6 +162,14 @@ fun AppNavigation() {
                 onLogOut = {
                     systemViewmodel.logOut()
                     userViewmodel.logOut()
+
+                    campaignViewmodel.logOut()
+                    characterViewmodel.logOut()
+                    creatureViewmodel.logOut()
+                    noteViewmodel.logOut()
+                    objectViewmodel.logOut()
+                    placeViewmodel.logOut()
+
                     campaignViewmodel.setCurrentCampaign("", "")
                     navController.navigate("login")
                 },

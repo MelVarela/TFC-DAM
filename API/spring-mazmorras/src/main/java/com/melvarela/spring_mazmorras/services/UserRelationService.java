@@ -58,12 +58,17 @@ public class UserRelationService {
 
     @Transactional(readOnly = true)
     public List<UserRelationEntity> findByCampaign(CampaignEntity campaign){
+        System.out.println("Searching relations for campaing: " + campaign);
         return repository.findByCampannaEntity(campaign);
     }
 
     @Transactional(readOnly = true)
     public List<UserRelationEntity> findByUserPending(String playerId) {
         return repository.findByPlayerPending(playerId);
+    }
+
+    public List<UserRelationEntity> findByUser(String userId) {
+        return repository.findByPlayer(userId);
     }
 
 }

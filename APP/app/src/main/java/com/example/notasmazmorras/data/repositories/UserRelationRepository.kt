@@ -33,7 +33,11 @@ interface UserRelationRepository {
 
     suspend fun syncFromServer(campaignId: String): RepositoryResult
 
+    suspend fun syncFromServerByUser(user: String): RepositoryResult
+
     suspend fun syncPending(user: String) : RepositoryResult
+
+    suspend fun reset()
 }
 
 class DefaultUserRelationRepository(
@@ -159,6 +163,39 @@ class DefaultUserRelationRepository(
         }
     }
 
+    override suspend fun syncFromServerByUser(user: String): RepositoryResult {
+        try{
+            var relationsRemote = remote.getRelationsByUser(user)
+            var relationsLocal = local.getRelationsForUser(user)
+
+            var relationsToUpdate : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
+            var relationsToInsert : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
+
+            Log.d("SYNC", relationsRemote.toString())
+
+            relationsRemote.map {
+                Log.d("SYNC", it.toString())
+                if(!relationsLocal.first().contains(it.toLocal())){
+                    Log.d("SYNC", "Insert")
+                    relationsToInsert = relationsToInsert.plus(it.toLocal())
+                }else{
+                    Log.d("SYNC", "Update")
+                    relationsToUpdate = relationsToUpdate.plus(it.toLocal())
+                }
+            }
+
+            Log.d("SYNC I", relationsToInsert.toString())
+            Log.d("SYNC U", relationsToUpdate.toString())
+
+            local.insertList(relationsToInsert)
+            local.updateList(relationsToUpdate)
+            return RepositoryResult.Success("Sicronizado con éxito")
+        }catch (e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
+        }
+    }
+
     override suspend fun syncPending(user: String): RepositoryResult{
         try{
             var relationsRemote = remote.getPendingInvites(user)
@@ -190,6 +227,10 @@ class DefaultUserRelationRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
+    }
+
+    override suspend fun reset() {
+        local.deleteAll()
     }
 
 }

@@ -45,6 +45,11 @@ class NoteViewmodel(
         noteRepository.setEditing(note, state)
     }
 
+    fun logOut() = viewModelScope.launch {
+        noteRepository.uploadPendingChanges()
+        noteRepository.reset()
+    }
+
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {

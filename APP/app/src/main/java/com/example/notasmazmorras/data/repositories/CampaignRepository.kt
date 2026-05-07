@@ -25,6 +25,8 @@ interface CampaignRepository {
     suspend fun uploadPendingChanges(): RepositoryResult
 
     suspend fun syncFromServer(email: String): RepositoryResult
+
+    suspend fun reset()
 }
 
 class DefaultCampaignRepository(
@@ -124,6 +126,10 @@ class DefaultCampaignRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
+    }
+
+    override suspend fun reset() {
+        local.deleteAll()
     }
 
 }

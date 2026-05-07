@@ -39,6 +39,11 @@ class CharacterViewmodel (
         characterRepository.syncFromServer(currentCampaign)
     }
 
+    fun logOut() = viewModelScope.launch {
+        characterRepository.uploadPendingChanges()
+        characterRepository.reset()
+    }
+
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {

@@ -17,5 +17,8 @@ public interface UserRelationRepository extends JpaRepository<UserRelationEntity
     
     @Query("SELECT r FROM UserRelationEntity r WHERE r.aceptada = false AND r.usuarioEntity.email = :userId")
     List<UserRelationEntity> findByPlayerPending(String userId);
+
+    @Query("SELECT r FROM UserRelationEntity r WHERE r.usuarioEntity.email = :userId")
+    List<UserRelationEntity> findByPlayer(String userId);
     
 }

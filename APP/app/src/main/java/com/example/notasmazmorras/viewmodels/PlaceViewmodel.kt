@@ -38,6 +38,11 @@ class PlaceViewmodel(
         placeRepository.syncFromServer(currentCampaign)
     }
 
+    fun logOut() = viewModelScope.launch {
+        placeRepository.uploadPendingChanges()
+        placeRepository.reset()
+    }
+
     companion object {
         val Factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {

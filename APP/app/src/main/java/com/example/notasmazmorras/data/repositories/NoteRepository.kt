@@ -30,6 +30,8 @@ interface NoteRepository {
     suspend fun uploadPendingChanges(): RepositoryResult
 
     suspend fun syncFromServer(owner: String): RepositoryResult
+
+    suspend fun reset()
 }
 
 class DefaultNoteRepository(
@@ -133,6 +135,10 @@ class DefaultNoteRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
+    }
+
+    override suspend fun reset() {
+        local.deleteAll()
     }
 
 }
