@@ -1,36 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:visor_web/data/api.dart';
 import 'package:visor_web/models/report.dart';
 
 class ReportViewModel extends ChangeNotifier {
 
-  List _reportes = [
-    Report(id: 1, texto: "La app crashea todo el tiempo", tipo: "R"),
-    Report(id: 2, texto: "La app se ve muy fea", tipo: "S")
-  ];
-  int _viendo = 0;
-  //Api api;
+  final List<Report> _reportes = [];
+  List<Report> get reportes => _reportes;
+  
+  Api api;
+
+  ReportViewModel({required this.api});
 
   void obtenerReportes() {
-
+    api.getPostsJsonInformation().then((List<dynamic> result) {
+      for (var i = 0; i < result.length; i++) {
+        if(!_reportes.contains(Report.fromJson(result[i]))){
+          _reportes.add(Report.fromJson(result[i]));
+        }
+      }
+      notifyListeners();
+    });
+    
   }
 
-  //BORRAR
-  Report obtenerPorId(int id){
-    return _reportes[id];
+  Report? obtenerPorId(int id){
+    try{
+      return _reportes.firstWhere((report) => report.id == id) as Report?;
+    }catch(e){
+      return null;
+    }
   }
 
-  /*
-  Report obtenerPorId(int id){
-
-  }
-
-  List<Report> obtenerTodos(){
-  
-  }
-  */
-
-  void cambiarViendo(int id){
-
+  String obtenerTexto(int id){
+    try{
+      return _reportes.firstWhere((report) => report.id == id).toString();
+    }catch(e){
+      return "Cargando...";
+    }
   }
 
   void manejar(int id){
