@@ -3,6 +3,7 @@ import 'package:visor_web/data/api.dart';
 import 'package:visor_web/models/report.dart';
 import 'package:visor_web/viewmodels/report_view_model.dart';
 import 'package:visor_web/views/reporte_card.dart';
+import 'package:visor_web/views/view_report.dart';
 
 class Inicio extends StatefulWidget {
   const Inicio({super.key});
@@ -80,10 +81,14 @@ class _Inicio extends State<Inicio> {
                       style: BorderStyle.solid,
                     ),
                   ),
-                  child: Column(children: [
-                  Text(viewModel.obtenerTexto(mostrando))
-                ],
-              ),
+                  child: Column(
+                    children: [
+                      ViewReport(
+                        reporte: viewModel.obtenerPorId(mostrando),
+                        viewModel: viewModel
+                      )
+                    ],
+                  ),
                 ),
               ),
             ],

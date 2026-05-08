@@ -23,24 +23,19 @@ class ReportViewModel extends ChangeNotifier {
     
   }
 
-  Report? obtenerPorId(int id){
+  Report obtenerPorId(int id){
     try{
-      return _reportes.firstWhere((report) => report.id == id) as Report?;
+      return _reportes.firstWhere((report) => report.id == id);
     }catch(e){
-      return null;
-    }
-  }
-
-  String obtenerTexto(int id){
-    try{
-      return _reportes.firstWhere((report) => report.id == id).toString();
-    }catch(e){
-      return "Cargando...";
+      return Report(id: -1, texto: "Selecciona un reporte para visualizarlo.", tipo: "C");
     }
   }
 
   void manejar(int id){
-
+    _reportes.remove(obtenerPorId(id));
+    api.manejar(id).then((void result) {
+      obtenerReportes();
+    });
   }
 
 }

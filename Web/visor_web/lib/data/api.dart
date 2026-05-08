@@ -21,4 +21,9 @@ class Api {
     return decoded;
   }
 
+  Future<void> manejar(int id) async {
+    final url = Uri.parse("$apiUrl/$id");
+    await http.delete(url);
+  }
+
 }
