@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.melvarela.spring_mazmorras.entities.CharacterEntity;
 import com.melvarela.spring_mazmorras.entities.CampaignEntity;
+import com.melvarela.spring_mazmorras.entities.CharacterEntity;
 import com.melvarela.spring_mazmorras.repositories.CharacterRepository;
 
 @Service
@@ -21,6 +21,7 @@ public class CharacterService {
     @Transactional
     public CharacterEntity createCharacter(CharacterEntity character){
         character.setId(LocalDateTime.now().toString() + "char");
+        if(character.getPicture().equals("")) character.setPicture("https://deltarune.com/assets/images/ie-info.png");
         return repository.save(character);
     }
 

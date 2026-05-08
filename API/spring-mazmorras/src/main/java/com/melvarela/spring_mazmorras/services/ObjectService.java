@@ -21,6 +21,7 @@ public class ObjectService {
     @Transactional
     public ObjectEntity createObject(ObjectEntity entity){
         entity.setId(LocalDateTime.now().toString() + "obje");
+        if(entity.getPicture().equals("")) entity.setPicture("https://deltarune.com/assets/images/ie-info.png");
         return repository.save(entity);
     }
 

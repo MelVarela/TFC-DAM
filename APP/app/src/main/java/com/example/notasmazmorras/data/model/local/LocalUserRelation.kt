@@ -19,7 +19,8 @@ import java.util.Date
         ForeignKey(
             entity = LocalCampaign::class,
             parentColumns = ["id"],
-            childColumns = ["campaign"]
+            childColumns = ["campaign"],
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [

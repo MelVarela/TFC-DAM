@@ -8,7 +8,7 @@ data class RemoteObject(
     val id : String?,
     val name : String,
     val cost : Float,
-    val picture : String = "",
+    val picture : String,
 
     val campaign : String,
 )

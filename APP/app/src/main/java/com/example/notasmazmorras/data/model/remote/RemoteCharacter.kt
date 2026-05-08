@@ -11,7 +11,7 @@ data class RemoteCharacter(
     val subClase : String,
     val maxPg : Int,
     val pg : Int,
-    val picture : String = "",
+    val picture : String,
 
     val campaign : String,
     val objects : List<String>?,

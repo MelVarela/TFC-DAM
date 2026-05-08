@@ -21,6 +21,7 @@ public class PlaceService {
     @Transactional
     public PlaceEntity createPlace(PlaceEntity place){
         place.setId(LocalDateTime.now().toString() + "plac");
+        if(place.getPicture().equals("")) place.setPicture("https://deltarune.com/assets/images/ie-info.png");
         return repository.save(place);
     }
 

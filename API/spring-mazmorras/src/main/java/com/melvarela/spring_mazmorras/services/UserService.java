@@ -19,6 +19,7 @@ public class UserService {
 
     @Transactional
     public UserEntity createUser(UserEntity user){
+        if(user.getProfilePicture().equals("")) user.setProfilePicture("https://deltarune.com/assets/images/ie-info.png");
         return repository.save(user);
     }
 

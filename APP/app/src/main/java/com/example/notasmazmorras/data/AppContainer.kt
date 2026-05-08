@@ -61,7 +61,7 @@ class AppDataContainer(private val context : Context) : AppContainer {
     }
 
     override val campaignRepository : CampaignRepository by lazy {
-        DefaultCampaignRepository(Datosbase.getDatabase(context).campaignDao(), retrofitService)
+        DefaultCampaignRepository(Datosbase.getDatabase(context).campaignDao(), Datosbase.getDatabase(context).userRelationDao(), retrofitService)
     }
 
     override val characterRepository : CharacterRepository by lazy {

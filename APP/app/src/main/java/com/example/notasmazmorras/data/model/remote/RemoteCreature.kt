@@ -8,7 +8,7 @@ data class RemoteCreature(
     val id : String?,
     val name : String,
     val species : String,
-    val picture : String = "",
+    val picture : String,
 
     val campaign : String,
 )

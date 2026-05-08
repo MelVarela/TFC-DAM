@@ -2,13 +2,16 @@ package com.example.notasmazmorras.data.repositories
 
 import android.util.Log
 import com.example.notasmazmorras.data.model.local.LocalCampaign
+import com.example.notasmazmorras.data.model.local.LocalUserRelation
 import com.example.notasmazmorras.data.model.local.toRemote
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign
 import com.example.notasmazmorras.data.model.remote.toLocal
 import com.example.notasmazmorras.data.repositories.daos.CampaignDao
+import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
 import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 
 interface CampaignRepository {
 
@@ -31,6 +34,7 @@ interface CampaignRepository {
 
 class DefaultCampaignRepository(
     private val local : CampaignDao,
+    private val localRelations : UserRelationDao,
     private val remote : ApiService
 ) : CampaignRepository {
 
@@ -74,29 +78,40 @@ class DefaultCampaignRepository(
         var toSync = local.getCampaignsToSync()
 
         try{
-            toSync.first().map {
+            toSync.first().map { campaign ->
 
-                if(it.pendingDelete){
+                if(campaign.pendingDelete){
 
-                    if(it.id.substring(0, 1) != "l") remote.deleteCampaign(it.id)
-                    local.delete(it)
+                    if(campaign.id.substring(0, 1) != "l") remote.deleteCampaign(campaign.id)
+                    local.delete(campaign)
 
-                }else if(it.id.substring(0, 1) == "l"){
+                }else if(campaign.id.substring(0, 1) == "l"){
 
                     var resposta : RemoteCampaign =
-                        remote.createCampaign(it.toRemote())
-                    local.delete(it)
-                    local.insert(it.copy((resposta.id ?: "0"), pendingSync = false))
+                        remote.createCampaign(campaign.toRemote())
+
+                    var relations = localRelations.getRelationsForCampaign(campaign.id).first()
+
+                    local.delete(campaign)
+                    local.insert(campaign.copy((resposta.id ?: campaign.id), pendingSync = false))
+
+                    relations.map { relation ->
+                        localRelations.insert(
+                            relation.copy(
+                                campaign = (resposta.id ?: campaign.id)
+                            )
+                        )
+                    }
 
                 }else{
 
-                    remote.updateCampaign(it.toRemote())
-                    local.update(it.copy(pendingSync = false))
+                    remote.updateCampaign(campaign.toRemote())
+                    local.update(campaign.copy(pendingSync = false))
 
                 }
             }
         }catch (e : Throwable){
-            Log.e(TAG, e.message ?: NO_ERR)
+            Log.e(TAG, ("${e.message ?: NO_ERR}: \n${Log.getStackTraceString(e)}"))
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
 

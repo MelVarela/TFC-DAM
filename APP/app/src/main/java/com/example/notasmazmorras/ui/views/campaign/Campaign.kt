@@ -22,16 +22,21 @@ import com.example.notasmazmorras.data.model.local.LocalCampaign
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Campaign(
-    campaign: LocalCampaign,
+    campaign: LocalCampaign?,
     onBack: () -> Unit,
     onSync: () -> Unit,
     onUserRelations: (String) -> Unit,
     navController: NavController
 ) {
+
+    if(campaign == null) {
+        onBack()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(campaign.name) },
+                title = { Text(campaign?.name ?: "Error") },
                 navigationIcon = {
                     IconButton(onClick = {onBack()}) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
@@ -46,37 +51,37 @@ fun Campaign(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Button(
-                onClick = {navController.navigate("campaign/${campaign.id}/calendar")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/calendar")}
             ) {
                 Text("Ver calendario")
             }
             Button(
-                onClick = {onUserRelations("campaign/${campaign.id}/players")}
+                onClick = {onUserRelations("campaign/${campaign!!.id}/players")}
             ) {
                 Text("Ver jugadores")
             }
             Button(
-                onClick = {navController.navigate("notes/${campaign.id}/notes")}
+                onClick = {navController.navigate("notes/${campaign!!.id}/notes")}
             ) {
                 Text("Ver notas")
             }
             Button(
-                onClick = {navController.navigate("campaign/${campaign.id}/characters")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/characters")}
             ) {
                 Text("Ver personajes")
             }
             Button(
-                onClick = {navController.navigate("campaign/${campaign.id}/objects")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/objects")}
             ) {
                 Text("Ver objetos")
             }
             Button(
-                onClick = {navController.navigate("campaign/${campaign.id}/creatures")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/creatures")}
             ) {
                 Text("Ver criaturas")
             }
             Button(
-                onClick = {navController.navigate("campaign/${campaign.id}/map")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/map")}
             ) {
                 Text("Ver mapa")
             }

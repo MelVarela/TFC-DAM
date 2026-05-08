@@ -47,7 +47,7 @@ class CampaignViewmodel (
         userRelationRepository.insertUserRelation(
             LocalUserRelation(
                 isAccepted = true,
-                role = "D",
+                role = "d",
                 schedule = emptyList(),
                 user = user,
                 campaign = campaign.id
@@ -99,12 +99,14 @@ class CampaignViewmodel (
     fun setCurrentCampaign(campaign: String, user: String) = viewModelScope.launch {
         _currentCampaign.value = campaign
         if(campaign != ""){
-            Log.d("SETDM", "Setting if is dm")
-            val relation : LocalUserRelation = userRelations.first().first {
-                it.campaign == campaign && it.user == user
-            }
-            Log.d("DB", "Relation found: ${relation.toString()}")
-            if(relation.role == "d"){
+            try{
+                val relation : LocalUserRelation = userRelations.first().first {
+                    it.campaign == campaign && it.user == user
+                }
+                if(relation.role == "d"){
+                    _isDm.value = true
+                }
+            }catch (e: Throwable){
                 _isDm.value = true
             }
         }

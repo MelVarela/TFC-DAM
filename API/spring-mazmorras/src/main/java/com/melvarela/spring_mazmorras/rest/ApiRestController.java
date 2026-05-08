@@ -569,17 +569,24 @@ public class ApiRestController {
     @GetMapping("userRelation/{campaignId}")
     public ResponseEntity<List<UserRelationDto>> getRelationsByCampaign(@PathVariable("campaignId") String campaignId){
         System.out.println("Getting user relations for campaign: " + campaignId);
-
         List<UserRelationDto> relationsDto = new ArrayList<>();
-        List<UserRelationEntity> relations = userRelationService.findByCampaign(
-            campaignService.findById(campaignId)
-        );
 
-        for (UserRelationEntity relation : relations) {
-            relationsDto.add(UserRelationDtoMapper.userRelationEntityToDto(relation));
+        try{
+
+            List<UserRelationEntity> relations = userRelationService.findByCampaign(
+                campaignService.findById(campaignId)
+            );
+
+            for (UserRelationEntity relation : relations) {
+                relationsDto.add(UserRelationDtoMapper.userRelationEntityToDto(relation));
+            }
+
+            return new ResponseEntity<>(relationsDto, HttpStatus.OK);
+
+        }catch(Exception e){
+            return new ResponseEntity<>(relationsDto, HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>(relationsDto, HttpStatus.OK);
+        
     }
 
     @GetMapping("userRelation/user/{userId}")

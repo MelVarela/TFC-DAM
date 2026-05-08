@@ -198,9 +198,12 @@ fun AppNavigation() {
         composable(route = "createCampaign"){
             CreateCampaign(
                 onDone = {
-                    campaign -> campaignViewmodel.insertCampaign(campaign, systemViewmodel.currentUser.value)
-                    campaignViewmodel.setCurrentCampaign(campaign.id, systemViewmodel.currentUser.value)
-                    navController.navigate("campaign/" + campaign.id)
+                    campaign ->
+                        campaignViewmodel.insertCampaign(campaign, systemViewmodel.currentUser.value)
+                        campaignViewmodel.sync(systemViewmodel.currentUser.value)
+                        campaignViewmodel.syncRelations(campaign.id)
+                        campaignViewmodel.setCurrentCampaign(campaign.id, systemViewmodel.currentUser.value)
+                        navController.navigate("campaign/" + campaign.id)
                          },
                 navController
             )
@@ -213,16 +216,8 @@ fun AppNavigation() {
             val id = backStackEntry.arguments?.getString("id")
             campaignViewmodel.setCurrentCampaign(id!!, systemViewmodel.currentUser.collectAsState().value)
 
-            var campaign : LocalCampaign
-
-            try{
-                campaign = campaigns.first{ it.id == id }
-            }catch (e: Throwable){
-                navController.navigate("home")
-            }
-
             Campaign(
-                campaign = campaigns.first{ it.id == id },
+                campaign = campaigns.firstOrNull{ it.id == id },
                 onBack = {navController.navigate("home")},
                 onSync = {
                     campaignViewmodel.sync(id)
