@@ -119,18 +119,24 @@ class DefaultCreatureRepository(
 
     override suspend fun syncFromServer(campaignId: String): RepositoryResult {
         try{
-            var creatures = remote.getCreatures(campaignId)
-            var ids = local.getIds()
+            val creatures = remote.getCreatures(campaignId)
+            val ids = local.getIds().first()
+            var workedIds : List<String> = emptyList()
 
             var creaturesToUpdate : List<LocalCreature> = ArrayList<LocalCreature>()
             var creaturesToInsert : List<LocalCreature> = ArrayList<LocalCreature>()
 
             creatures.map {
-                if(!(ids.first().contains(it.id))){
+                if(!(ids.contains(it.id))){
                     creaturesToInsert = creaturesToInsert.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }else{
                     creaturesToUpdate = creaturesToUpdate.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }
+            }
+            ids.map {
+                if(!workedIds.contains(it)) local.deleteById(it)
             }
 
             local.insertList(creaturesToInsert)

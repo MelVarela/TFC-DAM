@@ -1,6 +1,7 @@
 package com.example.notasmazmorras.ui.views
 
 import android.util.Log
+import android.widget.ImageView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,7 +51,9 @@ import com.example.notasmazmorras.viewmodels.UserViewmodel
 import kotlinx.coroutines.awaitAll
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(
+
+) {
     val navController = rememberNavController()
 
     val userViewmodel : UserViewmodel = viewModel(factory = UserViewmodel.Factory)
@@ -206,7 +209,12 @@ fun AppNavigation() {
 
                         campaignViewmodel.setCurrentCampaign(campaign.id, systemViewmodel.currentUser.value)
                         navController.navigate("campaign/" + campaign.id)
-                         },
+                 },
+                uploadImage = {
+                    image -> if(image != null){
+                        systemViewmodel.uploadImage(image)
+                    }
+                },
                 navController
             )
         }

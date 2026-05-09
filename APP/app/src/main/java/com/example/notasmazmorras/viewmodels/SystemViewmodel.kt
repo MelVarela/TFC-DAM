@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.viewmodels
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.ViewModel
@@ -124,11 +125,16 @@ class SystemViewmodel(
                 lastUser = "",
                 authenticated = false
             )
+
         )
     }
 
     fun sendReport(report: Suggestion) = viewModelScope.launch {
         systemRepository.sendReport(report)
+    }
+
+    fun uploadImage(image: Bitmap) = viewModelScope.launch {
+        systemRepository.uploadImage(image)
     }
 
     /*

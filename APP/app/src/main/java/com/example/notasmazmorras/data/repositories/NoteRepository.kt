@@ -116,18 +116,24 @@ class DefaultNoteRepository(
 
     override suspend fun syncFromServer(owner: String): RepositoryResult {
         try{
-            var notes = remote.getNotes(owner)
-            var ids = local.getIds()
+            val notes = remote.getNotes(owner)
+            val ids = local.getIds().first()
+            var workedIds : List<String> = emptyList()
 
             var notesToUpdate : List<LocalNote> = ArrayList<LocalNote>()
             var notesToInsert : List<LocalNote> = ArrayList<LocalNote>()
 
             notes.map {
-                if(!(ids.first().contains(it.id))){
+                if(!(ids.contains(it.id))){
                     notesToInsert = notesToInsert.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }else{
                     notesToUpdate = notesToUpdate.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }
+            }
+            ids.map {
+                if(!workedIds.contains(it)) local.deleteById(it)
             }
 
             local.insertList(notesToInsert)

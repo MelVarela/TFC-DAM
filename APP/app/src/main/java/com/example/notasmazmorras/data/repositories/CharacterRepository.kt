@@ -119,18 +119,24 @@ class DefaultCharacterRepository(
 
     override suspend fun syncFromServer(campaignId: String): RepositoryResult {
         try{
-            var characters = remote.getCharacters(campaignId)
-            var ids = local.getIds()
+            val characters = remote.getCharacters(campaignId)
+            val ids = local.getIds().first()
+            var workedIds : List<String> = emptyList()
 
             var charactersToUpdate : List<LocalCharacter> = ArrayList<LocalCharacter>()
             var charactersToInsert : List<LocalCharacter> = ArrayList<LocalCharacter>()
 
             characters.map {
-                if(!(ids.first().contains(it.id))){
+                if(!(ids.contains(it.id))){
                     charactersToInsert = charactersToInsert.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }else{
                     charactersToUpdate = charactersToUpdate.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }
+            }
+            ids.map {
+                if(!workedIds.contains(it)) local.deleteById(it)
             }
 
             local.insertList(charactersToInsert)

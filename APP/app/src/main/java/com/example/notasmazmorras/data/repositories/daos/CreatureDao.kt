@@ -32,6 +32,9 @@ interface CreatureDao {
     @Query("DELETE FROM creatures")
     suspend fun deleteAll()
 
+    @Query("DELETE FROM creatures WHERE id = :id")
+    suspend fun deleteById(id: String)
+
     @Query("SELECT * FROM creatures WHERE id = :id")
     fun getCreature(id: Int): Flow<LocalCreature>
 

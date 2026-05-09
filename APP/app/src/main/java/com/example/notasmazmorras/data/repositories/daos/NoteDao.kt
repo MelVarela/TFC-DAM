@@ -29,6 +29,8 @@ interface NoteDao {
     @Query("UPDATE notes SET id = :id WHERE id = :oldId")
     suspend fun updateLocal(id: String, oldId: String)
 
+    @Query("DELETE FROM notes WHERE id = :id")
+    suspend fun deleteById(id: String)
 
     @Query("DELETE FROM notes")
     suspend fun deleteAll()

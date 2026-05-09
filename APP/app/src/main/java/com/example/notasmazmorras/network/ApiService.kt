@@ -12,11 +12,15 @@ import com.example.notasmazmorras.data.model.remote.RemotePlace
 import com.example.notasmazmorras.data.model.remote.RemoteUser
 import com.example.notasmazmorras.data.model.remote.RemoteUserRelation
 import com.example.notasmazmorras.data.model.remote.Suggestion
+import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
@@ -146,5 +150,10 @@ interface ApiService {
 
     @POST("suggestion")
     suspend fun sendReport(@Body report: Suggestion): Suggestion
+
+    //Imagenes
+    @Multipart
+    @POST("image")
+    suspend fun uploadImage(@Part image: MultipartBody.Part)
 
 }

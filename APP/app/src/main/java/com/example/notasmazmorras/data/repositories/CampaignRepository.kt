@@ -17,6 +17,7 @@ import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlin.collections.map
 
 interface CampaignRepository {
 
@@ -124,18 +125,24 @@ class DefaultCampaignRepository(
 
     override suspend fun syncFromServer(email: String): RepositoryResult {
         try{
-            var campaigns = remote.getCampaigns(email)
-            var ids = local.getIds()
+            val campaigns = remote.getCampaigns(email)
+            val ids = local.getIds().first()
+            var workedIds : List<String> = emptyList()
 
             var campaignsToUpdate : List<LocalCampaign> = ArrayList<LocalCampaign>()
             var campaignsToInsert : List<LocalCampaign> = ArrayList<LocalCampaign>()
 
             campaigns.map {
-                if(!(ids.first().contains(it.id))){
+                if(!(ids.contains(it.id))){
                     campaignsToInsert = campaignsToInsert.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }else{
                     campaignsToUpdate = campaignsToUpdate.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }
+            }
+            ids.map {
+                if(!workedIds.contains(it)) local.deleteById(it)
             }
 
             local.insertList(campaignsToInsert)

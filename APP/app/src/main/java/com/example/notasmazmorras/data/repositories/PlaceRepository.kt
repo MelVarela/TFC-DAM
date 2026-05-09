@@ -120,18 +120,24 @@ class DefaultPlaceRepository(
 
     override suspend fun syncFromServer(campaignId: String): RepositoryResult {
         try{
-            var places = remote.getPlaces(campaignId)
-            var ids = local.getIds()
+            val places = remote.getPlaces(campaignId)
+            val ids = local.getIds().first()
+            var workedIds : List<String> = emptyList()
 
             var placesToUpdate : List<LocalPlace> = ArrayList<LocalPlace>()
             var placesToInsert : List<LocalPlace> = ArrayList<LocalPlace>()
 
             places.map {
-                if(!(ids.first().contains(it.id))){
+                if(!(ids.contains(it.id))){
                     placesToInsert = placesToInsert.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }else{
                     placesToUpdate = placesToUpdate.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }
+            }
+            ids.map {
+                if(!workedIds.contains(it)) local.deleteById(it)
             }
 
             local.insertList(placesToInsert)

@@ -29,6 +29,8 @@ interface ObjectDao {
     @Query("UPDATE objects SET id = :id WHERE id = :oldId")
     suspend fun updateLocal(id: String, oldId: String)
 
+    @Query("DELETE FROM objects WHERE id = :id")
+    suspend fun deleteById(id: String)
 
     @Query("DELETE FROM objects")
     suspend fun deleteAll()

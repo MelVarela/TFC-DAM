@@ -85,4 +85,7 @@ dependencies {
 
     //Gson
     implementation(libs.gson)
+
+    //Imagenes
+    implementation(libs.coil.compose)
 }

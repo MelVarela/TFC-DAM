@@ -29,6 +29,8 @@ interface PlaceDao {
     @Query("UPDATE places SET id = :id WHERE id = :oldId")
     suspend fun updateLocal(id: String, oldId: String)
 
+    @Query("DELETE FROM places WHERE id = :id")
+    suspend fun deleteById(id: String)
 
     @Query("DELETE FROM places")
     suspend fun deleteAll()

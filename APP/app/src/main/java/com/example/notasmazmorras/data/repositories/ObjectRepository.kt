@@ -119,18 +119,24 @@ class DefaultObjectRepository(
 
     override suspend fun syncFromServer(campaignId: String): RepositoryResult {
         try{
-            var objects = remote.getObjects(campaignId)
-            var ids = local.getIds()
+            val objects = remote.getObjects(campaignId)
+            val ids = local.getIds().first()
+            var workedIds : List<String> = emptyList()
 
             var objectsToUpdate : List<LocalObject> = ArrayList<LocalObject>()
             var objectsToInsert : List<LocalObject> = ArrayList<LocalObject>()
 
             objects.map {
-                if(!(ids.first().contains(it.id))){
+                if(!(ids.contains(it.id))){
                     objectsToInsert = objectsToInsert.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }else{
                     objectsToUpdate = objectsToUpdate.plus(it.toLocal())
+                    workedIds = workedIds.plus(it.id ?: "")
                 }
+            }
+            ids.map {
+                if(!workedIds.contains(it)) local.deleteById(it)
             }
 
             local.insertList(objectsToInsert)

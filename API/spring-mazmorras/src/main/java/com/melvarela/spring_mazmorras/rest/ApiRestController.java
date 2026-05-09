@@ -1,10 +1,15 @@
 package com.melvarela.spring_mazmorras.rest;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.CharacterEntity;
@@ -56,6 +62,9 @@ import com.melvarela.spring_mazmorras.services.UserService;
 @RestController
 @RequestMapping("/api/v1/")
 public class ApiRestController {
+
+    @Value("${file.upload-dir}")
+    private String uploadFolderPath;
 
     @Autowired
     UserService userService;
@@ -708,6 +717,34 @@ public class ApiRestController {
         }catch(Exception e){
             System.err.println("Error: " + e.getMessage());
             return new ResponseEntity<>(new SuggestionDto(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //Imagenes
+
+    @PostMapping(value = "image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadImage(@RequestBody MultipartFile image){
+        System.out.println("Uploading image: " + image);
+
+        try{
+
+            Path uploadPath = Paths.get(uploadFolderPath);
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String fileName = image.getOriginalFilename();
+            Path filePath = uploadPath.resolve(fileName + ".jpeg");
+            Files.copy(image.getInputStream(), filePath);
+
+            return new ResponseEntity<>(filePath.toString(), HttpStatus.OK);
+
+        }catch(Exception e){
+
+            System.err.println("Error: " + e.getMessage());
+            return new ResponseEntity<>("https://deltarune.com/assets/images/ie-info.png", HttpStatus.OK);
+
         }
     }
 
