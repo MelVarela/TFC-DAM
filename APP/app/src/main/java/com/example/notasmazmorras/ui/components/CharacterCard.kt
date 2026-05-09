@@ -43,6 +43,8 @@ fun CharacterCard(
     modifier: Modifier = Modifier
 ){
 
+    val maxPgT : Float = (if(character.maxPg == 0) 1f else character.maxPg.toFloat())
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -84,7 +86,7 @@ fun CharacterCard(
                         .padding(8.dp)
                 ){
                     LinearProgressIndicator(
-                        progress = { (character.pg.toFloat() / character.maxPg.toFloat()) },
+                        progress = { (character.pg.toFloat() / maxPgT) },
                         color = Color.Red,
                         trackColor = Color.Black,
                         gapSize = 0.dp

@@ -199,9 +199,11 @@ fun AppNavigation() {
             CreateCampaign(
                 onDone = {
                     campaign ->
+
                         campaignViewmodel.insertCampaign(campaign, systemViewmodel.currentUser.value)
                         campaignViewmodel.sync(systemViewmodel.currentUser.value)
                         campaignViewmodel.syncRelations(campaign.id)
+
                         campaignViewmodel.setCurrentCampaign(campaign.id, systemViewmodel.currentUser.value)
                         navController.navigate("campaign/" + campaign.id)
                          },

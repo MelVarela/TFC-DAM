@@ -7,6 +7,11 @@ import com.example.notasmazmorras.data.model.local.toRemote
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign
 import com.example.notasmazmorras.data.model.remote.toLocal
 import com.example.notasmazmorras.data.repositories.daos.CampaignDao
+import com.example.notasmazmorras.data.repositories.daos.CharacterDao
+import com.example.notasmazmorras.data.repositories.daos.CreatureDao
+import com.example.notasmazmorras.data.repositories.daos.NoteDao
+import com.example.notasmazmorras.data.repositories.daos.ObjectDao
+import com.example.notasmazmorras.data.repositories.daos.PlaceDao
 import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
 import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +39,7 @@ interface CampaignRepository {
 
 class DefaultCampaignRepository(
     private val local : CampaignDao,
-    private val localRelations : UserRelationDao,
+    private val notes : NoteDao,
     private val remote : ApiService
 ) : CampaignRepository {
 
@@ -82,23 +87,22 @@ class DefaultCampaignRepository(
 
                 if(campaign.pendingDelete){
 
-                    if(campaign.id.substring(0, 1) != "l") remote.deleteCampaign(campaign.id)
                     local.delete(campaign)
+                    if(campaign.id.substring(0, 1) != "l") remote.deleteCampaign(campaign.id)
 
                 }else if(campaign.id.substring(0, 1) == "l"){
 
-                    var resposta : RemoteCampaign =
+                    val resposta : RemoteCampaign =
                         remote.createCampaign(campaign.toRemote())
 
-                    var relations = localRelations.getRelationsForCampaign(campaign.id).first()
+                    local.updateLocal((resposta.id ?: campaign.id), campaign.id)
 
-                    local.delete(campaign)
-                    local.insert(campaign.copy((resposta.id ?: campaign.id), pendingSync = false))
+                    val nots = notes.getByOwner(campaign.id).first()
 
-                    relations.map { relation ->
-                        localRelations.insert(
-                            relation.copy(
-                                campaign = (resposta.id ?: campaign.id)
+                    nots.map { note ->
+                        notes.update(
+                            note.copy(
+                                owner = (resposta.id ?: campaign.id)
                             )
                         )
                     }

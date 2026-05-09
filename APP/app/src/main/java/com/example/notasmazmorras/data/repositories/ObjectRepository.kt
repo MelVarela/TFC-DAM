@@ -7,6 +7,7 @@ import com.example.notasmazmorras.data.model.local.toRemote
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
 import com.example.notasmazmorras.data.model.remote.RemoteObject
 import com.example.notasmazmorras.data.model.remote.toLocal
+import com.example.notasmazmorras.data.repositories.daos.NoteDao
 import com.example.notasmazmorras.data.repositories.daos.ObjectDao
 import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +34,7 @@ interface ObjectRepository {
 
 class DefaultObjectRepository(
     private val local : ObjectDao,
+    private val notes : NoteDao,
     private val remote : ApiService
 ) : ObjectRepository {
 
@@ -76,23 +78,35 @@ class DefaultObjectRepository(
         var toSync = local.getObjectsToSync()
 
         try{
-            toSync.first().map {
-                val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
+            toSync.first().map { obxecto ->
+                val id = obxecto.id.substring(obxecto.id.indexOf("_") + 1, obxecto.id.length)
 
-                if(it.pendingDelete){
-                    if(it.id.substring(0, 1) != "l") remote.deleteObject(it.id)
-                    local.delete(it)
-                }else if(it.id.substring(0, 1) == "l"){
+                if(obxecto.pendingDelete){
+                    if(obxecto.id.substring(0, 1) != "l") remote.deleteObject(obxecto.id)
+                    local.delete(obxecto)
+                }else if(obxecto.id.substring(0, 1) == "l" && obxecto.campaign.substring(0, 1) != "l"){
 
                     var resposta : RemoteObject =
-                        remote.createObject(it.toRemote())
-                    local.delete(it)
-                    local.insert(it.copy((resposta.id ?: "0"), pendingSync = false))
+                        remote.createObject(obxecto.toRemote())
+
+                    local.updateLocal((resposta.id ?: obxecto.id), obxecto.id)
+
+                    val nots = notes.getByOwner(obxecto.id).first()
+
+                    nots.map { note ->
+                        notes.update(
+                            note.copy(
+                                owner = (resposta.id ?: obxecto.id)
+                            )
+                        )
+                    }
 
                 }else{
 
-                    remote.updateObject(it.toRemote())
-                    local.update(it.copy(pendingSync = false))
+                    if(obxecto.id.substring(0, 1) != "l"){
+                        remote.updateObject(obxecto.toRemote())
+                        local.update(obxecto.copy(pendingSync = false))
+                    }
 
                 }
             }

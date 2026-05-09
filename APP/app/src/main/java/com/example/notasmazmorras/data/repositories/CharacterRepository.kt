@@ -8,6 +8,7 @@ import com.example.notasmazmorras.data.model.remote.RemoteCampaign
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
 import com.example.notasmazmorras.data.model.remote.toLocal
 import com.example.notasmazmorras.data.repositories.daos.CharacterDao
+import com.example.notasmazmorras.data.repositories.daos.NoteDao
 import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -33,6 +34,7 @@ interface CharacterRepository {
 
 class DefaultCharacterRepository(
     private val local : CharacterDao,
+    private val notes : NoteDao,
     private val remote : ApiService
 ) : CharacterRepository {
 
@@ -76,23 +78,35 @@ class DefaultCharacterRepository(
         var toSync = local.getCharactersToSync()
 
         try{
-            toSync.first().map {
-                val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
+            toSync.first().map { character ->
+                val id = character.id.substring(character.id.indexOf("_") + 1, character.id.length)
 
-                if(it.pendingDelete){
-                    if(it.id.substring(0, 1) != "l") remote.deleteCharacter(it.id)
-                    local.delete(it)
-                }else if(it.id.substring(0, 1) == "l"){
+                if(character.pendingDelete){
+                    if(character.id.substring(0, 1) != "l") remote.deleteCharacter(character.id)
+                    local.delete(character)
+                }else if(character.id.substring(0, 1) == "l" && character.campaign.substring(0, 1) != "l"){
 
                     var resposta : RemoteCharacter =
-                        remote.createCharacter(it.toRemote())
-                    local.delete(it)
-                    local.insert(it.copy((resposta.id ?: "0"), pendingSync = false))
+                        remote.createCharacter(character.toRemote())
+
+                    local.updateLocal((resposta.id ?: character.id), character.id)
+
+                    val nots = notes.getByOwner(character.id).first()
+
+                    nots.map { note ->
+                        notes.update(
+                            note.copy(
+                                owner = (resposta.id ?: character.id)
+                            )
+                        )
+                    }
 
                 }else{
 
-                    remote.updateCharacter(it.toRemote())
-                    local.update(it.copy(pendingSync = false))
+                    if(character.id.substring(0, 1) != "l"){
+                        remote.updateCharacter(character.toRemote())
+                        local.update(character.copy(pendingSync = false))
+                    }
 
                 }
             }

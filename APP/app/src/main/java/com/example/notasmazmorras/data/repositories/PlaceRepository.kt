@@ -8,6 +8,7 @@ import com.example.notasmazmorras.data.model.remote.RemoteCharacter
 import com.example.notasmazmorras.data.model.remote.RemotePlace
 import com.example.notasmazmorras.data.model.remote.toLocal
 import com.example.notasmazmorras.data.repositories.daos.CampaignDao
+import com.example.notasmazmorras.data.repositories.daos.NoteDao
 import com.example.notasmazmorras.data.repositories.daos.PlaceDao
 import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
@@ -34,6 +35,7 @@ interface PlaceRepository {
 
 class DefaultPlaceRepository(
     private val local : PlaceDao,
+    private val notes : NoteDao,
     private val remote : ApiService
 ) : PlaceRepository {
 
@@ -77,23 +79,35 @@ class DefaultPlaceRepository(
         var toSync = local.getPlacesToSync()
 
         try{
-            toSync.first().map {
-                val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
+            toSync.first().map { place ->
+                val id = place.id.substring(place.id.indexOf("_") + 1, place.id.length)
 
-                if(it.pendingDelete){
-                    if(it.id.substring(0, 1) != "l") remote.deletePlace(it.id)
-                    local.delete(it)
-                }else if(it.id.substring(0, 1) == "l"){
+                if(place.pendingDelete){
+                    if(place.id.substring(0, 1) != "l") remote.deletePlace(place.id)
+                    local.delete(place)
+                }else if(place.id.substring(0, 1) == "l" && place.campaign.substring(0, 1) != "l"){
 
                     var resposta : RemotePlace =
-                        remote.createPlace(it.toRemote())
-                    local.delete(it)
-                    local.insert(it.copy((resposta.id ?: "0"), pendingSync = false))
+                        remote.createPlace(place.toRemote())
+
+                    local.updateLocal((resposta.id ?: place.id), place.id)
+
+                    val nots = notes.getByOwner(place.id).first()
+
+                    nots.map { note ->
+                        notes.update(
+                            note.copy(
+                                owner = (resposta.id ?: place.id)
+                            )
+                        )
+                    }
 
                 }else{
 
-                    remote.updatePlace(it.toRemote())
-                    local.update(it.copy(pendingSync = false))
+                    if(place.id.substring(0, 1) != "l"){
+                        remote.updatePlace(place.toRemote())
+                        local.update(place.copy(pendingSync = false))
+                    }
 
                 }
             }

@@ -26,11 +26,18 @@ interface ObjectDao {
     @Delete
     suspend fun delete(obxecto : LocalObject)
 
+    @Query("UPDATE objects SET id = :id WHERE id = :oldId")
+    suspend fun updateLocal(id: String, oldId: String)
+
+
     @Query("DELETE FROM objects")
     suspend fun deleteAll()
 
     @Query("SELECT * FROM objects WHERE id = :id")
     fun getObject(id: Int): Flow<LocalObject>
+
+    @Query("SELECT * FROM objects WHERE campaign = :id")
+    fun getObjectsFromCampaign(id: String): Flow<List<LocalObject>>
 
     @Query("SELECT * FROM objects WHERE pendingDelete = 0")
     fun getAllObjects(): Flow<List<LocalObject>>

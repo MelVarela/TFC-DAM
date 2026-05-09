@@ -26,11 +26,18 @@ interface NoteDao {
     @Delete
     suspend fun delete(note: LocalNote)
 
+    @Query("UPDATE notes SET id = :id WHERE id = :oldId")
+    suspend fun updateLocal(id: String, oldId: String)
+
+
     @Query("DELETE FROM notes")
     suspend fun deleteAll()
 
     @Query("SELECT * FROM notes WHERE id = :id")
     fun getNote(id: Int): Flow<LocalNote>
+
+    @Query("SELECT * FROM notes WHERE owner = :owner")
+    fun getByOwner(owner: String): Flow<List<LocalNote>>
 
     @Query("SELECT * FROM notes WHERE pendingDelete = 0")
     fun getAllNotes(): Flow<List<LocalNote>>

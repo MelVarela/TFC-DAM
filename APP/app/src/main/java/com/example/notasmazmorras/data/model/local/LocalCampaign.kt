@@ -8,7 +8,7 @@ import com.example.notasmazmorras.data.model.remote.RemoteCampaign
 data class LocalCampaign(
     @PrimaryKey val id : String,
     val name : String,
-    val picture : String = "",
+    val picture : String,
 
     // Sincronización
     val pendingSync: Boolean = false,

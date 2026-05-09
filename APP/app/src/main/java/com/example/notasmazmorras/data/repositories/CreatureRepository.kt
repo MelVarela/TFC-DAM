@@ -8,6 +8,7 @@ import com.example.notasmazmorras.data.model.remote.RemoteCharacter
 import com.example.notasmazmorras.data.model.remote.RemoteCreature
 import com.example.notasmazmorras.data.model.remote.toLocal
 import com.example.notasmazmorras.data.repositories.daos.CreatureDao
+import com.example.notasmazmorras.data.repositories.daos.NoteDao
 import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -33,6 +34,7 @@ interface CreatureRepository {
 
 class DefaultCreatureRepository(
     private val local : CreatureDao,
+    private val notes : NoteDao,
     private val remote : ApiService
 ) : CreatureRepository {
 
@@ -76,23 +78,35 @@ class DefaultCreatureRepository(
         var toSync = local.getCreaturesToSync()
 
         try{
-            toSync.first().map {
-                val id = it.id.substring(it.id.indexOf("_") + 1, it.id.length)
+            toSync.first().map { creature ->
+            val id = creature.id.substring(creature.id.indexOf("_") + 1, creature.id.length)
 
-                if(it.pendingDelete){
-                    if(it.id.substring(0, 1) != "l") remote.deleteCreature(it.id)
-                    local.delete(it)
-                }else if(it.id.substring(0, 1) == "l"){
+                if(creature.pendingDelete){
+                    if(creature.id.substring(0, 1) != "l") remote.deleteCreature(creature.id)
+                    local.delete(creature)
+                }else if(creature.id.substring(0, 1) == "l" && creature.campaign.substring(0, 1) != "l"){
 
                     var resposta : RemoteCreature =
-                        remote.createCreature(it.toRemote())
-                    local.delete(it)
-                    local.insert(it.copy((resposta.id ?: "0"), pendingSync = false))
+                        remote.createCreature(creature.toRemote())
+
+                    local.updateLocal((resposta.id ?: creature.id), creature.id)
+
+                    val nots = notes.getByOwner(creature.id).first()
+
+                    nots.map { note ->
+                        notes.update(
+                            note.copy(
+                                owner = (resposta.id ?: creature.id)
+                            )
+                        )
+                    }
 
                 }else{
 
-                    remote.updateCreature(it.toRemote())
-                    local.update(it.copy(pendingSync = false))
+                    if(creature.id.substring(0, 1) != "l"){
+                        remote.updateCreature(creature.toRemote())
+                        local.update(creature.copy(pendingSync = false))
+                    }
 
                 }
             }

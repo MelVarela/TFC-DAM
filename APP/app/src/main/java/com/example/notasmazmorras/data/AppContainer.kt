@@ -61,15 +61,26 @@ class AppDataContainer(private val context : Context) : AppContainer {
     }
 
     override val campaignRepository : CampaignRepository by lazy {
-        DefaultCampaignRepository(Datosbase.getDatabase(context).campaignDao(), Datosbase.getDatabase(context).userRelationDao(), retrofitService)
+        DefaultCampaignRepository(
+            Datosbase.getDatabase(context).campaignDao(),
+            Datosbase.getDatabase(context).noteDao(),
+            retrofitService)
     }
 
     override val characterRepository : CharacterRepository by lazy {
-        DefaultCharacterRepository(Datosbase.getDatabase(context).characterDao(), retrofitService)
+        DefaultCharacterRepository(
+            Datosbase.getDatabase(context).characterDao(),
+            Datosbase.getDatabase(context).noteDao(),
+            retrofitService
+        )
     }
 
     override val creatureRepository : CreatureRepository by lazy {
-        DefaultCreatureRepository(Datosbase.getDatabase(context).creatureDao(), retrofitService)
+        DefaultCreatureRepository(
+            Datosbase.getDatabase(context).creatureDao(),
+            Datosbase.getDatabase(context).noteDao(),
+            retrofitService
+        )
     }
 
     override val noteRepository : NoteRepository by lazy {
@@ -77,11 +88,19 @@ class AppDataContainer(private val context : Context) : AppContainer {
     }
 
     override val objectRepository : ObjectRepository by lazy {
-        DefaultObjectRepository(Datosbase.getDatabase(context).objectDao(), retrofitService)
+        DefaultObjectRepository(
+            Datosbase.getDatabase(context).objectDao(),
+            Datosbase.getDatabase(context).noteDao(),
+            retrofitService
+        )
     }
 
     override val placeRepository : PlaceRepository by lazy {
-        DefaultPlaceRepository(Datosbase.getDatabase(context).placeDao(), retrofitService)
+        DefaultPlaceRepository(
+            Datosbase.getDatabase(context).placeDao(),
+            Datosbase.getDatabase(context).noteDao(),
+            retrofitService
+        )
     }
 
     override val userRepository : UserRepository by lazy {

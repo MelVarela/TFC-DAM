@@ -91,17 +91,19 @@ class DefaultNoteRepository(
                 if(it.pendingDelete){
                     if(it.id.substring(0, 1) != "l") remote.deleteNote(it.id)
                     local.delete(it)
-                }else if(it.id.substring(0, 1) == "l"){
+                }else if(it.id.substring(0, 1) == "l" && it.owner.substring(0, 1) != "l"){
 
                     var resposta : RemoteNote =
                         remote.createNote(it.toRemote())
-                    local.delete(it)
-                    local.insert(it.copy((resposta.id ?: "0"), pendingSync = false))
+
+                    local.updateLocal((resposta.id ?: it.id), it.id)
 
                 }else{
 
-                    remote.updateNote(it.toRemote())
-                    local.update(it.copy(pendingSync = false))
+                    if(it.id.substring(0, 1) != "l"){
+                        remote.updateNote(it.toRemote())
+                        local.update(it.copy(pendingSync = false))
+                    }
 
                 }
             }

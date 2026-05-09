@@ -2,6 +2,7 @@ package com.example.notasmazmorras.data.model.local
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
@@ -20,7 +21,8 @@ import java.util.Date
             entity = LocalCampaign::class,
             parentColumns = ["id"],
             childColumns = ["campaign"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = CASCADE,
+            onUpdate = CASCADE
         )
     ],
     indices = [

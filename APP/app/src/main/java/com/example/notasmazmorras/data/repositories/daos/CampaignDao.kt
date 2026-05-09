@@ -26,6 +26,9 @@ interface CampaignDao {
     @Delete
     suspend fun delete(campaign: LocalCampaign)
 
+    @Query("UPDATE campaigns SET id = :id WHERE id = :oldId")
+    suspend fun updateLocal(id: String, oldId: String)
+
     @Query("DELETE FROM campaigns")
     suspend fun deleteAll()
 

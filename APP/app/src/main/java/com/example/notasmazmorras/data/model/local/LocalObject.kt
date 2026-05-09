@@ -14,7 +14,8 @@ import com.example.notasmazmorras.data.model.remote.RemoteObject
             entity = LocalCampaign::class,
             parentColumns = ["id"],
             childColumns = ["campaign"],
-            onDelete = CASCADE
+            onDelete = CASCADE,
+            onUpdate = CASCADE
         )
     ],
     indices = [Index(value = ["campaign"])]

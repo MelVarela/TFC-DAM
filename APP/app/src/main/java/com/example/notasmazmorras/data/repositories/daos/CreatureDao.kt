@@ -26,11 +26,17 @@ interface CreatureDao {
     @Delete
     suspend fun delete(creature: LocalCreature)
 
+    @Query("UPDATE creatures SET id = :id WHERE id = :oldId")
+    suspend fun updateLocal(id: String, oldId: String)
+
     @Query("DELETE FROM creatures")
     suspend fun deleteAll()
 
     @Query("SELECT * FROM creatures WHERE id = :id")
     fun getCreature(id: Int): Flow<LocalCreature>
+
+    @Query("SELECT * FROM creatures WHERE campaign = :id")
+    fun getCreaturesFromCampaign(id: String): Flow<List<LocalCreature>>
 
     @Query("SELECT * FROM creatures WHERE pendingDelete = 0")
     fun getAllCreatures(): Flow<List<LocalCreature>>

@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign.details
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -111,24 +112,28 @@ fun EditObjectScreen(
             )
 
             Button(onClick = {
-                if(objectId != null){
-                    onDone(LocalObject(
-                        objectId,
-                        name,
-                        cost.toFloat(),
-                        "",
-                        campaign,
-                        true
-                    ))
-                }else{
-                    onDone(LocalObject(
-                        "local_${System.nanoTime()}obje",
-                        name,
-                        cost.toFloat(),
-                        "",
-                        campaign,
-                        true
-                    ))
+                try{
+                    if(objectId != null){
+                        onDone(LocalObject(
+                            objectId,
+                            name,
+                            cost.toFloat(),
+                            "",
+                            campaign,
+                            true
+                        ))
+                    }else{
+                        onDone(LocalObject(
+                            "local_${System.nanoTime()}obje",
+                            name,
+                            cost.toFloat(),
+                            "",
+                            campaign,
+                            true
+                        ))
+                    }
+                }catch (e: Throwable){
+                    Log.d("ERR", "${e.message}")
                 }
             }) { Text("Done") }
         }
