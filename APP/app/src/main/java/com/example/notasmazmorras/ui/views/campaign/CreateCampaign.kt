@@ -151,9 +151,7 @@ fun CreateCampaignScreen(
 
         Button(
             onClick = {
-
                 uploadImage(fotoActual)
-
             }
         ) { Text("Create Campaign") }
 

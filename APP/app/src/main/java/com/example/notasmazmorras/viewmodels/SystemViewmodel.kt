@@ -143,18 +143,14 @@ class SystemViewmodel(
 
     fun uploadImage(image: Bitmap){
 
-        Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
         _uploadState.value = _uploadState.value.copy(
             uploadStarted = true,
             isLoading = true,
             url = ""
         )
-        Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
 
         viewModelScope.launch {
-            Log.d("AAA", "Lanzando corrutina")
             val resultado = systemRepository.uploadImage(image)
-            Log.d("AAA", "Resultado obtenido")
             when(resultado){
 
                 is ImageUploadResult.Success -> {
@@ -166,7 +162,6 @@ class SystemViewmodel(
                             error = null
                         )
                     }
-                    Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
 
                 }
 
@@ -179,7 +174,6 @@ class SystemViewmodel(
                             url = ""
                         )
                     }
-                    Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
 
                 }
 
@@ -194,7 +188,6 @@ class SystemViewmodel(
                 uploadStarted = false
             )
         }
-        Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
     }
 
     /*

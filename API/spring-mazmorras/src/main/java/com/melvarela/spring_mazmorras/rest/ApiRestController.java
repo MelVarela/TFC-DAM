@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +68,8 @@ public class ApiRestController {
 
     @Value("${file.upload-dir}")
     private String uploadFolderPath;
+
+    final String IMG_URL = "http://10.0.2.2:8080/api/v1/images/";
 
     @Autowired
     UserService userService;
@@ -739,7 +743,7 @@ public class ApiRestController {
             Path filePath = uploadPath.resolve(fileName + ".jpeg");
             Files.copy(image.getInputStream(), filePath);
 
-            return new ResponseEntity<>(new SingleStringDto(filePath.toString()), HttpStatus.OK);
+            return new ResponseEntity<>(new SingleStringDto(IMG_URL + fileName + ".jpeg"), HttpStatus.OK);
 
         }catch(Exception e){
 
@@ -747,6 +751,26 @@ public class ApiRestController {
             return new ResponseEntity<>(new SingleStringDto("https://deltarune.com/assets/images/ie-info.png"), HttpStatus.OK);
 
         }
+    }
+
+    @GetMapping("images/{imageId}")
+    public ResponseEntity<Resource> getImage(@PathVariable String imageId){
+
+        try{
+            Path filePath = Paths.get(uploadFolderPath).resolve(imageId);
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if(resource.exists()){
+                return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(resource);
+            }else{
+                return ResponseEntity.notFound().build();
+            }
+        }catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 
 }

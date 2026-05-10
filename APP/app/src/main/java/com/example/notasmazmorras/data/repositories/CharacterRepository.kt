@@ -136,7 +136,7 @@ class DefaultCharacterRepository(
                 }
             }
             ids.map {
-                if(!workedIds.contains(it)) local.deleteById(it)
+                if(!workedIds.contains(it) && it.substring(0, 1) != "l") local.deleteById(it)
             }
 
             local.insertList(charactersToInsert)

@@ -63,7 +63,6 @@ class DefaultSystemRepository(
 
     override suspend fun uploadImage(image: Bitmap) : ImageUploadResult {
 
-        Log.d("REPO", "Subiendo en repo...")
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.JPEG, 80, stream)
 
@@ -72,10 +71,8 @@ class DefaultSystemRepository(
             "image", "photo${System.nanoTime()}",
             byteArray.toRequestBody("image/jpeg".toMediaTypeOrNull(), 0, byteArray.size)
         )
-        Log.d("REPO", "Paquete creado...")
 
         try{
-            Log.d("REPO", "Enviando...")
             return ImageUploadResult.Success(remote.uploadImage(body).str)
         }catch(e: Throwable){
             Log.d("ERROR_IMG", "${e.message}")

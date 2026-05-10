@@ -105,6 +105,12 @@ fun AppNavigation(
                     systemViewmodel.setLastSigned(userAccount.email)
                     navController.navigate("home")
                          },
+                uploadImage = {
+                        image -> if(image != null){
+                    systemViewmodel.uploadImage(image)
+                }
+                },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 navController
             )
         }
@@ -203,7 +209,6 @@ fun AppNavigation(
                 onDone = {
                     campaign ->
 
-                        Log.d("FOTO", campaign.picture)
                         campaignViewmodel.insertCampaign(
                             campaign,
                             systemViewmodel.currentUser.value
@@ -211,8 +216,7 @@ fun AppNavigation(
 
                         systemViewmodel.finishUpload()
 
-                        campaignViewmodel.sync(systemViewmodel.currentUser.value)
-                        campaignViewmodel.syncRelations(campaign.id)
+                        campaignViewmodel.createCampaign(campaign.id, systemViewmodel.currentUser.value)
 
                         campaignViewmodel.setCurrentCampaign(campaign.id, systemViewmodel.currentUser.value)
                         navController.navigate("campaign/" + campaign.id)
@@ -300,7 +304,6 @@ fun AppNavigation(
             )
         ){ backStackEntry ->
             val ownerId = backStackEntry.arguments?.getString("owner")!!
-            Log.d("ISDM", campaignViewmodel.isDm.collectAsState().value.toString())
 
             Notes(
                 notes = notes.filter {
@@ -317,7 +320,6 @@ fun AppNavigation(
                     noteViewmodel.sync(ownerId)
                 },
                 onBack = {
-                    Log.d("Nav", "Owner ID: $ownerId")
                     try{
                         if(ownerId.subSequence((ownerId.length - 4), ownerId.length) == "camp"){
                             navController.navigate("campaign/${ownerId}")
@@ -485,8 +487,15 @@ fun AppNavigation(
             EditCharacter(
                 onDone = {
                     character -> characterViewmodel.updateCharacter(character)
+                    systemViewmodel.finishUpload()
                     navController.navigate("campaign/${character.campaign}/characters")
                 },
+                uploadImage = {
+                        image -> if(image != null){
+                        systemViewmodel.uploadImage(image)
+                    }
+                },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 characters = characters,
                 characterId = id,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
@@ -500,8 +509,15 @@ fun AppNavigation(
             EditCharacter(
                 onDone = {
                     character -> characterViewmodel.insertCharacter(character)
+                    systemViewmodel.finishUpload()
                     navController.navigate("campaign/${character.campaign}/characters")
                 },
+                uploadImage = {
+                        image -> if(image != null){
+                        systemViewmodel.uploadImage(image)
+                    }
+                },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 characters = characters,
                 characterId = null,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
@@ -517,8 +533,15 @@ fun AppNavigation(
             EditObject(
                 onDone = {
                     obxecto -> objectViewmodel.updateObject(obxecto)
+                    systemViewmodel.finishUpload()
                     navController.navigate("campaign/${obxecto.campaign}/objects")
                 },
+                uploadImage = {
+                        image -> if(image != null){
+                        systemViewmodel.uploadImage(image)
+                    }
+                },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 objects = objects,
                 objectId = id,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
@@ -532,8 +555,15 @@ fun AppNavigation(
             EditObject(
                 onDone = {
                     obxecto -> objectViewmodel.insertObject(obxecto)
+                    systemViewmodel.finishUpload()
                     navController.navigate("campaign/${obxecto.campaign}/objects")
                 },
+                uploadImage = {
+                        image -> if(image != null){
+                        systemViewmodel.uploadImage(image)
+                    }
+                },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 objects = objects,
                 objectId = null,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
@@ -549,8 +579,15 @@ fun AppNavigation(
             EditCreature(
                 onDone = {
                     creature -> creatureViewmodel.updateCreature(creature)
+                    systemViewmodel.finishUpload()
                     navController.navigate("campaign/${creature.campaign}/creatures")
                 },
+                uploadImage = {
+                        image -> if(image != null){
+                        systemViewmodel.uploadImage(image)
+                    }
+                },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 creatures = creatures,
                 creatureId = id,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
@@ -564,8 +601,15 @@ fun AppNavigation(
             EditCreature(
                 onDone = {
                     creature -> creatureViewmodel.insertCreature(creature)
+                    systemViewmodel.finishUpload()
                     navController.navigate("campaign/${creature.campaign}/creatures")
                 },
+                uploadImage = {
+                        image -> if(image != null){
+                        systemViewmodel.uploadImage(image)
+                    }
+                },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 creatures = creatures,
                 creatureId = null,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
@@ -581,8 +625,15 @@ fun AppNavigation(
             EditMap(
                 onDone = {
                     place -> placeViewmodel.updatePlace(place)
+                    systemViewmodel.finishUpload()
                     navController.navigate("campaign/${place.campaign}/map")
                 },
+                uploadImage = {
+                        image -> if(image != null){
+                        systemViewmodel.uploadImage(image)
+                    }
+                },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 places = places,
                 placeId = id,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
@@ -596,8 +647,15 @@ fun AppNavigation(
             EditMap(
                 onDone = {
                     place -> placeViewmodel.insertPlace(place)
+                    systemViewmodel.finishUpload()
                     navController.navigate("campaign/${place.campaign}/map")
                 },
+                uploadImage = {
+                        image -> if(image != null){
+                        systemViewmodel.uploadImage(image)
+                    }
+                },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 places = places,
                 placeId = null,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,

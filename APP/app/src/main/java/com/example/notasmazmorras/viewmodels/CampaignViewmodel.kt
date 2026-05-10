@@ -72,11 +72,17 @@ class CampaignViewmodel (
     fun sync(emailUser: String) = viewModelScope.launch {
         campaignRepository.uploadPendingChanges()
         campaignRepository.syncFromServer(emailUser)
-
     }
 
     fun syncRelations(campaign: String) = viewModelScope.launch {
         userRelationRepository.uploadPendingChanges()
+        userRelationRepository.syncFromServer(campaign)
+    }
+
+    fun createCampaign(campaign: String, user: String) = viewModelScope.launch {
+        campaignRepository.uploadPendingChanges()
+        userRelationRepository.uploadPendingChanges()
+        campaignRepository.syncFromServer(user)
         userRelationRepository.syncFromServer(campaign)
     }
 

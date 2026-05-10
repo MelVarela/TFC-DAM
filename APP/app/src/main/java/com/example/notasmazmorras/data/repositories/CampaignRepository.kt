@@ -81,6 +81,7 @@ class DefaultCampaignRepository(
     }
 
     override suspend fun uploadPendingChanges(): RepositoryResult {
+        Log.d("DB", "Subiendo cambios...")
         var toSync = local.getCampaignsToSync()
 
         try{
@@ -115,19 +116,24 @@ class DefaultCampaignRepository(
 
                 }
             }
+
+            Log.d("DB", "Cambios subidos")
+            return RepositoryResult.Success("Cambios sincronizados con éxito.")
         }catch (e : Throwable){
             Log.e(TAG, ("${e.message ?: NO_ERR}: \n${Log.getStackTraceString(e)}"))
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
-
-        return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
 
     override suspend fun syncFromServer(email: String): RepositoryResult {
+        Log.d("DB", "Sincronizando...")
         try{
             val campaigns = remote.getCampaigns(email)
             val ids = local.getIds().first()
             var workedIds : List<String> = emptyList()
+
+            Log.d(TAG, campaigns.toString())
+            Log.d(TAG, ids.toString())
 
             var campaignsToUpdate : List<LocalCampaign> = ArrayList<LocalCampaign>()
             var campaignsToInsert : List<LocalCampaign> = ArrayList<LocalCampaign>()
@@ -142,11 +148,13 @@ class DefaultCampaignRepository(
                 }
             }
             ids.map {
-                if(!workedIds.contains(it)) local.deleteById(it)
+                if(!workedIds.contains(it) && it.substring(0, 1) != "l") local.deleteById(it)
             }
 
             local.insertList(campaignsToInsert)
             local.updateList(campaignsToUpdate)
+
+            Log.d("DB", "Sincronizacion terminada.")
             return RepositoryResult.Success("Sicronizado con éxito")
         }catch (e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)
