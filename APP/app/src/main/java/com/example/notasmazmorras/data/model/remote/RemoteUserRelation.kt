@@ -27,19 +27,8 @@ fun RemoteUserRelation.toLocal() : LocalUserRelation =
     LocalUserRelation(
         isAccepted = accepted,
         role = role,
-        schedule = listLongToDate(jsonToList(schedule)),
+        schedule = schedule,
         user = user,
         campaign = campaign,
         existsRemote = true
     )
-
-private fun listLongToDate(list : List<Long>) : List<LocalDateTime> {
-    var dev : ArrayList<LocalDateTime> = ArrayList<LocalDateTime>()
-    list.forEach { dev.add(LocalDateTime.ofEpochSecond(it, 0, ZoneOffset.UTC)) }
-    return dev.toList()
-}
-
-private fun jsonToList(json: String) : List<Long> {
-    Log.d("JSON", "Received $json")
-    return emptyList()
-}

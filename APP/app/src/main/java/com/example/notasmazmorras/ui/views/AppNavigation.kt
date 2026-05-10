@@ -19,6 +19,7 @@ import com.example.notasmazmorras.data.model.local.LocalObject
 import com.example.notasmazmorras.data.model.local.LocalPlace
 import com.example.notasmazmorras.ui.views.campaign.Calendar
 import com.example.notasmazmorras.ui.views.campaign.Campaign
+import com.example.notasmazmorras.ui.views.campaign.ChangeSchedule
 import com.example.notasmazmorras.ui.views.campaign.CreateCampaign
 import com.example.notasmazmorras.ui.views.campaign.InvitePlayer
 import com.example.notasmazmorras.ui.views.campaign.Note
@@ -262,7 +263,32 @@ fun AppNavigation(
             route = "campaign/{id}/calendar",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){
-            Calendar(navController)
+            Calendar(
+                onChangeSchedule = {
+                    navController.navigate("campaign/${campaignViewmodel.currentCampaign}/changeSchedule")
+                },
+                navController
+            )
+        }
+
+        composable(
+            route = "campaign/{id}/changeSchedule",
+            arguments = listOf(navArgument("id"){type = NavType.StringType})
+        ){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")
+
+            ChangeSchedule(
+                onDone = { schedule ->
+                    campaignViewmodel.updateSchedule(schedule, systemViewmodel.currentUser.value)
+                    campaignViewmodel.syncRelations(campaignViewmodel.currentCampaign.value)
+                    navController.navigate("campaign/${id}/calendar")
+                },
+                schedule = userRelations.firstOrNull {
+                    it.campaign == campaignViewmodel.currentCampaign.value &&
+                    it.user == systemViewmodel.currentUser.value
+                                                     }?.schedule ?: "",
+                navController
+            )
         }
 
         composable(

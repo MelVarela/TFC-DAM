@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverter
-import androidx.room.TypeConverters
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.data.model.local.LocalCreature
@@ -14,7 +12,6 @@ import com.example.notasmazmorras.data.model.local.LocalObject
 import com.example.notasmazmorras.data.model.local.LocalPlace
 import com.example.notasmazmorras.data.model.local.LocalUser
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
-import com.example.notasmazmorras.data.model.local.ScheduleTypeConverter
 import com.example.notasmazmorras.data.model.local.SysTable
 import com.example.notasmazmorras.data.repositories.daos.CampaignDao
 import com.example.notasmazmorras.data.repositories.daos.CharacterDao
@@ -38,8 +35,7 @@ import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
     LocalUserRelation::class,
     SysTable::class,
 
-], version = 9)
-@TypeConverters(value = [ScheduleTypeConverter::class])
+], version = 10)
 abstract class Datosbase : RoomDatabase() {
 
     abstract fun campaignDao() : CampaignDao

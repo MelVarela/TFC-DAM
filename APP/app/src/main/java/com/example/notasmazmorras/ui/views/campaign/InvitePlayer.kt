@@ -89,7 +89,7 @@ fun InvitePlayerScreen(
                         LocalUserRelation(
                             isAccepted = false,
                             role = "p",
-                            schedule = emptyList(),
+                            schedule = "",
                             user = player,
                             campaign = campaign
                         )

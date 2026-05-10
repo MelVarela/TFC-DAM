@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,7 +19,10 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Calendar(navController: NavController) {
+fun Calendar(
+    onChangeSchedule: () -> Unit,
+    navController: NavController
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -36,7 +40,18 @@ fun Calendar(navController: NavController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-
+            Button(
+                onClick = {onChangeSchedule()}
+            ) {
+                Text("Cambiar mi horario")
+            }
         }
     }
+}
+
+@Composable
+fun CalendarioScreen(
+
+){
+
 }

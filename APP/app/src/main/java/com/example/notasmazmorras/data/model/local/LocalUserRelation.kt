@@ -37,7 +37,7 @@ import java.util.Date
 data class LocalUserRelation(
     val isAccepted : Boolean,
     val role : String, //D -> Dm, P -> Player
-    val schedule : List<LocalDateTime>,
+    val schedule : String,
 
     val user : String,
     val campaign : String,
@@ -52,27 +52,7 @@ fun LocalUserRelation.toRemote() : RemoteUserRelation =
     RemoteUserRelation(
         accepted = isAccepted,
         role = role,
-        schedule = listLocalDateTimeToLong(schedule).toString(),
+        schedule = schedule,
         user = user,
         campaign = campaign
     )
-
-class ScheduleTypeConverter {
-
-    @TypeConverter
-    fun fromJson(value: String?) : List<LocalDateTime> {
-        val listType = object : TypeToken<List<LocalDateTime>>(){}.type
-        return Gson().fromJson(value, listType)
-    }
-
-    @TypeConverter
-    fun toJson(value: List<LocalDateTime>) : String {
-        return Gson().toJson(value)
-    }
-}
-
-private fun listLocalDateTimeToLong(list: List<LocalDateTime>) : List<Long> {
-    var dev : ArrayList<Long> = ArrayList<Long>()
-    list.forEach { dev.add(it.toEpochSecond(ZoneOffset.UTC)) }
-    return dev.toList()
-}

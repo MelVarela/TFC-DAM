@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -48,7 +49,7 @@ class CampaignViewmodel (
             LocalUserRelation(
                 isAccepted = true,
                 role = "d",
-                schedule = emptyList(),
+                schedule = "",
                 user = user,
                 campaign = campaign.id
             )
@@ -57,6 +58,16 @@ class CampaignViewmodel (
 
     fun updateCampaign(campaign: LocalCampaign) = viewModelScope.launch {
         campaignRepository.updateCampaign(campaign)
+    }
+
+    fun updateSchedule(schedule: String, user: String) = viewModelScope.launch {
+        val relation = userRelationRepository.getAllUserRelations().first().firstOrNull { (it.campaign == currentCampaign.value && it.user == user) }
+        Log.d("UPT", "$relation")
+        if (relation != null){
+            userRelationRepository.updateUserRelation(
+                relation.copy(schedule = schedule, pendingSync = true)
+            )
+        }
     }
 
     fun deleteCampaign(campaign: LocalCampaign) = viewModelScope.launch {
