@@ -27,6 +27,7 @@ import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.CharacterEntity;
 import com.melvarela.spring_mazmorras.entities.CreatureEntity;
 import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
+import com.melvarela.spring_mazmorras.repositories.DndApiRepository;
 import com.melvarela.spring_mazmorras.entities.NoteEntity;
 import com.melvarela.spring_mazmorras.entities.ObjectEntity;
 import com.melvarela.spring_mazmorras.entities.PlaceEntity;
@@ -34,6 +35,7 @@ import com.melvarela.spring_mazmorras.entities.SuggestionEntity;
 import com.melvarela.spring_mazmorras.entities.UserRelationEntity;
 import com.melvarela.spring_mazmorras.rest.dtos.CampaignDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CharacterDto;
+import com.melvarela.spring_mazmorras.rest.dtos.ClassDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CreatureDto;
 import com.melvarela.spring_mazmorras.rest.dtos.LoginDto;
 import com.melvarela.spring_mazmorras.rest.dtos.NoteDto;
@@ -55,6 +57,7 @@ import com.melvarela.spring_mazmorras.rest.mappers.UserRelationDtoMapper;
 import com.melvarela.spring_mazmorras.services.CampaignService;
 import com.melvarela.spring_mazmorras.services.CharacterService;
 import com.melvarela.spring_mazmorras.services.CreatureService;
+import com.melvarela.spring_mazmorras.services.DndApiService;
 import com.melvarela.spring_mazmorras.services.NoteService;
 import com.melvarela.spring_mazmorras.services.ObjectService;
 import com.melvarela.spring_mazmorras.services.PlaceService;
@@ -89,6 +92,9 @@ public class ApiRestController {
     UserRelationService userRelationService;
     @Autowired
     SuggestionService suggestionService;
+
+    @Autowired
+    DndApiService dndApiService;
 
     //Login
     @PostMapping("login")
@@ -773,7 +779,49 @@ public class ApiRestController {
                 return ResponseEntity.notFound().build();
             }
         }catch(Exception e){
+            System.err.println("Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
+    //DND API Conexion
+
+    @GetMapping("dnd")
+    public ResponseEntity<List<ClassDto>> getAllClases(){
+        System.out.println("Getting all clases.");
+
+        try{
+            return new ResponseEntity<>(dndApiService.getAllClases(), HttpStatus.OK);
+        }catch(Exception e){
+            System.err.println("Error: " + e.getMessage());
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @GetMapping("dnd/{clase}")
+    public ResponseEntity<ClassDto> getClase(@PathVariable String clase){
+        System.out.println("Getting class: " + clase);
+
+        try{
+            return new ResponseEntity<>(dndApiService.getClase(clase), HttpStatus.OK);
+        }catch(Exception e){
+            System.err.println("Error: " + e.getMessage());
+            return new ResponseEntity<>(new ClassDto(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @GetMapping("dnd/{clase}/subClases")
+    public ResponseEntity<List<String>> getSubclasesFor(@PathVariable String clase){
+        System.out.println("Getting all subclases for: " + clase);
+        
+        try{
+            return new ResponseEntity<>(dndApiService.getSubclasesForClass(clase), HttpStatus.OK);
+        }catch(Exception e){
+            System.err.println("Error: " + e.getMessage());
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
