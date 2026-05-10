@@ -41,6 +41,15 @@ public class NoteService {
         return note;
     }
 
+    @Transactional
+    public void deleteAllByOwner(String ownerId){
+        List<NoteEntity> toDelete = findAllByOwner(ownerId);
+
+        for (NoteEntity note : toDelete) {
+            deleteNote(note);
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<NoteEntity> findAll(){
         return repository.findAll();

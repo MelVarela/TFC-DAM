@@ -215,6 +215,7 @@ public class ApiRestController {
         System.out.println("Delete campaign: " + id);
 
         try{
+            noteService.deleteAllByOwner(id);
             return new ResponseEntity<>(CampaignDtoMapper.campaignEntityToDto(
                 campaignService.deleteCampaign(id)
             ), HttpStatus.OK);
@@ -287,6 +288,7 @@ public class ApiRestController {
         System.out.println("Delete character: " + id);
 
         try{
+            noteService.deleteAllByOwner(id);
             return new ResponseEntity<>(CharacterDtoMapper.characterEntityToDto(
                 characterService.deleteCharacter(id)
             ), HttpStatus.OK);
@@ -359,6 +361,7 @@ public class ApiRestController {
         System.out.println("Delete creature: " + id);
 
         try{
+            noteService.deleteAllByOwner(id);
             return new ResponseEntity<>(CreatureDtoMapper.creatureEntityToDto(
                 creatureService.deleteCreature(id)
             ), HttpStatus.OK);
@@ -500,6 +503,7 @@ public class ApiRestController {
         System.out.println("Delete object: " + id);
 
         try{
+            noteService.deleteAllByOwner(id);
             return new ResponseEntity<>(ObjectDtoMapper.objectEntityToDto(
                 objectService.deleteObject(id)
             ), HttpStatus.OK);
@@ -573,6 +577,7 @@ public class ApiRestController {
         System.out.println("Delete place: " + id);
 
         try{
+            noteService.deleteAllByOwner(id);
             return new ResponseEntity<>(PlaceDtoMapper.placeEntityToDto(
                 placeService.deletePlace(id)
             ), HttpStatus.OK);
