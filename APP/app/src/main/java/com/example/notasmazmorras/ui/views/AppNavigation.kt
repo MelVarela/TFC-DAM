@@ -263,10 +263,17 @@ fun AppNavigation(
             route = "campaign/{id}/calendar",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){
+
+            var schedules : List<String> = emptyList()
+            userRelations.filter { it.campaign == campaignViewmodel.currentCampaign.value }.map {
+                schedules = schedules.plus(it.schedule)
+            }
+
             Calendar(
                 onChangeSchedule = {
-                    navController.navigate("campaign/${campaignViewmodel.currentCampaign}/changeSchedule")
+                    navController.navigate("campaign/${campaignViewmodel.currentCampaign.value}/changeSchedule")
                 },
+                listSchedules = schedules,
                 navController
             )
         }
