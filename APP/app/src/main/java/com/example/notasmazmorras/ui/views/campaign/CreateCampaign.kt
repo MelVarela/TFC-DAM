@@ -6,6 +6,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,12 +36,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.notasmazmorras.data.model.local.LocalCampaign
+import com.example.notasmazmorras.viewmodels.UploadState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateCampaign(
     onDone: (LocalCampaign) -> Unit,
     uploadImage: (Bitmap?) -> Unit,
+    uploadState: UploadState,
     navController: NavController
 ) {
     Scaffold(
@@ -63,6 +66,7 @@ fun CreateCampaign(
             CreateCampaignScreen(
                 onDone = onDone,
                 uploadImage = uploadImage,
+                uploadState = uploadState,
                 modifier = Modifier
             )
         }
@@ -73,6 +77,7 @@ fun CreateCampaign(
 fun CreateCampaignScreen(
     onDone: (LocalCampaign) -> Unit,
     uploadImage: (Bitmap?) -> Unit,
+    uploadState: UploadState,
     modifier : Modifier
 ){
 
@@ -81,7 +86,6 @@ fun CreateCampaignScreen(
     var name by remember { mutableStateOf("") }
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-
     var fotoActual by remember { mutableStateOf<Bitmap?>(null) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
@@ -98,6 +102,21 @@ fun CreateCampaignScreen(
             }
         }
     )
+
+    if(!uploadState.isLoading && uploadState.uploadStarted){
+        if (uploadState.error != null){
+            Log.d("ERR", "Error subiendo una foto. ${uploadState.error}")
+        }
+
+        onDone(
+            LocalCampaign(
+                "local_${System.nanoTime()}camp",
+                name,
+                uploadState.url,
+                true
+            )
+        )
+    }
 
     Column(
         modifier = modifier,
@@ -135,16 +154,12 @@ fun CreateCampaignScreen(
 
                 uploadImage(fotoActual)
 
-                onDone(
-                    LocalCampaign(
-                        "local_${System.nanoTime()}camp",
-                        name,
-                        "",
-                        true
-                    )
-                )
             }
         ) { Text("Create Campaign") }
+
+        if(uploadState.isLoading){
+            Text("Creando...")
+        }
 
     }
 

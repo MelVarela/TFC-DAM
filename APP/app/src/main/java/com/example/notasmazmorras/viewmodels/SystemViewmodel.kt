@@ -11,13 +11,18 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.notasmazmorras.NotasMazmorrasApplication
 import com.example.notasmazmorras.data.model.local.SysTable
 import com.example.notasmazmorras.data.model.remote.Suggestion
+import com.example.notasmazmorras.data.repositories.ImageUploadResult
 import com.example.notasmazmorras.data.repositories.SystemRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -31,6 +36,9 @@ class SystemViewmodel(
 
     private val _currentUser = MutableStateFlow("")
     val currentUser : StateFlow<String> = _currentUser.asStateFlow()
+
+    private val _uploadState = MutableStateFlow(UploadState())
+    val uploadState : StateFlow<UploadState> = _uploadState.asStateFlow()
 
     fun firstTimeOpened() = viewModelScope.launch {
         Log.d("LAUNCH", "Getting sys data")
@@ -133,8 +141,60 @@ class SystemViewmodel(
         systemRepository.sendReport(report)
     }
 
-    fun uploadImage(image: Bitmap) = viewModelScope.launch {
-        systemRepository.uploadImage(image)
+    fun uploadImage(image: Bitmap){
+
+        Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
+        _uploadState.value = _uploadState.value.copy(
+            uploadStarted = true,
+            isLoading = true,
+            url = ""
+        )
+        Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
+
+        viewModelScope.launch {
+            Log.d("AAA", "Lanzando corrutina")
+            val resultado = systemRepository.uploadImage(image)
+            Log.d("AAA", "Resultado obtenido")
+            when(resultado){
+
+                is ImageUploadResult.Success -> {
+
+                    _uploadState.update {
+                        it.copy(
+                            isLoading = false,
+                            url = resultado.url,
+                            error = null
+                        )
+                    }
+                    Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
+
+                }
+
+                is ImageUploadResult.Error -> {
+
+                    _uploadState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = resultado.message,
+                            url = ""
+                        )
+                    }
+                    Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
+
+                }
+
+            }
+        }
+
+    }
+
+    fun finishUpload() {
+        _uploadState.update {
+            it.copy(
+                uploadStarted = false
+            )
+        }
+        Log.d("AAA", "${uploadState.value.isLoading} - ${uploadState.value.uploadStarted}")
     }
 
     /*
@@ -164,3 +224,10 @@ class SystemViewmodel(
         }
     }
 }
+
+data class UploadState(
+    val url : String = "",
+    val error : String? = null,
+    val isLoading : Boolean = false,
+    val uploadStarted : Boolean = false
+)

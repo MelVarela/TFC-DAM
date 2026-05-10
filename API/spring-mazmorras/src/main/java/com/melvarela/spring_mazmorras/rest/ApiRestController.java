@@ -37,6 +37,7 @@ import com.melvarela.spring_mazmorras.rest.dtos.LoginDto;
 import com.melvarela.spring_mazmorras.rest.dtos.NoteDto;
 import com.melvarela.spring_mazmorras.rest.dtos.ObjectDto;
 import com.melvarela.spring_mazmorras.rest.dtos.PlaceDto;
+import com.melvarela.spring_mazmorras.rest.dtos.SingleStringDto;
 import com.melvarela.spring_mazmorras.rest.dtos.SuggestionDto;
 import com.melvarela.spring_mazmorras.rest.dtos.UserDto;
 import com.melvarela.spring_mazmorras.rest.dtos.UserRelationDto;
@@ -723,7 +724,7 @@ public class ApiRestController {
     //Imagenes
 
     @PostMapping(value = "image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadImage(@RequestBody MultipartFile image){
+    public ResponseEntity<SingleStringDto> uploadImage(@RequestBody MultipartFile image){
         System.out.println("Uploading image: " + image);
 
         try{
@@ -738,12 +739,12 @@ public class ApiRestController {
             Path filePath = uploadPath.resolve(fileName + ".jpeg");
             Files.copy(image.getInputStream(), filePath);
 
-            return new ResponseEntity<>(filePath.toString(), HttpStatus.OK);
+            return new ResponseEntity<>(new SingleStringDto(filePath.toString()), HttpStatus.OK);
 
         }catch(Exception e){
 
             System.err.println("Error: " + e.getMessage());
-            return new ResponseEntity<>("https://deltarune.com/assets/images/ie-info.png", HttpStatus.OK);
+            return new ResponseEntity<>(new SingleStringDto("https://deltarune.com/assets/images/ie-info.png"), HttpStatus.OK);
 
         }
     }

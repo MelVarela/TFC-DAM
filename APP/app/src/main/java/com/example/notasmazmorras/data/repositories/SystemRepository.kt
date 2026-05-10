@@ -30,7 +30,7 @@ interface SystemRepository {
 
     fun getIsDataPresent(): Flow<Int>
 
-    suspend fun uploadImage(image: Bitmap)
+    suspend fun uploadImage(image: Bitmap) : ImageUploadResult
 
 }
 
@@ -61,7 +61,9 @@ class DefaultSystemRepository(
 
     override fun getIsDataPresent(): Flow<Int> = dao.getIsDataPresent()
 
-    override suspend fun uploadImage(image: Bitmap) {
+    override suspend fun uploadImage(image: Bitmap) : ImageUploadResult {
+
+        Log.d("REPO", "Subiendo en repo...")
         val stream = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.JPEG, 80, stream)
 
@@ -70,13 +72,28 @@ class DefaultSystemRepository(
             "image", "photo${System.nanoTime()}",
             byteArray.toRequestBody("image/jpeg".toMediaTypeOrNull(), 0, byteArray.size)
         )
+        Log.d("REPO", "Paquete creado...")
 
         try{
-            remote.uploadImage(body)
+            Log.d("REPO", "Enviando...")
+            return ImageUploadResult.Success(remote.uploadImage(body).str)
         }catch(e: Throwable){
             Log.d("ERROR_IMG", "${e.message}")
+            return ImageUploadResult.Error("${e.message}")
         }
 
     }
+
+}
+
+sealed class ImageUploadResult{
+
+    data class Error(
+        val message : String
+    ) : ImageUploadResult()
+
+    data class Success(
+        var url : String
+    ) : ImageUploadResult()
 
 }

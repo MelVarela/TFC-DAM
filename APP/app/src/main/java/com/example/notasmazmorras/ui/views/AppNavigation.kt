@@ -203,7 +203,14 @@ fun AppNavigation(
                 onDone = {
                     campaign ->
 
-                        campaignViewmodel.insertCampaign(campaign, systemViewmodel.currentUser.value)
+                        Log.d("FOTO", campaign.picture)
+                        campaignViewmodel.insertCampaign(
+                            campaign,
+                            systemViewmodel.currentUser.value
+                        )
+
+                        systemViewmodel.finishUpload()
+
                         campaignViewmodel.sync(systemViewmodel.currentUser.value)
                         campaignViewmodel.syncRelations(campaign.id)
 
@@ -215,6 +222,7 @@ fun AppNavigation(
                         systemViewmodel.uploadImage(image)
                     }
                 },
+                uploadState = systemViewmodel.uploadState.collectAsState().value,
                 navController
             )
         }

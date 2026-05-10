@@ -11,6 +11,7 @@ import com.example.notasmazmorras.data.model.remote.RemoteObject
 import com.example.notasmazmorras.data.model.remote.RemotePlace
 import com.example.notasmazmorras.data.model.remote.RemoteUser
 import com.example.notasmazmorras.data.model.remote.RemoteUserRelation
+import com.example.notasmazmorras.data.model.remote.SingleString
 import com.example.notasmazmorras.data.model.remote.Suggestion
 import okhttp3.MultipartBody
 import retrofit2.http.Body
@@ -154,6 +155,6 @@ interface ApiService {
     //Imagenes
     @Multipart
     @POST("image")
-    suspend fun uploadImage(@Part image: MultipartBody.Part)
+    suspend fun uploadImage(@Part image: MultipartBody.Part) : SingleString
 
 }

@@ -1,0 +1,8 @@
+package com.example.notasmazmorras.data.model.remote
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class SingleString(
+    var str : String
+)
