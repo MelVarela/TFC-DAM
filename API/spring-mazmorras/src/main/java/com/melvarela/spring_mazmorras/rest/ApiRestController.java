@@ -13,6 +13,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,6 @@ import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.CharacterEntity;
 import com.melvarela.spring_mazmorras.entities.CreatureEntity;
 import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
-import com.melvarela.spring_mazmorras.repositories.DndApiRepository;
 import com.melvarela.spring_mazmorras.entities.NoteEntity;
 import com.melvarela.spring_mazmorras.entities.ObjectEntity;
 import com.melvarela.spring_mazmorras.entities.PlaceEntity;
@@ -73,6 +73,8 @@ public class ApiRestController {
     private String uploadFolderPath;
 
     final String IMG_URL = "http://10.0.2.2:8080/api/v1/images/";
+
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Autowired
     UserService userService;
@@ -126,6 +128,7 @@ public class ApiRestController {
         System.out.println("Create user: " + user.toString());
 
         try{
+            user.setPassword(encoder.encode(user.getPassword()));
             return new ResponseEntity<>(UserDtoMapper.userEntityToUserDto(
                 userService.createUser(UserDtoMapper.userDtoToUserEntity(user))
             ), HttpStatus.CREATED);

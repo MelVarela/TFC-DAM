@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,8 @@ public class UserService {
     
     @Autowired
     UserRepository repository;
+
+    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Transactional
     public UserEntity createUser(UserEntity user){
@@ -62,7 +65,7 @@ public class UserService {
         if(realUser.isEmpty()){
             return false;
         }else{
-            if(user.getPassword().equals(realUser.get().getPassword())){
+            if(encoder.matches(user.getPassword(), realUser.get().getPassword())){
                 return true;
             }else return false;
         }
