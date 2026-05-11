@@ -16,6 +16,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -39,6 +41,7 @@ import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.viewmodels.UploadState
 import androidx.core.net.toUri
 import com.example.notasmazmorras.data.model.local.LocalCampaign
+import com.example.notasmazmorras.data.model.remote.DndClass
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +52,9 @@ fun EditCharacter(
     characters: List<LocalCharacter>,
     characterId: String?,
     campaign: String,
+    clases: List<DndClass>,
+    subClases: List<String>,
+    onClasSelected: (String) -> Unit,
     navController: NavController
 ) {
     Scaffold(
@@ -75,6 +81,9 @@ fun EditCharacter(
                 characterId = characterId,
                 characters = characters,
                 campaign = campaign,
+                clases = clases,
+                subClases = subClases,
+                onClasSelected = onClasSelected,
                 modifier = Modifier
             )
         }
@@ -90,16 +99,22 @@ fun EditCharacterScreen(
     characters: List<LocalCharacter>,
     characterId : String?,
     campaign: String,
+    clases: List<DndClass>,
+    subClases: List<String>,
+    onClasSelected: (String) -> Unit,
     modifier: Modifier
 ){
 
     val ctx = LocalContext.current.contentResolver
 
     var name by remember { mutableStateOf("") }
-    var clase by remember { mutableStateOf("") }
-    var subclase by remember { mutableStateOf("") }
+    var clase by remember { mutableStateOf("Selecciona una clase") }
+    var subclase by remember { mutableStateOf("Selecciona una subclase") }
     var maxPg by remember { mutableIntStateOf(0) }
     var pg by remember { mutableIntStateOf(0) }
+
+    var desplegado by remember { mutableStateOf(false) }
+    var desplegadoSubclase by remember { mutableStateOf(false) }
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var fotoActual by remember { mutableStateOf<Bitmap?>(null) }
@@ -186,21 +201,56 @@ fun EditCharacterScreen(
                 singleLine = true,
             )
 
-            TextField(
-                value = clase,
-                onValueChange = {clase = it},
-                label = { Text("Clase") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                singleLine = true,
-            )
+            Button(
+                onClick = {desplegado = !desplegado}
+            ) {Text(clase)}
+            DropdownMenu(
+                expanded = desplegado,
+                onDismissRequest = {}
+            ) {
 
-            TextField(
-                value = subclase,
-                onValueChange = {subclase = it},
-                label = { Text("Subclase") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                singleLine = true,
-            )
+                clases.forEach { claseI ->
+                    DropdownMenuItem(
+                        text = {Text(claseI.name)},
+                        onClick = {
+                            onClasSelected(claseI.index)
+                            clase = claseI.name
+                            desplegado = false
+                        }
+                    )
+                }
+
+            }
+
+            Button(
+                onClick = {desplegadoSubclase = !desplegadoSubclase}
+            ) {Text(subclase)}
+            DropdownMenu(
+                expanded = desplegadoSubclase,
+                onDismissRequest = {}
+            ) {
+
+                if(subClases.isNotEmpty()){
+                    subClases.forEach { subI ->
+                        DropdownMenuItem(
+                            text = {Text(subI)},
+                            onClick = {
+                                subclase = subI
+                                desplegadoSubclase = false
+                            }
+                        )
+                    }
+                }else{
+                    DropdownMenuItem(
+                        text = {Text("Esta clase no tiene subclases")},
+                        onClick = {
+                            subclase = "Esta clase no tiene subclases"
+                            desplegadoSubclase = false
+                        }
+                    )
+                }
+
+            }
 
             TextField(
                 value = maxPg.toString(),
@@ -279,7 +329,4 @@ fun EditCharacterScreen(
 
         }
     }
-
-
-
 }

@@ -517,6 +517,7 @@ fun AppNavigation(
             arguments = listOf(navArgument("id"){type = NavType.StringType})
         ){ backStackEntry ->
             val id = backStackEntry.arguments?.getString("id")
+            characterViewmodel.getClases()
             EditCharacter(
                 onDone = {
                     character -> characterViewmodel.updateCharacter(character)
@@ -532,6 +533,11 @@ fun AppNavigation(
                 characters = characters,
                 characterId = id,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
+                clases = characterViewmodel.clases.collectAsState().value,
+                subClases = characterViewmodel.subClases.collectAsState().value,
+                onClasSelected = {
+                    clase -> characterViewmodel.getSubclasesFor(clase)
+                },
                 navController
             )
         }
@@ -539,6 +545,7 @@ fun AppNavigation(
         composable(
             route = "editCharacter"
         ){
+            characterViewmodel.getClases()
             EditCharacter(
                 onDone = {
                     character -> characterViewmodel.insertCharacter(character)
@@ -554,6 +561,11 @@ fun AppNavigation(
                 characters = characters,
                 characterId = null,
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
+                clases = characterViewmodel.clases.collectAsState().value,
+                subClases = characterViewmodel.subClases.collectAsState().value,
+                onClasSelected = {
+                        clase -> characterViewmodel.getSubclasesFor(clase)
+                },
                 navController
             )
         }

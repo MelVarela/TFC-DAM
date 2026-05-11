@@ -2,6 +2,7 @@ package com.example.notasmazmorras.network
 
 import com.example.notasmazmorras.data.model.UserAccount
 import com.example.notasmazmorras.data.model.remote.Credentials
+import com.example.notasmazmorras.data.model.remote.DndClass
 import com.example.notasmazmorras.data.model.remote.LoginResponse
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
@@ -156,5 +157,13 @@ interface ApiService {
     @Multipart
     @POST("image")
     suspend fun uploadImage(@Part image: MultipartBody.Part) : SingleString
+
+    //API DND
+
+    @GET("dnd")
+    suspend fun getClases() : List<DndClass>
+
+    @GET("dnd/{clase}/subClases")
+    suspend fun getClasesFor(@Path("clase") clase: String) : List<String>
 
 }

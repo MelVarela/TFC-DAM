@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.data.model.local.toRemote
+import com.example.notasmazmorras.data.model.remote.DndClass
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
 import com.example.notasmazmorras.data.model.remote.toLocal
@@ -22,6 +23,10 @@ interface CharacterRepository {
     suspend fun updateCharacter(character: LocalCharacter): RepositoryResult
 
     suspend fun deleteCharacter(character: LocalCharacter): RepositoryResult
+
+    suspend fun getClases() : List<DndClass>
+
+    suspend fun getSubclasesFor(clase: String) : List<String>
 
     // Sincronización
 
@@ -72,6 +77,14 @@ class DefaultCharacterRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("Error eliminando el personaje '${character.name}'.")
         }
+    }
+
+    override suspend fun getClases(): List<DndClass> {
+        return remote.getClases()
+    }
+
+    override suspend fun getSubclasesFor(clase: String): List<String> {
+        return remote.getClasesFor(clase)
     }
 
     override suspend fun uploadPendingChanges(): RepositoryResult {
