@@ -29,73 +29,74 @@ class _Inicio extends State<Inicio> {
   Widget build(BuildContext context) {
     viewModel.obtenerReportes();
 
-    return AnimatedBuilder(
-      animation: viewModel,
-      builder: (context, _) {
-        return Center(
-          child: Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.greenAccent,
-                    border: BoxBorder.all(
-                      color: Colors.black,
-                      width: 1,
-                      style: BorderStyle.solid,
+    return Scaffold(
+      body: AnimatedBuilder(
+        animation: viewModel,
+        builder: (context, _) {
+          return Center(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.greenAccent,
+                      border: BoxBorder.all(
+                        color: Colors.black,
+                        width: 1,
+                        style: BorderStyle.solid,
+                      ),
                     ),
-                  ),
-                  child: Column(
-                    children: [
-                      SingleChildScrollView(
-                        child: SizedBox(
-                          height: MediaQuery.of(context).size.height - 20,
-                          child: ListView.builder(
-                            itemCount: viewModel.reportes.length,
-                            itemBuilder: (context, index) {
-                              return ReporteCard(
-                                reporte: viewModel.reportes[index],
-                                viewModel: viewModel,
-                                alTocar: (value) {
-                                  _cambiarMostrando(value);
-                                },
-                              );
-                            },
+                    child: Column(
+                      children: [
+                        SingleChildScrollView(
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height - 20,
+                            child: ListView.builder(
+                              itemCount: viewModel.reportes.length,
+                              itemBuilder: (context, index) {
+                                return ReporteCard(
+                                  reporte: viewModel.reportes[index],
+                                  viewModel: viewModel,
+                                  alTocar: (value) {
+                                    _cambiarMostrando(value);
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              Expanded(
-                flex: 7,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 132, 216, 94),
-                    border: BoxBorder.all(
-                      color: Colors.black,
-                      width: 1,
-                      style: BorderStyle.solid,
+                      ],
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      ViewReport(
-                        reporte: viewModel.obtenerPorId(mostrando),
-                        viewModel: viewModel
-                      )
-                    ],
+                ),
+
+                Expanded(
+                  flex: 7,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 132, 216, 94),
+                      border: BoxBorder.all(
+                        color: Colors.black,
+                        width: 1,
+                        style: BorderStyle.solid,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        ViewReport(
+                          reporte: viewModel.obtenerPorId(mostrando),
+                          viewModel: viewModel,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
-    
   }
 }
