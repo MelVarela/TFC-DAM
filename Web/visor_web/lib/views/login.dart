@@ -31,6 +31,7 @@ class _Login extends State<Login> {
                 border: OutlineInputBorder(),
                 hintText: "Contraseña:",
               ),
+              obscureText: true,
               onSubmitted: (contra) => {contrasinal = contra},
             ),
             ElevatedButton(

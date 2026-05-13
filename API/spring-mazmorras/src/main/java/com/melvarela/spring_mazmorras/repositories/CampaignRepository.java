@@ -12,7 +12,7 @@ import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 @Repository
 public interface CampaignRepository extends JpaRepository<CampaignEntity, String>{
     
-    @Query("SELECT c FROM CampaignEntity c JOIN UserRelationEntity ur ON c.id = ur.id.campanna WHERE ur.id.usuario = :play")
+    @Query("SELECT c FROM CampaignEntity c JOIN UserRelationEntity ur ON c.id = ur.id.campanna WHERE ur.id.usuario = :play AND ur.aceptada = true")
     List<CampaignEntity> findAllByPlayer(@Param("play") String playerId);
 
 }
