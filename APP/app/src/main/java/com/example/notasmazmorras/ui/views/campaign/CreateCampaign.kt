@@ -97,8 +97,10 @@ fun CreateCampaignScreen(
                 fotoActual =
                     MediaStore.Images.Media.getBitmap(ctx, it)
             } else {
-                val source = ImageDecoder.createSource(ctx, it!!)
-                fotoActual = ImageDecoder.decodeBitmap(source)
+                if(it != null){
+                    val source = ImageDecoder.createSource(ctx, it)
+                    fotoActual = ImageDecoder.decodeBitmap(source)
+                }
             }
         }
     )
@@ -151,7 +153,19 @@ fun CreateCampaignScreen(
 
         Button(
             onClick = {
-                uploadImage(fotoActual)
+                if(fotoActual != null){
+                    uploadImage(fotoActual)
+                }else{
+                    onDone(
+                        LocalCampaign(
+                            "local_${System.nanoTime()}camp",
+                            name,
+                            "",
+                            true
+                        )
+                    )
+                }
+
             }
         ) { Text("Create Campaign") }
 

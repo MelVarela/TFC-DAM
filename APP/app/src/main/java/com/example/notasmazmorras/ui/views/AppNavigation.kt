@@ -102,6 +102,7 @@ fun AppNavigation(
             CreateAccount(
                 onDone = {
                     userAccount ->
+                    systemViewmodel.finishUpload()
                     userViewmodel.insertUser(userAccount)
                     systemViewmodel.setLastSigned(userAccount.email)
                     navController.navigate("home")

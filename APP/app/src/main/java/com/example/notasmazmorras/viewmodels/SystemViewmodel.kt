@@ -185,6 +185,9 @@ class SystemViewmodel(
     fun finishUpload() {
         _uploadState.update {
             it.copy(
+                url = "",
+                error = null,
+                isLoading = false,
                 uploadStarted = false
             )
         }

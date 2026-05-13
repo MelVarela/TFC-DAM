@@ -101,8 +101,10 @@ fun CreateAccountScreen(
                 fotoActual =
                     MediaStore.Images.Media.getBitmap(ctx, it)
             } else {
-                val source = ImageDecoder.createSource(ctx, it!!)
-                fotoActual = ImageDecoder.decodeBitmap(source)
+                if(it != null){
+                    val source = ImageDecoder.createSource(ctx, it)
+                    fotoActual = ImageDecoder.decodeBitmap(source)
+                }
             }
         }
     )
@@ -170,7 +172,16 @@ fun CreateAccountScreen(
 
         Button(
             onClick = {
-                uploadImage(fotoActual)
+                if(fotoActual != null){
+                    uploadImage(fotoActual)
+                }else{
+                    onDone(UserAccount(
+                        email = email,
+                        password = password,
+                        name = userName,
+                        profilePicture = ""
+                    ))
+                }
             }
         ) { Text("Crear cuenta") }
 

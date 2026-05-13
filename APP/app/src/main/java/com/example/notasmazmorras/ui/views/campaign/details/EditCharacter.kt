@@ -132,8 +132,10 @@ fun EditCharacterScreen(
                 fotoActual =
                     MediaStore.Images.Media.getBitmap(ctx, it)
             } else {
-                val source = ImageDecoder.createSource(ctx, it!!)
-                fotoActual = ImageDecoder.decodeBitmap(source)
+                if(it != null){
+                    val source = ImageDecoder.createSource(ctx, it)
+                    fotoActual = ImageDecoder.decodeBitmap(source)
+                }
             }
         }
     )
@@ -287,7 +289,7 @@ fun EditCharacterScreen(
 
             Button(
                 onClick = {
-                    if(!fotoCambiada){
+                    if(!fotoCambiada || fotoActual == null){
 
                         if(characterId != null){
                             Log.d("DB", "Actualizando sin foto")

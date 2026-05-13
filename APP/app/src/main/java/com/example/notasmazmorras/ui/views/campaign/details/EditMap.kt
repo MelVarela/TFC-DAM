@@ -112,8 +112,10 @@ fun EditMapScreen(
                 fotoActual =
                     MediaStore.Images.Media.getBitmap(ctx, it)
             } else {
-                val source = ImageDecoder.createSource(ctx, it!!)
-                fotoActual = ImageDecoder.decodeBitmap(source)
+                if(it != null){
+                    val source = ImageDecoder.createSource(ctx, it)
+                    fotoActual = ImageDecoder.decodeBitmap(source)
+                }
             }
         }
     )
@@ -185,7 +187,7 @@ fun EditMapScreen(
 
             Button(
                 onClick = {
-                    if(!fotoCambiada){
+                    if(!fotoCambiada || fotoActual == null){
 
                         if(placeId != null){
                             onDone(LocalPlace(

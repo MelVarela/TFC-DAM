@@ -112,8 +112,10 @@ fun EditObjectScreen(
                 fotoActual =
                     MediaStore.Images.Media.getBitmap(ctx, it)
             } else {
-                val source = ImageDecoder.createSource(ctx, it!!)
-                fotoActual = ImageDecoder.decodeBitmap(source)
+                if(it != null){
+                    val source = ImageDecoder.createSource(ctx, it)
+                    fotoActual = ImageDecoder.decodeBitmap(source)
+                }
             }
         }
     )
@@ -196,7 +198,7 @@ fun EditObjectScreen(
 
             Button(onClick = {
                 try{
-                    if(!fotoCambiada){
+                    if(!fotoCambiada || fotoActual == null){
 
                         if(objectId != null){
                             onDone(LocalObject(
