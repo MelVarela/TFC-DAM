@@ -1,6 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign.details
 
-import android.util.Log
+import com.example.notasmazmorras.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalCreature
 import com.example.notasmazmorras.ui.components.GenericCard
@@ -37,10 +38,10 @@ fun Creatures(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Creatures") },
+                title = { Text(stringResource(R.string.creatures)) },
                 navigationIcon = {
                     IconButton(onClick = {onBack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -54,7 +55,7 @@ fun Creatures(
             Button(
                 onClick = {navController.navigate("editCreature")}
             ) {
-                Text("Crear criatura")
+                Text(stringResource(R.string.add_creature))
             }
             Button(
                 onClick = { onSync() }

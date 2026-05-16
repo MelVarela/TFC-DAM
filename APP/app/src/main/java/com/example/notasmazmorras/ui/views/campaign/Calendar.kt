@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,13 +19,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import com.example.notasmazmorras.R
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -41,10 +37,10 @@ fun Calendar(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Calendar") },
+                title = { Text(stringResource(R.string.calendar)) },
                 navigationIcon = {
                     IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -61,7 +57,7 @@ fun Calendar(
             Button(
                 onClick = {onChangeSchedule()}
             ) {
-                Text("Cambiar mi horario")
+                Text(stringResource(R.string.change_schedule))
             }
         }
     }
@@ -113,7 +109,7 @@ fun CalendarioScreen(
                     color = if(lunes) colorScheme.secondaryContainer else Color.Red,
                 )
         ){
-            Text(modifier = Modifier.padding(8.dp), text = "L")
+            Text(modifier = Modifier.padding(8.dp), text = stringResource(R.string.ltr_monday))
         }
         Box(
             modifier = Modifier
@@ -123,7 +119,7 @@ fun CalendarioScreen(
                     color = if(martes) colorScheme.secondaryContainer else Color.Red,
                 )
         ){
-            Text(modifier = Modifier.padding(8.dp), text = "M")
+            Text(modifier = Modifier.padding(8.dp), text = stringResource(R.string.ltr_tuesday))
         }
         Box(
             modifier = Modifier
@@ -133,7 +129,7 @@ fun CalendarioScreen(
                     color = if(miercoles) colorScheme.secondaryContainer else Color.Red,
                 )
         ){
-            Text(modifier = Modifier.padding(8.dp), text = "X")
+            Text(modifier = Modifier.padding(8.dp), text = stringResource(R.string.ltr_wednesday))
         }
         Box(
             modifier = Modifier
@@ -143,7 +139,7 @@ fun CalendarioScreen(
                     color = if(jueves) colorScheme.secondaryContainer else Color.Red,
                 )
         ){
-            Text(modifier = Modifier.padding(8.dp), text = "J")
+            Text(modifier = Modifier.padding(8.dp), text = stringResource(R.string.ltr_thursday))
         }
         Box(
             modifier = Modifier
@@ -153,7 +149,7 @@ fun CalendarioScreen(
                     color = if(viernes) colorScheme.secondaryContainer else Color.Red,
                 )
         ){
-            Text(modifier = Modifier.padding(8.dp), text = "V")
+            Text(modifier = Modifier.padding(8.dp), text = stringResource(R.string.ltr_friday))
         }
         Box(
             modifier = Modifier
@@ -163,7 +159,7 @@ fun CalendarioScreen(
                     color = if(sabado) colorScheme.secondaryContainer else Color.Red,
                 )
         ){
-            Text(modifier = Modifier.padding(8.dp), text = "S")
+            Text(modifier = Modifier.padding(8.dp), text = stringResource(R.string.ltr_saturday))
         }
         Box(
             modifier = Modifier
@@ -173,7 +169,7 @@ fun CalendarioScreen(
                     color = if(domingo) colorScheme.secondaryContainer else Color.Red,
                 )
         ){
-            Text(modifier = Modifier.padding(8.dp), text = "D")
+            Text(modifier = Modifier.padding(8.dp), text = stringResource(R.string.ltr_sunday))
         }
     }
 

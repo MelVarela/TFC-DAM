@@ -34,13 +34,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.viewmodels.UploadState
 import androidx.core.net.toUri
-import com.example.notasmazmorras.data.model.local.LocalCampaign
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.remote.DndClass
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,10 +61,10 @@ fun EditCharacter(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Edit Character") },
+                title = { Text(stringResource(R.string.edit_character)) },
                 navigationIcon = {
                     IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -105,11 +106,12 @@ fun EditCharacterScreen(
     modifier: Modifier
 ){
 
-    val ctx = LocalContext.current.contentResolver
+    val context = LocalContext.current
+    val ctx = context.contentResolver
 
     var name by remember { mutableStateOf("") }
-    var clase by remember { mutableStateOf("Selecciona una clase") }
-    var subclase by remember { mutableStateOf("Selecciona una subclase") }
+    var clase by remember { mutableStateOf(context.getString(R.string.char_sel_class)) }
+    var subclase by remember { mutableStateOf(context.getString(R.string.char_sel_subclass)) }
     var maxPg by remember { mutableIntStateOf(0) }
     var pg by remember { mutableIntStateOf(0) }
 
@@ -158,7 +160,6 @@ fun EditCharacterScreen(
         }
 
         if(characterId != null){
-            Log.d("DB", "Actualizando con foto")
             onDone(LocalCharacter(
                 characterId,
                 name,
@@ -171,7 +172,6 @@ fun EditCharacterScreen(
                 true
             ))
         }else{
-            Log.d("DB", "Creando con foto")
             onDone(LocalCharacter(
                 "local_${System.nanoTime()}char",
                 name,
@@ -198,7 +198,7 @@ fun EditCharacterScreen(
             TextField(
                 value = name,
                 onValueChange = {name = it},
-                label = { Text("Nombre") },
+                label = { Text(stringResource(R.string.name)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 singleLine = true,
             )
@@ -244,9 +244,9 @@ fun EditCharacterScreen(
                     }
                 }else{
                     DropdownMenuItem(
-                        text = {Text("Esta clase no tiene subclases")},
+                        text = {Text(stringResource(R.string.no_subclases))},
                         onClick = {
-                            subclase = "Esta clase no tiene subclases"
+                            subclase = context.getString(R.string.no_subclases)
                             desplegadoSubclase = false
                         }
                     )
@@ -257,7 +257,7 @@ fun EditCharacterScreen(
             TextField(
                 value = maxPg.toString(),
                 onValueChange = {maxPg = Integer.parseInt(if(it != "") it else "0")},
-                label = { Text("PG Maximos") },
+                label = { Text(stringResource(R.string.max_pg)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
             )
@@ -265,7 +265,7 @@ fun EditCharacterScreen(
             TextField(
                 value = pg.toString(),
                 onValueChange = {pg = Integer.parseInt(if(it != "") it else "0")},
-                label = { Text("Pg") },
+                label = { Text(stringResource(R.string.pg)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
             )
@@ -279,7 +279,7 @@ fun EditCharacterScreen(
                     )
                 }
             ) {
-                Text("Selecciona una foto")
+                Text(stringResource(R.string.select_photo))
             }
 
             AsyncImage(
@@ -292,7 +292,6 @@ fun EditCharacterScreen(
                     if(!fotoCambiada || fotoActual == null){
 
                         if(characterId != null){
-                            Log.d("DB", "Actualizando sin foto")
                             onDone(LocalCharacter(
                                 characterId,
                                 name,
@@ -305,7 +304,6 @@ fun EditCharacterScreen(
                                 true
                             ))
                         }else{
-                            Log.d("DB", "Creando sin foto")
                             onDone(LocalCharacter(
                                 "local_${System.nanoTime()}char",
                                 name,
@@ -323,10 +321,10 @@ fun EditCharacterScreen(
                         uploadImage(fotoActual)
                     }
                 }
-            ) { Text("Done") }
+            ) { Text(stringResource(R.string.done)) }
 
             if(uploadState.isLoading){
-                Text("Cargando...")
+                Text(stringResource(R.string.loading))
             }
 
         }

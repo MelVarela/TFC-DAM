@@ -16,9 +16,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.ui.components.CampaignCard
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +35,7 @@ fun Home(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Welcome, $name") })
+            TopAppBar(title = { Text(stringResource(R.string.welcome) + name) })
         }
     ){ contentPadding ->
         Column(
@@ -44,32 +46,32 @@ fun Home(
             Button(
                 onClick = {navController.navigate("createCampaign")}
             ) {
-                Text("Crear campaña")
+                Text(stringResource(R.string.add_campaign))
             }
             Button(
                 onClick = {navController.navigate("account/1")}
             ) {
-                Text("Ver cuenta")
+                Text(stringResource(R.string.view_account))
             }
             Button(
                 onClick = {onInvitations()}
             ) {
-                Text("Ver invitaciones")
+                Text(stringResource(R.string.view_invitations))
             }
             Button(
                 onClick = {navController.navigate("reportingSuggestions/R")}
             ) {
-                Text("Reportar error")
+                Text(stringResource(R.string.report_error))
             }
             Button(
                 onClick = {navController.navigate("reportingSuggestions/S")}
             ) {
-                Text("Sugerir un cambio")
+                Text(stringResource(R.string.make_suggestion))
             }
             Button(
                 onClick = {navController.navigate("options")}
             ) {
-                Text("Opciones")
+                Text(stringResource(R.string.options))
             }
             Button(
                 onClick = { onSync() }

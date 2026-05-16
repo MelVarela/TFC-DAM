@@ -1,6 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign
 
-import android.util.Log
+import com.example.notasmazmorras.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -22,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.example.notasmazmorras.data.model.local.LocalNote
 
@@ -35,13 +37,15 @@ fun Note(
     isDm: Boolean
 ) {
 
+    val context = LocalContext.current
+
     var firstLoad by remember { mutableStateOf(true) };
     if(firstLoad){
         onLoad()
         firstLoad = false
     }
 
-    var name by remember { mutableStateOf("Nueva nota") }
+    var name by remember { mutableStateOf(context.getString(R.string.new_note)) }
     var content by remember { mutableStateOf("") }
     var dmOnly by remember { mutableStateOf(false) }
 
@@ -53,7 +57,7 @@ fun Note(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Note") },
+                title = { Text(stringResource(R.string.note)) },
                 navigationIcon = {
                     IconButton(onClick = {
 
@@ -80,7 +84,7 @@ fun Note(
                         }
 
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -96,12 +100,12 @@ fun Note(
                     checked = dmOnly,
                     onCheckedChange = { dmOnly = it }
                 )
-                Text("Make note only visible to DM")
+                Text(stringResource(R.string.dm_view_only))
             }
             TextField(
                 value = name,
                 onValueChange = {name = it},
-                label = { Text("Name") },
+                label = { Text(stringResource(R.string.name)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 singleLine = true)
             TextField(

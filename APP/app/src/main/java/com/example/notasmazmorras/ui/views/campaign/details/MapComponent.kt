@@ -18,9 +18,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalPlace
 import com.example.notasmazmorras.ui.components.GenericCard
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,10 +38,10 @@ fun MapComponent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Map") },
+                title = { Text(stringResource(R.string.map)) },
                 navigationIcon = {
                     IconButton(onClick = {onBack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -53,7 +55,7 @@ fun MapComponent(
             Button(
                 onClick = {navController.navigate("editMap")}
             ) {
-                Text("Crear lugar")
+                Text(stringResource(R.string.add_place))
             }
             Button(
                 onClick = { onSync() }

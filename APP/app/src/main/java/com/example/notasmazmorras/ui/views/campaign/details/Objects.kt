@@ -18,9 +18,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalObject
 import com.example.notasmazmorras.ui.components.GenericCard
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,10 +38,10 @@ fun Objects(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Objects") },
+                title = { Text(stringResource(R.string.objects)) },
                 navigationIcon = {
                     IconButton(onClick = {onBack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -53,7 +55,7 @@ fun Objects(
             Button(
                 onClick = {navController.navigate("editObject")}
             ) {
-                Text("Crear objeto")
+                Text(stringResource(R.string.add_object))
             }
             Button(
                 onClick = { onSync() }

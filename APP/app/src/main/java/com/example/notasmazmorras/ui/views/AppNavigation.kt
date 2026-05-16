@@ -1,17 +1,16 @@
 package com.example.notasmazmorras.ui.views
 
 import android.util.Log
-import android.widget.ImageView
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.data.model.local.LocalCreature
 import com.example.notasmazmorras.data.model.local.LocalNote
@@ -49,7 +48,7 @@ import com.example.notasmazmorras.viewmodels.ObjectViewmodel
 import com.example.notasmazmorras.viewmodels.PlaceViewmodel
 import com.example.notasmazmorras.viewmodels.SystemViewmodel
 import com.example.notasmazmorras.viewmodels.UserViewmodel
-import kotlinx.coroutines.awaitAll
+import com.example.notasmazmorras.R
 
 @Composable
 fun AppNavigation(
@@ -725,8 +724,8 @@ fun AppNavigation(
 
             val map = HashMap<String, String>()
 
-            map.put("Clase", chara.clase)
-            map.put("Subclase", chara.subClase)
+            map.put(stringResource(R.string.clase), chara.clase)
+            map.put(stringResource(R.string.sub_class), chara.subClase)
 
             Details(
                 caracteristicas = map.toMap(),
@@ -750,7 +749,7 @@ fun AppNavigation(
 
             val map = HashMap<String, String>()
 
-            map.put("Especie", creature.species)
+            map.put(stringResource(R.string.species), creature.species)
 
             Details(
                 caracteristicas = map.toMap(),
@@ -774,7 +773,7 @@ fun AppNavigation(
 
             val map = HashMap<String, String>()
 
-            map.put("Precio", obxecto.cost.toString())
+            map.put(stringResource(R.string.price), obxecto.cost.toString())
 
             Details(
                 caracteristicas = map.toMap(),

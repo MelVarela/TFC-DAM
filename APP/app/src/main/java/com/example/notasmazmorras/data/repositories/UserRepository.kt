@@ -49,7 +49,6 @@ class DefaultUserRepository(
     override suspend fun insertUser(user: UserAccount): RepositoryResult {
         try{
             if(!checkEmailExists(user.email)){
-                Log.d("DB", "Creando usuario...")
                 local.insert(user.toLocal().copy(pendingSync = false))
                 remote.createUser(user)
                 return RepositoryResult.Success("Usuario creado con éxito")

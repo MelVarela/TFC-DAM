@@ -1,6 +1,5 @@
 package com.example.notasmazmorras.ui.views.campaign
 
-import android.content.ContentResolver
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -32,11 +31,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.viewmodels.UploadState
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,10 +50,10 @@ fun CreateCampaign(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("CreateCampaign") },
+                title = { Text(stringResource(R.string.add_campaign)) },
                 navigationIcon = {
                     IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -129,7 +130,7 @@ fun CreateCampaignScreen(
         TextField(
             value = name,
             onValueChange = {name = it},
-            label = { Text("Nombre") },
+            label = { Text(stringResource(R.string.name)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
         )
@@ -143,7 +144,7 @@ fun CreateCampaignScreen(
                 )
             }
         ) {
-            Text("Selecciona una foto")
+            Text(stringResource(R.string.select_photo))
         }
 
         AsyncImage(
@@ -167,10 +168,10 @@ fun CreateCampaignScreen(
                 }
 
             }
-        ) { Text("Create Campaign") }
+        ) { Text(stringResource(R.string.add_campaign)) }
 
         if(uploadState.isLoading){
-            Text("Creando...")
+            Text(stringResource(R.string.loading))
         }
 
     }

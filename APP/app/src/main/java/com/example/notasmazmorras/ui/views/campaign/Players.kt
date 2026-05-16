@@ -17,9 +17,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
 import com.example.notasmazmorras.ui.components.RelationCard
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,10 +35,10 @@ fun Players(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Players") },
+                title = { Text(stringResource(R.string.players)) },
                 navigationIcon = {
                     IconButton(onClick = {onBack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -50,7 +52,7 @@ fun Players(
             Button(
                 onClick = {navController.navigate("invitePlayer")}
             ) {
-                Text("Invitar jugador")
+                Text(stringResource(R.string.invite_player))
             }
             LazyColumn(
                 modifier = Modifier.padding(contentPadding),

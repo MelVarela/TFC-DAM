@@ -18,9 +18,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.ui.components.CharacterCard
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,10 +38,10 @@ fun Characters(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Characters") },
+                title = { Text(stringResource(R.string.characters)) },
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -53,7 +55,7 @@ fun Characters(
             Button(
                 onClick = {navController.navigate("editCharacter")}
             ) {
-                Text("Crear personaje")
+                Text(stringResource(R.string.add_character))
             }
             Button(
                 onClick = { onSync() }

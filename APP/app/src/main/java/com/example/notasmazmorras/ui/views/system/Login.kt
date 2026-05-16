@@ -17,11 +17,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.navigation.NavController
-import com.example.notasmazmorras.data.model.local.LocalCampaign
-import com.example.notasmazmorras.viewmodels.CampaignViewmodel
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +32,7 @@ fun Login(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Login") })
+            TopAppBar(title = { Text(stringResource(R.string.login)) })
         }
     ){ contentPadding ->
         Column(
@@ -77,7 +76,7 @@ fun LoginScreen(
         TextField(
             value = email,
             onValueChange = {email = it},
-            label = { Text("Email") },
+            label = { Text(stringResource(R.string.email)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
         )
@@ -85,7 +84,7 @@ fun LoginScreen(
         TextField(
             value = password,
             onValueChange = {password = it},
-            label = { Text("Contraseña") },
+            label = { Text(stringResource(R.string.password)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
@@ -94,13 +93,13 @@ fun LoginScreen(
         Button(
             onClick = { onLog(email, password) }
         ) {
-            Text("Loggearse")
+            Text(stringResource(R.string.login))
         }
 
         Button(
             onClick = {onCreate()}
         ) {
-            Text("Crear cuenta")
+            Text(stringResource(R.string.create_account))
         }
 
     }

@@ -41,7 +41,6 @@ class NoteViewmodel(
     }
 
     fun setEditing(note: LocalNote, state: Boolean) = viewModelScope.launch {
-        Log.d("DB", "Setting editing $state")
         noteRepository.setEditing(note, state)
     }
 

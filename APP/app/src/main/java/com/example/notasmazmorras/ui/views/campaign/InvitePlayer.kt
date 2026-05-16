@@ -21,10 +21,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
-import com.example.notasmazmorras.ui.views.campaign.details.EditCharacterScreen
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,10 +37,10 @@ fun InvitePlayer(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Invite player") },
+                title = { Text(stringResource(R.string.invite_player)) },
                 navigationIcon = {
                     IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -79,7 +80,7 @@ fun InvitePlayerScreen(
             TextField(
                 value = player,
                 onValueChange = {player = it},
-                label = { Text("Correo del jugador a invitar") },
+                label = { Text(stringResource(R.string.email_to_invite)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 singleLine = true,
             )
@@ -96,7 +97,7 @@ fun InvitePlayerScreen(
                     )
                 }
             ) {
-                Text("Invitar")
+                Text(stringResource(R.string.invite_player))
             }
         }
     }

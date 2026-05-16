@@ -138,21 +138,13 @@ class DefaultUserRelationRepository(
             var relationsToUpdate : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
             var relationsToInsert : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
 
-            Log.d("SYNC", relationsRemote.toString())
-
             relationsRemote.map {
-                Log.d("SYNC", it.toString())
                 if(!relationsLocal.first().contains(it.toLocal())){
-                    Log.d("SYNC", "Insert")
                     relationsToInsert = relationsToInsert.plus(it.toLocal())
                 }else{
-                    Log.d("SYNC", "Update")
                     relationsToUpdate = relationsToUpdate.plus(it.toLocal())
                 }
             }
-
-            Log.d("SYNC I", relationsToInsert.toString())
-            Log.d("SYNC U", relationsToUpdate.toString())
 
             local.insertList(relationsToInsert)
             local.updateList(relationsToUpdate)
@@ -171,21 +163,13 @@ class DefaultUserRelationRepository(
             var relationsToUpdate : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
             var relationsToInsert : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
 
-            Log.d("SYNC", relationsRemote.toString())
-
             relationsRemote.map {
-                Log.d("SYNC", it.toString())
                 if(!relationsLocal.first().contains(it.toLocal())){
-                    Log.d("SYNC", "Insert")
                     relationsToInsert = relationsToInsert.plus(it.toLocal())
                 }else{
-                    Log.d("SYNC", "Update")
                     relationsToUpdate = relationsToUpdate.plus(it.toLocal())
                 }
             }
-
-            Log.d("SYNC I", relationsToInsert.toString())
-            Log.d("SYNC U", relationsToUpdate.toString())
 
             local.insertList(relationsToInsert)
             local.updateList(relationsToUpdate)
@@ -204,21 +188,13 @@ class DefaultUserRelationRepository(
             var relationsToUpdate : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
             var relationsToInsert : List<LocalUserRelation> = ArrayList<LocalUserRelation>()
 
-            Log.d("SYNC", relationsRemote.toString())
-
             relationsRemote.map {
-                Log.d("SYNC", it.toString())
                 if(!relationsLocal.first().contains(it.toLocal())){
-                    Log.d("SYNC", "Insert")
                     relationsToInsert = relationsToInsert.plus(it.toLocal())
                 }else{
-                    Log.d("SYNC", "Update")
                     relationsToUpdate = relationsToUpdate.plus(it.toLocal())
                 }
             }
-
-            Log.d("SYNC I", relationsToInsert.toString())
-            Log.d("SYNC U", relationsToUpdate.toString())
 
             local.insertList(relationsToInsert)
             local.updateList(relationsToUpdate)

@@ -1,7 +1,6 @@
 package com.example.notasmazmorras.viewmodels
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,15 +12,10 @@ import com.example.notasmazmorras.data.model.local.SysTable
 import com.example.notasmazmorras.data.model.remote.Suggestion
 import com.example.notasmazmorras.data.repositories.ImageUploadResult
 import com.example.notasmazmorras.data.repositories.SystemRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -48,7 +42,7 @@ class SystemViewmodel(
                         "1",
                         lastUser = "",
                         LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                        "esp"
+                        "es"
                     )
                 )
             }else{
@@ -60,7 +54,7 @@ class SystemViewmodel(
                     "1",
                     lastUser = "",
                     LocalDateTime.now().toEpochSecond(ZoneOffset.UTC),
-                    "esp",
+                    "es",
                     false
                 )
             )

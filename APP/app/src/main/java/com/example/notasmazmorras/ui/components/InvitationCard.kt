@@ -13,8 +13,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
+import com.example.notasmazmorras.R
 
 @Composable
 fun InvitationCard(
@@ -35,18 +37,18 @@ fun InvitationCard(
             Text(userRelation.user)
             if(userRelation.isAccepted){
                 if(userRelation.role == "D"){
-                    Text("DM")
+                    Text(stringResource(R.string.dm))
                 }else{
-                    Text("Jugador")
+                    Text(stringResource(R.string.player))
                 }
             }else{
-                Text("Pendiente")
+                Text(stringResource(R.string.pending))
             }
             IconButton(onClick = { onAccepted(userRelation) }) {
-                Icon(Icons.Outlined.PersonAdd, contentDescription = "Aceptar")
+                Icon(Icons.Outlined.PersonAdd, contentDescription = stringResource(R.string.accept))
             }
             IconButton(onClick = { onRejected(userRelation) }) {
-                Icon(Icons.Outlined.Delete, contentDescription = "Rechazar")
+                Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.reject))
             }
         }
     }

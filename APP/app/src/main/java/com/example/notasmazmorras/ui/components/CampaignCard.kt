@@ -1,6 +1,6 @@
 package com.example.notasmazmorras.ui.components
 
-import android.R
+import com.example.notasmazmorras.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -22,9 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -81,7 +78,7 @@ fun CampaignCard(
                     modifier = Modifier.weight(0.2f)
                 ) {
                     IconButton(onClick = { onDelete(campaign) }) {
-                        Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
+                        Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
                     }
                 }
 

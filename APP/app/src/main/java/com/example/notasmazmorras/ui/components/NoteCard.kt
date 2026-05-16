@@ -15,7 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.local.LocalNote
 
 @Composable
@@ -43,7 +45,7 @@ fun NoteCard(
             Text(note.name)
 
             IconButton(onClick = { onDelete(note) }) {
-                Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
+                Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
             }
         }
     }

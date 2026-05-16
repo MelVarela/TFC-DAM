@@ -31,11 +31,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.example.notasmazmorras.data.model.local.LocalCampaign
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.local.LocalObject
 import com.example.notasmazmorras.viewmodels.UploadState
 
@@ -53,10 +54,10 @@ fun EditObject(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Edit Object") },
+                title = { Text(stringResource(R.string.edit_object)) },
                 navigationIcon = {
                     IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -166,7 +167,7 @@ fun EditObjectScreen(
             TextField(
                 value = name,
                 onValueChange = {name = it},
-                label = { Text("Nombre") },
+                label = { Text(stringResource(R.string.name)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 singleLine = true,
             )
@@ -174,7 +175,7 @@ fun EditObjectScreen(
             TextField(
                 value = cost,
                 onValueChange = {cost = it},
-                label = { Text("Costo") },
+                label = { Text(stringResource(R.string.price)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
             )
@@ -188,7 +189,7 @@ fun EditObjectScreen(
                     )
                 }
             ) {
-                Text("Selecciona una foto")
+                Text(stringResource(R.string.select_photo))
             }
 
             AsyncImage(
@@ -226,10 +227,10 @@ fun EditObjectScreen(
                 }catch (e: Throwable){
                     Log.d("ERR", "${e.message}")
                 }
-            }) { Text("Done") }
+            }) { Text(stringResource(R.string.done)) }
 
             if(uploadState.isLoading){
-                Text("Cargando...")
+                Text(stringResource(R.string.loading))
             }
         }
     }

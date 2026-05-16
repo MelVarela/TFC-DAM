@@ -81,7 +81,6 @@ class DefaultCampaignRepository(
     }
 
     override suspend fun uploadPendingChanges(): RepositoryResult {
-        Log.d("DB", "Subiendo cambios...")
         var toSync = local.getCampaignsToSync()
 
         try{
@@ -117,7 +116,6 @@ class DefaultCampaignRepository(
                 }
             }
 
-            Log.d("DB", "Cambios subidos")
             return RepositoryResult.Success("Cambios sincronizados con éxito.")
         }catch (e : Throwable){
             Log.e(TAG, ("${e.message ?: NO_ERR}: \n${Log.getStackTraceString(e)}"))
@@ -126,7 +124,6 @@ class DefaultCampaignRepository(
     }
 
     override suspend fun syncFromServer(email: String): RepositoryResult {
-        Log.d("DB", "Sincronizando...")
         try{
             val campaigns = remote.getCampaigns(email)
             val ids = local.getIds().first()
@@ -154,7 +151,6 @@ class DefaultCampaignRepository(
             local.insertList(campaignsToInsert)
             local.updateList(campaignsToUpdate)
 
-            Log.d("DB", "Sincronizacion terminada.")
             return RepositoryResult.Success("Sicronizado con éxito")
         }catch (e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)

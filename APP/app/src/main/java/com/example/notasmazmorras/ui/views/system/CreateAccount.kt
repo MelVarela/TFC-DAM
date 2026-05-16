@@ -31,13 +31,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.notasmazmorras.data.model.UserAccount
-import com.example.notasmazmorras.data.model.local.LocalCampaign
-import com.example.notasmazmorras.data.model.local.LocalUser
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.viewmodels.UploadState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,10 +51,10 @@ fun CreateAccount(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("CreateAccount") },
+                title = { Text(stringResource(R.string.create_account)) },
                 navigationIcon = {
                     IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -131,7 +131,7 @@ fun CreateAccountScreen(
         TextField(
             value = userName,
             onValueChange = {userName = it},
-            label = { Text("User Name") },
+            label = { Text(stringResource(R.string.user_name)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
         )
@@ -139,7 +139,7 @@ fun CreateAccountScreen(
         TextField(
             value = password,
             onValueChange = {password = it},
-            label = { Text("Contraseña") },
+            label = { Text(stringResource(R.string.password)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
@@ -148,7 +148,7 @@ fun CreateAccountScreen(
         TextField(
             value = email,
             onValueChange = {email = it},
-            label = { Text("Email") },
+            label = { Text(stringResource(R.string.email)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             singleLine = true,
         )
@@ -162,7 +162,7 @@ fun CreateAccountScreen(
                 )
             }
         ) {
-            Text("Selecciona una foto")
+            Text(stringResource(R.string.select_photo))
         }
 
         AsyncImage(
@@ -183,10 +183,10 @@ fun CreateAccountScreen(
                     ))
                 }
             }
-        ) { Text("Crear cuenta") }
+        ) { Text(stringResource(R.string.create_account)) }
 
         if(uploadState.isLoading){
-            Text("Cargando...")
+            Text(stringResource(R.string.loading))
         }
 
     }

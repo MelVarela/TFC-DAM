@@ -24,10 +24,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.notasmazmorras.R
 
 @Composable
 fun GenericCard(
@@ -80,10 +82,10 @@ fun GenericCard(
                     modifier = Modifier.weight(0.2f)
                 ) {
                     IconButton(onClick = { onEdit() }) {
-                        Icon(Icons.Outlined.Edit, contentDescription = "Editar")
+                        Icon(Icons.Outlined.Edit, contentDescription = stringResource(R.string.edit))
                     }
                     IconButton(onClick = { onDelete() }) {
-                        Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
+                        Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
                     }
                 }
             }

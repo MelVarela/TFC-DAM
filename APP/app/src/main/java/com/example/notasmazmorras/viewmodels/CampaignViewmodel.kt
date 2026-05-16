@@ -62,7 +62,6 @@ class CampaignViewmodel (
 
     fun updateSchedule(schedule: String, user: String) = viewModelScope.launch {
         val relation = userRelationRepository.getAllUserRelations().first().firstOrNull { (it.campaign == currentCampaign.value && it.user == user) }
-        Log.d("UPT", "$relation")
         if (relation != null){
             userRelationRepository.updateUserRelation(
                 relation.copy(schedule = schedule, pendingSync = true)

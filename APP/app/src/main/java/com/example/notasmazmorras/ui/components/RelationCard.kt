@@ -12,7 +12,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
 
 @Composable
@@ -35,15 +37,15 @@ fun RelationCard(
             Text(userRelation.user)
             if(userRelation.isAccepted){
                 if(userRelation.role == "D"){
-                    Text("DM")
+                    Text(stringResource(R.string.dm))
                 }else{
-                    Text("Jugador")
+                    Text(stringResource(R.string.player))
                 }
             }else{
-                Text("Pendiente")
+                Text(stringResource(R.string.pending))
             }
             IconButton(onClick = { onDelete(userRelation) }) {
-                Icon(Icons.Outlined.Delete, contentDescription = "Eliminar")
+                Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
             }
         }
     }

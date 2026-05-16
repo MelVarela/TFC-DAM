@@ -16,8 +16,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalCampaign
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +41,7 @@ fun Campaign(
                 title = { Text(campaign?.name ?: "Error") },
                 navigationIcon = {
                     IconButton(onClick = {onBack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -53,37 +55,37 @@ fun Campaign(
             Button(
                 onClick = {navController.navigate("campaign/${campaign!!.id}/calendar")}
             ) {
-                Text("Ver calendario")
+                Text(stringResource(R.string.calendar))
             }
             Button(
                 onClick = {onUserRelations("campaign/${campaign!!.id}/players")}
             ) {
-                Text("Ver jugadores")
+                Text(stringResource(R.string.players))
             }
             Button(
                 onClick = {navController.navigate("notes/${campaign!!.id}/notes")}
             ) {
-                Text("Ver notas")
+                Text(stringResource(R.string.notes))
             }
             Button(
                 onClick = {navController.navigate("campaign/${campaign!!.id}/characters")}
             ) {
-                Text("Ver personajes")
+                Text(stringResource(R.string.characters))
             }
             Button(
                 onClick = {navController.navigate("campaign/${campaign!!.id}/objects")}
             ) {
-                Text("Ver objetos")
+                Text(stringResource(R.string.objects))
             }
             Button(
                 onClick = {navController.navigate("campaign/${campaign!!.id}/creatures")}
             ) {
-                Text("Ver criaturas")
+                Text(stringResource(R.string.creatures))
             }
             Button(
                 onClick = {navController.navigate("campaign/${campaign!!.id}/map")}
             ) {
-                Text("Ver mapa")
+                Text(stringResource(R.string.map))
             }
             Button(
                 onClick = { onSync() }

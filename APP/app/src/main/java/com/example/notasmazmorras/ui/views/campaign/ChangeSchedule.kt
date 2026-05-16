@@ -1,30 +1,19 @@
 package com.example.notasmazmorras.ui.views.campaign
 
-import android.icu.util.Calendar
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimePicker
-import androidx.compose.material3.TimePickerLayoutType
-import androidx.compose.material3.TimePickerState
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,10 +21,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
-import java.time.LocalDateTime
+import com.example.notasmazmorras.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,10 +35,10 @@ fun ChangeSchedule(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Change Schedule") },
+                title = { Text(stringResource(R.string.change_schedule_title)) },
                 navigationIcon = {
                     IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -85,14 +73,14 @@ fun ChangeScheduleScreen(
     var domingo by remember { mutableStateOf(schedule.contains("domingo")) }
 
     Column {
-        Text("Que dias estás disponible?")
+        Text(stringResource(R.string.days_available))
         Row {
             Column {
                 Checkbox(
                     checked = lunes,
                     onCheckedChange = { lunes = it }
                 )
-                Text("Lunes")
+                Text(stringResource(R.string.monday))
             }
 
             Column {
@@ -100,7 +88,7 @@ fun ChangeScheduleScreen(
                     checked = martes,
                     onCheckedChange = { martes = it }
                 )
-                Text("Martes")
+                Text(stringResource(R.string.tuesday))
             }
 
             Column {
@@ -108,7 +96,7 @@ fun ChangeScheduleScreen(
                     checked = miercoles,
                     onCheckedChange = { miercoles = it }
                 )
-                Text("Miercoles")
+                Text(stringResource(R.string.wednesaday))
             }
 
             Column {
@@ -116,7 +104,7 @@ fun ChangeScheduleScreen(
                     checked = jueves,
                     onCheckedChange = { jueves = it }
                 )
-                Text("Jueves")
+                Text(stringResource(R.string.thursday))
             }
 
         }
@@ -126,7 +114,7 @@ fun ChangeScheduleScreen(
                     checked = viernes,
                     onCheckedChange = { viernes = it }
                 )
-                Text("Viernes")
+                Text(stringResource(R.string.friday))
             }
 
             Column {
@@ -134,7 +122,7 @@ fun ChangeScheduleScreen(
                     checked = sabado,
                     onCheckedChange = { sabado = it }
                 )
-                Text("Sabado")
+                Text(stringResource(R.string.saturday))
             }
 
             Column {
@@ -142,7 +130,7 @@ fun ChangeScheduleScreen(
                     checked = domingo,
                     onCheckedChange = { domingo = it }
                 )
-                Text("Domingo")
+                Text(stringResource(R.string.friday))
             }
         }
 
@@ -160,7 +148,7 @@ fun ChangeScheduleScreen(
 
                 onDone(str)
             }
-        ) { Text("Confirmar") }
+        ) { Text(stringResource(R.string.done)) }
     }
 
 }

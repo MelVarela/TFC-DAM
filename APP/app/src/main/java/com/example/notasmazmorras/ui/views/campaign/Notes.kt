@@ -18,7 +18,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.compose.ui.res.stringResource
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.local.LocalNote
 import com.example.notasmazmorras.ui.components.NoteCard
 
@@ -35,10 +36,10 @@ fun Notes(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Notes") },
+                title = { Text(stringResource(R.string.notes)) },
                 navigationIcon = {
                     IconButton(onClick = {onBack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
                     }
                 }
             )
@@ -53,7 +54,7 @@ fun Notes(
             Button(
                 onClick = { onNew() }
             ) {
-                Text("Nueva nota")
+                Text(stringResource(R.string.new_note))
             }
             Button(
                 onClick = { onSync() }
