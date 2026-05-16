@@ -94,7 +94,9 @@ fun AppNavigation(
                 onLog = {
                     email, password -> userViewmodel.login(email, password)
                 },
-                navController
+                onCreate = {
+                    navController.navigate("createAccount")
+                }
             )
         }
 
@@ -194,6 +196,9 @@ fun AppNavigation(
 
                     campaignViewmodel.setCurrentCampaign("", "")
                     navController.navigate("login")
+                },
+                onLangChange = {
+                    lg -> systemViewmodel.changeLanguage(lg)
                 },
                 navController
             )

@@ -41,10 +41,8 @@ class SystemViewmodel(
     val uploadState : StateFlow<UploadState> = _uploadState.asStateFlow()
 
     fun firstTimeOpened() = viewModelScope.launch {
-        Log.d("LAUNCH", "Getting sys data")
         try {
             if(systemRepository.getIsDataPresent().first() == 0){
-                Log.d("LAUNCH", "No data detected, creating")
                 systemRepository.insert(
                     SysTable(
                         "1",
@@ -57,7 +55,6 @@ class SystemViewmodel(
                 changeLastTimeSigned()
             }
         }catch (e: Throwable){
-            Log.d("DB", "No data detected by error, creating...")
             systemRepository.insert(
                 SysTable(
                     "1",
@@ -71,7 +68,6 @@ class SystemViewmodel(
     }
 
     fun setLastSigned(email: String) = viewModelScope.launch {
-        Log.d("DB", "Setting last time signed as now")
         val sysDataUpdated = systemRepository.getData()
         val sysData = sysDataUpdated.first()
         _currentUser.value = email
@@ -86,7 +82,6 @@ class SystemViewmodel(
     }
 
     fun changeLastTimeSigned() = viewModelScope.launch {
-        Log.d("DB", "Reseting last time signed as now")
         val sysDataUpdated = systemRepository.getData()
         val sysData = sysDataUpdated.first()
         _currentUser.value = sysData.lastUser
@@ -98,7 +93,6 @@ class SystemViewmodel(
     }
 
     fun checkIfStillAuthenticated() = viewModelScope.launch {
-        Log.d("DB", "Checking if user still has auth")
         try{
             val sysDataUpdated = systemRepository.getData()
             val sysData = sysDataUpdated.first()
@@ -123,7 +117,6 @@ class SystemViewmodel(
     }
 
     fun logOut() = viewModelScope.launch {
-        Log.d("DB", "Logging out")
         _authenticated.value = false
         val sysDataUpdated = systemRepository.getData()
         val sysData = sysDataUpdated.first()
@@ -191,6 +184,16 @@ class SystemViewmodel(
                 uploadStarted = false
             )
         }
+    }
+
+    fun changeLanguage(lang: String) = viewModelScope.launch {
+        val sysDataUpdated = systemRepository.getData()
+        val sysData = sysDataUpdated.first()
+        systemRepository.update(
+            sysData.copy(
+                language = lang
+            )
+        )
     }
 
     /*

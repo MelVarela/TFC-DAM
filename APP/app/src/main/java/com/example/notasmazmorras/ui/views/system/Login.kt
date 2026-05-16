@@ -28,8 +28,8 @@ import com.example.notasmazmorras.viewmodels.CampaignViewmodel
 fun Login(
     authenticated: Boolean,
     onSuccess: (String) -> Unit,
-    onLog: (String, String) -> Unit,
-    navController: NavController
+    onCreate: () -> Unit,
+    onLog: (String, String) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -41,16 +41,13 @@ fun Login(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            Button(
-                onClick = {navController.navigate("createAccount")}
-            ) {
-                Text("Crear cuenta")
-            }
+
 
             LoginScreen(
                 authenticated = authenticated,
                 onSuccess = onSuccess,
                 onLog = onLog,
+                onCreate = onCreate,
                 modifier = Modifier
             )
         }
@@ -62,6 +59,7 @@ fun LoginScreen(
     authenticated: Boolean,
     onSuccess: (String) -> Unit,
     onLog: (String, String) -> Unit,
+    onCreate: () -> Unit,
     modifier: Modifier
 ){
 
@@ -97,6 +95,12 @@ fun LoginScreen(
             onClick = { onLog(email, password) }
         ) {
             Text("Loggearse")
+        }
+
+        Button(
+            onClick = {onCreate()}
+        ) {
+            Text("Crear cuenta")
         }
 
     }
