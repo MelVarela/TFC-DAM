@@ -27,7 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.CharacterEntity;
 import com.melvarela.spring_mazmorras.entities.CreatureEntity;
+import com.melvarela.spring_mazmorras.entities.Ids.InventoryId;
 import com.melvarela.spring_mazmorras.entities.Ids.UserRelationId;
+import com.melvarela.spring_mazmorras.entities.InventoryEntity;
 import com.melvarela.spring_mazmorras.entities.NoteEntity;
 import com.melvarela.spring_mazmorras.entities.ObjectEntity;
 import com.melvarela.spring_mazmorras.entities.PlaceEntity;
@@ -37,6 +39,7 @@ import com.melvarela.spring_mazmorras.rest.dtos.CampaignDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CharacterDto;
 import com.melvarela.spring_mazmorras.rest.dtos.ClassDto;
 import com.melvarela.spring_mazmorras.rest.dtos.CreatureDto;
+import com.melvarela.spring_mazmorras.rest.dtos.InventoryDto;
 import com.melvarela.spring_mazmorras.rest.dtos.LoginDto;
 import com.melvarela.spring_mazmorras.rest.dtos.NoteDto;
 import com.melvarela.spring_mazmorras.rest.dtos.ObjectDto;
@@ -48,6 +51,7 @@ import com.melvarela.spring_mazmorras.rest.dtos.UserRelationDto;
 import com.melvarela.spring_mazmorras.rest.mappers.CampaignDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.CharacterDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.CreatureDtoMapper;
+import com.melvarela.spring_mazmorras.rest.mappers.InventoryDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.NoteDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.ObjectDtoMapper;
 import com.melvarela.spring_mazmorras.rest.mappers.PlaceDtoMapper;
@@ -827,6 +831,58 @@ public class ApiRestController {
             return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
+    }
+
+    //Inventories
+
+    @GetMapping("inventories/{characterId}")
+    public ResponseEntity<List<InventoryDto>> getItemsFor(@PathVariable String characterId){
+        System.out.println("Getting items for: " + characterId);
+
+        try{
+            List<InventoryEntity> inventories = characterService.getAllItemsFor(characterId);
+            List<InventoryDto> listDto = new ArrayList<>();
+
+            for (InventoryEntity inventory : inventories) {
+                listDto.add(InventoryDtoMapper.entityToDto(inventory));
+            }
+
+            return new ResponseEntity<>(listDto, HttpStatus.OK);
+        }catch(Exception e){
+            System.err.println("Error: " + e.getMessage());
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("inventory")
+    public ResponseEntity<InventoryDto> postInventory(@RequestBody InventoryDto inventory){
+        System.out.println("Creating inventory: " + inventory.toString());
+
+        try{
+            return new ResponseEntity<>(InventoryDtoMapper.entityToDto(
+                characterService.addItem(InventoryDtoMapper.dtoToEntity(inventory))
+            ), HttpStatus.OK);
+        }catch(Exception e){
+            System.err.println("Error: " + e.getMessage());
+            return new ResponseEntity<>(new InventoryDto(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("inventory/{id}")
+    public ResponseEntity<InventoryDto> deleteSuggestion(@PathVariable("id") String id){
+        System.out.println("Deleting inventory: " + id);
+
+        try{
+            String[] splited = id.split("-");
+            InventoryId invId = new InventoryId(splited[0], splited[1]);
+
+            return new ResponseEntity<>(InventoryDtoMapper.entityToDto(
+                characterService.deleteItemFromInventory(new InventoryEntity(invId))
+            ), HttpStatus.OK);
+        }catch(Exception e){
+            System.err.println("Error: " + e.getMessage());
+            return new ResponseEntity<>(new InventoryDto(), HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

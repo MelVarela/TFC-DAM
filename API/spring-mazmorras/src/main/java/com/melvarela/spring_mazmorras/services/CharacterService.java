@@ -10,13 +10,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.melvarela.spring_mazmorras.entities.CampaignEntity;
 import com.melvarela.spring_mazmorras.entities.CharacterEntity;
+import com.melvarela.spring_mazmorras.entities.InventoryEntity;
 import com.melvarela.spring_mazmorras.repositories.CharacterRepository;
+import com.melvarela.spring_mazmorras.repositories.InventoryRepository;
 
 @Service
 public class CharacterService {
     
     @Autowired
     CharacterRepository repository;
+    @Autowired
+    InventoryRepository inventoryRepository;
 
     @Transactional
     public CharacterEntity createCharacter(CharacterEntity character){
@@ -58,8 +62,25 @@ public class CharacterService {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<CharacterEntity> findAllByCampaign(CampaignEntity campaign) {
         return repository.findByCampaign(campaign);
+    }
+
+    @Transactional
+    public InventoryEntity addItem(InventoryEntity inventory){
+        return inventoryRepository.save(inventory);
+    }
+
+    @Transactional
+    public InventoryEntity deleteItemFromInventory(InventoryEntity inventory){
+        inventoryRepository.delete(inventory);
+        return inventory;
+    }
+
+    @Transactional
+    public List<InventoryEntity> getAllItemsFor(String character){
+        return inventoryRepository.findByPersonaje(character);
     }
 
 }
