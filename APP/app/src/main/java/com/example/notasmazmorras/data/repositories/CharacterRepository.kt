@@ -3,20 +3,25 @@ package com.example.notasmazmorras.data.repositories
 import android.util.Log
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalCharacter
+import com.example.notasmazmorras.data.model.local.LocalInventory
 import com.example.notasmazmorras.data.model.local.toRemote
 import com.example.notasmazmorras.data.model.remote.DndClass
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
+import com.example.notasmazmorras.data.model.remote.RemoteInventory
 import com.example.notasmazmorras.data.model.remote.toLocal
 import com.example.notasmazmorras.data.repositories.daos.CharacterDao
 import com.example.notasmazmorras.data.repositories.daos.NoteDao
 import com.example.notasmazmorras.network.ApiService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 
 interface CharacterRepository {
 
     fun getAllCharacters(): Flow<List<LocalCharacter>>
+
+    fun getAllInventories(): Flow<List<LocalInventory>>
 
     suspend fun insertCharacter(character: LocalCharacter): RepositoryResult
 
@@ -27,6 +32,12 @@ interface CharacterRepository {
     suspend fun getClases() : List<DndClass>
 
     suspend fun getSubclasesFor(clase: String) : List<String>
+
+    suspend fun addItem(item: LocalInventory) : RepositoryResult
+
+    suspend fun updateItem(item: LocalInventory) : RepositoryResult
+
+    suspend fun deleteItem(item: LocalInventory) : RepositoryResult
 
     // Sincronización
 
@@ -43,10 +54,12 @@ class DefaultCharacterRepository(
     private val remote : ApiService
 ) : CharacterRepository {
 
-    final val TAG = "character_repository"
-    final val NO_ERR = "No se proporcionó mensaje de error."
+    val TAG = "character_repository"
+    val NO_ERR = "No se proporcionó mensaje de error."
 
     override fun getAllCharacters(): Flow<List<LocalCharacter>> = local.getAllCharacters()
+
+    override fun getAllInventories(): Flow<List<LocalInventory>> = local.getAllItems()
 
     override suspend fun insertCharacter(character: LocalCharacter): RepositoryResult {
         try{
@@ -87,8 +100,40 @@ class DefaultCharacterRepository(
         return remote.getClasesFor(clase)
     }
 
+    override suspend fun addItem(item: LocalInventory): RepositoryResult {
+        try{
+            local.insertItems(item.copy(pendingSync = true))
+            return RepositoryResult.Success("Objeto '${item.obxecto}' dado con éxito.")
+        }catch(e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return RepositoryResult.Error("Error dando el objeto '${item.obxecto}'.")
+        }
+    }
+
+    override suspend fun updateItem(item: LocalInventory): RepositoryResult {
+        try{
+            local.updateItems(item.copy(pendingSync = true))
+            return RepositoryResult.Success("Relación con el objeto '${item.obxecto}' actualizado con éxito.")
+        }catch(e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            if(item.pendingDelete) return RepositoryResult.Error("Error eliminando la relacion con el objeto '${item.obxecto}'.")
+            else return RepositoryResult.Error("Error actualizando la relacion con elobjeto '${item.obxecto}'.")
+        }
+    }
+
+    override suspend fun deleteItem(item: LocalInventory): RepositoryResult {
+        try{
+            updateItem(item.copy(pendingSync = true, pendingDelete = true))
+            return RepositoryResult.Success("Relación con el objeto '${item.obxecto}' eliminada con éxito.")
+        }catch(e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return RepositoryResult.Error("Error eliminando la relacion con el objeto '${item.obxecto}'.")
+        }
+    }
+
     override suspend fun uploadPendingChanges(): RepositoryResult {
         var toSync = local.getCharactersToSync()
+        var toSyncItems = local.getItemsToSync()
 
         try{
             toSync.first().map { character ->
@@ -123,6 +168,24 @@ class DefaultCharacterRepository(
 
                 }
             }
+
+            toSyncItems.first().map { item ->
+                val charId = item.character
+                val objId = item.obxecto
+
+                if(item.pendingDelete){
+                    if(item.existsRemote) remote.deleteInventory("${item.character}.${item.obxecto}")
+                    local.deleteItem(item)
+                }else if(!item.existsRemote || item.pendingSync){
+
+                    var resposta : RemoteInventory =
+                        remote.createInventory(item.toRemote())
+
+                    local.updateItems(resposta.toLocal().copy(existsRemote = true))
+
+                }
+
+            }
         }catch (e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)
         }
@@ -139,13 +202,32 @@ class DefaultCharacterRepository(
             var charactersToUpdate : List<LocalCharacter> = ArrayList<LocalCharacter>()
             var charactersToInsert : List<LocalCharacter> = ArrayList<LocalCharacter>()
 
-            characters.map {
-                if(!(ids.contains(it.id))){
-                    charactersToInsert = charactersToInsert.plus(it.toLocal())
-                    workedIds = workedIds.plus(it.id ?: "")
+            characters.map { char ->
+                if(!(ids.contains(char.id))){
+                    charactersToInsert = charactersToInsert.plus(char.toLocal())
+                    workedIds = workedIds.plus(char.id ?: "")
                 }else{
-                    charactersToUpdate = charactersToUpdate.plus(it.toLocal())
-                    workedIds = workedIds.plus(it.id ?: "")
+                    charactersToUpdate = charactersToUpdate.plus(char.toLocal())
+                    workedIds = workedIds.plus(char.id ?: "")
+                }
+
+                if(char.id != null){
+                    val items = remote.getItemsOf(char.id)
+                    val objectIds : List<String> = local.getAllItems().first().filter { it.character == char.id }.map { it.obxecto }
+                    var workedItems : List<String> = emptyList()
+
+                    var itemsToInsert : List<LocalInventory> = ArrayList<LocalInventory>()
+
+                    items.map {
+                        if(!(objectIds.contains(it.obxecto))){
+                            itemsToInsert = itemsToInsert.plus(it.toLocal())
+                            workedItems = workedItems.plus(it.obxecto)
+                        }
+                    }
+
+                    objectIds.map {
+                        if(!workedItems.contains(it)) local.deleteItemById(char.id, it)
+                    }
                 }
             }
             ids.map {
@@ -155,6 +237,7 @@ class DefaultCharacterRepository(
             local.insertList(charactersToInsert)
             local.updateList(charactersToUpdate)
             return RepositoryResult.Success("Sicronizado con éxito")
+
         }catch (e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")

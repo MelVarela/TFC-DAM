@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.data.model.local.LocalCreature
+import com.example.notasmazmorras.data.model.local.LocalInventory
 import com.example.notasmazmorras.data.model.local.LocalNote
 import com.example.notasmazmorras.data.model.local.LocalObject
 import com.example.notasmazmorras.data.model.local.LocalPlace
@@ -33,9 +34,10 @@ import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
     LocalPlace::class,
     LocalUser::class,
     LocalUserRelation::class,
+    LocalInventory::class,
     SysTable::class,
 
-], version = 10)
+], version = 11)
 abstract class Datosbase : RoomDatabase() {
 
     abstract fun campaignDao() : CampaignDao

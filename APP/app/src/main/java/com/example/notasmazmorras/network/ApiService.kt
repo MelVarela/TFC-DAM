@@ -7,6 +7,7 @@ import com.example.notasmazmorras.data.model.remote.LoginResponse
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
 import com.example.notasmazmorras.data.model.remote.RemoteCreature
+import com.example.notasmazmorras.data.model.remote.RemoteInventory
 import com.example.notasmazmorras.data.model.remote.RemoteNote
 import com.example.notasmazmorras.data.model.remote.RemoteObject
 import com.example.notasmazmorras.data.model.remote.RemotePlace
@@ -46,11 +47,20 @@ interface ApiService {
     @GET("characters/{campaignId}")
     suspend fun getCharacters(@Path("campaignId") campaignId : String) : List<RemoteCharacter>
 
+    @GET("inventories/{character}")
+    suspend fun getItemsOf(@Path("character") character: String) : List<RemoteInventory>
+
     @POST("character")
     suspend fun createCharacter(@Body character: RemoteCharacter): RemoteCharacter
 
+    @POST("inventory")
+    suspend fun createInventory(@Body inventory: RemoteInventory) : RemoteInventory
+
     @DELETE("character/{id}")
     suspend fun deleteCharacter(@Path("id") id : String): RemoteCharacter
+
+    @DELETE("inventory/{id}")
+    suspend fun deleteInventory(@Path("id") id : String) : RemoteInventory
 
     @PUT("character")
     suspend fun updateCharacter(@Body character: RemoteCharacter): RemoteCharacter
