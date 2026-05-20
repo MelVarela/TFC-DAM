@@ -145,7 +145,10 @@ class DefaultCampaignRepository(
                 }
             }
             ids.map {
-                if(!workedIds.contains(it) && it.substring(0, 1) != "l") local.deleteById(it)
+                if(!workedIds.contains(it) && it.substring(0, 1) != "l"){
+                    Log.d("DEL", "Deleting $it")
+                    local.deleteById(it)
+                }
             }
 
             local.insertList(campaignsToInsert)

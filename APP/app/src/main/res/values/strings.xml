@@ -77,4 +77,5 @@
     <string name="suggestion">Suggestion</string>
     <string name="clase">Class</string>
     <string name="sub_class">Subclass</string>
+    <string name="inventory">Inventory</string>
 </resources>

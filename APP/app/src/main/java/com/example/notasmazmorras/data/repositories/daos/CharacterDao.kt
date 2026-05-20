@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.data.model.local.LocalInventory
+import com.example.notasmazmorras.data.model.local.LocalObject
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -79,5 +80,8 @@ interface CharacterDao {
 
     @Query("SELECT * FROM inventories WHERE pendingDelete = 1")
     fun getItemsToDelete(): Flow<List<LocalInventory>>
+
+    @Query("SELECT * FROM objects o INNER JOIN inventories i ON i.obxecto = o.id WHERE character = :char AND i.pendingDelete = 0 ")
+    fun getObjectsOf(char: String): Flow<List<LocalObject>>
 
 }

@@ -57,7 +57,8 @@ class DefaultUserRelationRepository(
             local.insert(userRelation.copy(pendingSync = true))
             return RepositoryResult.Success("")
         }catch(e : Throwable){
-            Log.e(TAG, e.message ?: NO_ERR)
+            Log.e(TAG, "insertUserRelation: " + (e.message ?: NO_ERR))
+            e.printStackTrace()
             return RepositoryResult.Error("")
         }
     }
@@ -67,7 +68,8 @@ class DefaultUserRelationRepository(
             local.update(userRelation.copy(pendingSync = true))
             return RepositoryResult.Success("")
         }catch(e : Throwable){
-            Log.e(TAG, e.message ?: NO_ERR)
+            Log.e(TAG, "updateUserRelation: " + (e.message ?: NO_ERR))
+            e.printStackTrace()
             return RepositoryResult.Error("")
         }
     }
@@ -77,7 +79,8 @@ class DefaultUserRelationRepository(
             updateUserRelation(userRelation.copy(pendingSync = true, pendingDelete = true))
             return RepositoryResult.Success("")
         }catch(e : Throwable){
-            Log.e(TAG, e.message ?: NO_ERR)
+            Log.e(TAG, "deleteUserRelation: " + (e.message ?: NO_ERR))
+            e.printStackTrace()
             return RepositoryResult.Error("")
         }
     }
@@ -91,7 +94,8 @@ class DefaultUserRelationRepository(
             }
             return RepositoryResult.Error("")
         }catch (e: Throwable){
-            Log.e(TAG, e.message ?: NO_ERR)
+            Log.e(TAG, "invitePLayer: " + (e.message ?: NO_ERR))
+            e.printStackTrace()
             return RepositoryResult.Error("")
         }
     }
@@ -124,7 +128,8 @@ class DefaultUserRelationRepository(
                 }
             }
         }catch (e : Throwable){
-            Log.e(TAG, e.message ?: NO_ERR)
+            Log.e(TAG, "uploadPendingChanges: " + (e.message ?: NO_ERR))
+            e.printStackTrace()
         }
 
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
@@ -150,7 +155,8 @@ class DefaultUserRelationRepository(
             local.updateList(relationsToUpdate)
             return RepositoryResult.Success("Sicronizado con éxito")
         }catch (e : Throwable){
-            Log.e(TAG, e.message ?: NO_ERR)
+            Log.e(TAG, "syncFromServer: " + (e.message ?: NO_ERR))
+            e.printStackTrace()
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
     }
@@ -175,7 +181,8 @@ class DefaultUserRelationRepository(
             local.updateList(relationsToUpdate)
             return RepositoryResult.Success("Sicronizado con éxito")
         }catch (e : Throwable){
-            Log.e(TAG, e.message ?: NO_ERR)
+            Log.e(TAG, "syncFromServerByUser: " + (e.message ?: NO_ERR))
+            e.printStackTrace()
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
     }
@@ -200,7 +207,8 @@ class DefaultUserRelationRepository(
             local.updateList(relationsToUpdate)
             return RepositoryResult.Success("Sicronizado con éxito")
         }catch (e : Throwable){
-            Log.e(TAG, e.message ?: NO_ERR)
+            Log.e(TAG, "syncPending: " + (e.message ?: NO_ERR))
+            e.printStackTrace()
             return RepositoryResult.Error("Se ha producido un error sincronizando del servidor.")
         }
     }

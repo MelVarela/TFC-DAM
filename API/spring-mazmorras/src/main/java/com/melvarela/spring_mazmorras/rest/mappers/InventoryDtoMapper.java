@@ -9,8 +9,8 @@ public class InventoryDtoMapper {
     public static InventoryEntity dtoToEntity(InventoryDto dto){
         return new InventoryEntity(
             new InventoryId(
-                dto.getPersonaje(),
-                dto.getObjeto()
+                dto.getCharacter(),
+                dto.getObxecto()
             )
         );
     }

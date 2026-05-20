@@ -49,7 +49,12 @@ class UserViewmodel(
     */
 
     fun login(email: String, password: String) = viewModelScope.launch {
-        _authenticated.value = userRepository.login(Credentials(email, password))
+        try{
+            _authenticated.value = userRepository.login(Credentials(email, password))
+        }catch(e: Throwable){
+            Log.d("ERR", "Bad password.")
+        }
+
     }
 
     fun logOut() = viewModelScope.launch {

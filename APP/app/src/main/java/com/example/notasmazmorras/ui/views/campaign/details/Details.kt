@@ -29,7 +29,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -41,6 +40,8 @@ fun Details(
     title: String,
     maxPg: Int?,
     pg: Int?,
+    onAddObject: (String) -> Unit,
+    charId: String,
     picture: String,
     onNotes: () -> Unit,
     onBack: () -> Unit,
@@ -72,6 +73,8 @@ fun Details(
                 title = title,
                 maxPg = maxPg,
                 pg = pg,
+                onAddObject = onAddObject,
+                charId = charId,
                 picture = picture
             )
         }
@@ -84,6 +87,8 @@ fun DetailsScreen(
     title: String,
     maxPg: Int?,
     pg: Int?,
+    onAddObject: (String) -> Unit,
+    charId: String,
     picture: String
 ){
 
@@ -120,6 +125,12 @@ fun DetailsScreen(
                     gapSize = 0.dp
                 )
             }
+
+            Button(
+                onClick = {
+                    onAddObject(charId)
+                }
+            ) {Text(stringResource(R.string.add_object))}
         }
 
         LazyColumn(

@@ -1,0 +1,124 @@
+package com.example.notasmazmorras.ui.views.campaign.details
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.notasmazmorras.R
+import com.example.notasmazmorras.data.model.local.LocalObject
+import com.example.notasmazmorras.ui.components.GenericCard
+import com.example.notasmazmorras.ui.components.ObjectRelCard
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddObject(
+    onBack: () -> Unit,
+    objects: List<LocalObject>,
+    onObjectSelected: (String) -> Unit,
+    onDelete: (String) -> Unit,
+    objectsInInventory: List<LocalObject>
+){
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.add_object)) },
+                navigationIcon = {
+                    IconButton(onClick = {onBack()}) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
+                    }
+                }
+            )
+        }
+    ){ contentPadding ->
+        Column(
+            modifier = Modifier.padding(contentPadding),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            AddObjectScreen(
+                objects = objects,
+                onObjectSelected = onObjectSelected,
+                onDelete = onDelete,
+                objectsInInventory = objectsInInventory
+            )
+        }
+    }
+
+}
+
+@Composable
+fun AddObjectScreen(
+    objects: List<LocalObject>,
+    onObjectSelected: (String) -> Unit,
+    onDelete: (String) -> Unit,
+    objectsInInventory: List<LocalObject>
+){
+
+    var desplegado by remember { mutableStateOf(false) }
+
+    Scaffold(
+    ){ contentPadding ->
+        Column(
+            modifier = Modifier
+                .padding(contentPadding),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ){
+
+            Button(
+                onClick = {desplegado = !desplegado}
+            ) {Text(stringResource(R.string.add_object))}
+            DropdownMenu(
+                expanded = desplegado,
+                onDismissRequest = {}
+            ) {
+
+                objects.forEach { obxecto ->
+                    DropdownMenuItem(
+                        text = {Text(obxecto.name)},
+                        onClick = {
+                            onObjectSelected(obxecto.id)
+                            desplegado = false
+                        }
+                    )
+                }
+
+            }
+
+            LazyColumn(
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ){
+                items(objectsInInventory){ obxecto ->
+                    ObjectRelCard(
+                        obxecto = obxecto,
+                        onDelete = onDelete,
+                    )
+                }
+            }
+
+        }
+    }
+
+}

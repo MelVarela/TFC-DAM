@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class InventoryDto {
     
-    private String personaje;
-    private String objeto;
+    private String character;
+    private String obxecto;
 
 }

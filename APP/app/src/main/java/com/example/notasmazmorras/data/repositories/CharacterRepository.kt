@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalCharacter
 import com.example.notasmazmorras.data.model.local.LocalInventory
+import com.example.notasmazmorras.data.model.local.LocalObject
 import com.example.notasmazmorras.data.model.local.toRemote
 import com.example.notasmazmorras.data.model.remote.DndClass
 import com.example.notasmazmorras.data.model.remote.RemoteCampaign
@@ -38,6 +39,8 @@ interface CharacterRepository {
     suspend fun updateItem(item: LocalInventory) : RepositoryResult
 
     suspend fun deleteItem(item: LocalInventory) : RepositoryResult
+
+    suspend fun getItemsOf(char: String) : List<LocalObject>
 
     // Sincronización
 
@@ -128,6 +131,16 @@ class DefaultCharacterRepository(
         }catch(e : Throwable){
             Log.e(TAG, e.message ?: NO_ERR)
             return RepositoryResult.Error("Error eliminando la relacion con el objeto '${item.obxecto}'.")
+        }
+    }
+
+    override suspend fun getItemsOf(char: String): List<LocalObject> {
+        try{
+            return local.getObjectsOf(char).first()
+        }catch(e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            e.printStackTrace()
+            return emptyList()
         }
     }
 

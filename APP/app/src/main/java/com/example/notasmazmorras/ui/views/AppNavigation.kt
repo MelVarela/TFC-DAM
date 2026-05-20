@@ -49,6 +49,9 @@ import com.example.notasmazmorras.viewmodels.PlaceViewmodel
 import com.example.notasmazmorras.viewmodels.SystemViewmodel
 import com.example.notasmazmorras.viewmodels.UserViewmodel
 import com.example.notasmazmorras.R
+import com.example.notasmazmorras.data.model.local.LocalInventory
+import com.example.notasmazmorras.ui.views.campaign.details.AddObject
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun AppNavigation(
@@ -72,6 +75,7 @@ fun AppNavigation(
     val notes by noteViewmodel.notes.collectAsState()
     val objects by objectViewmodel.objects.collectAsState()
     val places by placeViewmodel.places.collectAsState()
+    val inventories by characterViewmodel.objectsInventory.collectAsState()
 
     NavHost(
         navController = navController,
@@ -248,7 +252,7 @@ fun AppNavigation(
                 campaign = campaigns.firstOrNull{ it.id == id },
                 onBack = {navController.navigate("home")},
                 onSync = {
-                    campaignViewmodel.sync(id)
+                    campaignViewmodel.sync(systemViewmodel.currentUser.value)
                     campaignViewmodel.syncRelations(id)
                     characterViewmodel.sync(id)
                     creatureViewmodel.sync(id)
@@ -721,11 +725,20 @@ fun AppNavigation(
         ){ backStackEntry ->
             val id = backStackEntry.arguments?.getString("detailId")
             val chara : LocalCharacter = characters.first { it.id == id }
+            characterViewmodel.getObjectsFor(id!!)
 
             val map = HashMap<String, String>()
 
             map.put(stringResource(R.string.clase), chara.clase)
             map.put(stringResource(R.string.sub_class), chara.subClase)
+            var objs : String = " "
+            for (obxecto in characterViewmodel.objetos.collectAsState().value) {
+               objs = objs.plus("${obxecto.name}, ")
+            }
+            if(objs.length != 1){
+                map.put(stringResource(R.string.inventory) + "", objs.substring(1, (objs.length - 2)))
+            }
+
 
             Details(
                 caracteristicas = map.toMap(),
@@ -734,7 +747,39 @@ fun AppNavigation(
                 pg = chara.pg,
                 picture = chara.picture,
                 onNotes = { navController.navigate("notes/${chara.id}/notes") },
+                onAddObject = { charId ->
+                    navController.navigate("addObject/${chara.id}")
+                },
+                charId = chara.id,
                 onBack = { navController.navigate("campaign/${chara.campaign}/characters") }
+            )
+        }
+
+        composable(
+            route = "addObject/{charId}",
+            arguments = listOf(
+                navArgument("charId"){type = NavType.StringType}
+            )
+        ){ backStackEntry ->
+            val charId = backStackEntry.arguments?.getString("charId")
+
+            characterViewmodel.getObjectsFor(charId!!)
+
+            AddObject(
+                onBack = {
+                    navController.navigate("details/char/$charId")
+                },
+                objects = objects,
+                onObjectSelected = { obj ->
+                    characterViewmodel.addObjectTo(charId, obj)
+                    characterViewmodel.getObjectsFor(charId)
+                },
+                onDelete = { obj ->
+                    characterViewmodel.deleteInventory(inventories
+                        .firstOrNull { it.obxecto == obj && it.character == charId } ?: LocalInventory("", ""))
+                    characterViewmodel.getObjectsFor(charId)
+                },
+                objectsInInventory = characterViewmodel.objetos.collectAsState().value,
             )
         }
 
@@ -758,6 +803,8 @@ fun AppNavigation(
                 pg = null,
                 picture = creature.picture,
                 onNotes = { navController.navigate("notes/${creature.id}/notes") },
+                onAddObject = {},
+                charId = "",
                 onBack = { navController.navigate("campaign/${creature.campaign}/creatures") }
             )
         }
@@ -782,6 +829,8 @@ fun AppNavigation(
                 pg = null,
                 picture = obxecto.picture,
                 onNotes = { navController.navigate("notes/${obxecto.id}/notes") },
+                onAddObject = {},
+                charId = "",
                 onBack = { navController.navigate("campaign/${obxecto.campaign}/objects") }
             )
         }
@@ -804,6 +853,8 @@ fun AppNavigation(
                 pg = null,
                 picture = place.picture,
                 onNotes = { navController.navigate("notes/${place.id}/notes") },
+                onAddObject = {},
+                charId = "",
                 onBack = { navController.navigate("campaign/${place.campaign}/map") }
             )
         }

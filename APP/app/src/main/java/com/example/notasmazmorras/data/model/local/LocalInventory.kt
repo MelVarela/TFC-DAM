@@ -24,7 +24,14 @@ import com.example.notasmazmorras.data.model.remote.RemoteInventory
             onUpdate = CASCADE
         )
     ],
-    indices = [Index(value = ["charcter", "obxecto"])]
+    indices = [
+        Index(value = ["character"]),
+        Index(value = ["obxecto"])
+              ],
+    primaryKeys = [
+        "character",
+        "obxecto"
+    ]
 )
 data class LocalInventory(
     val character: String,
