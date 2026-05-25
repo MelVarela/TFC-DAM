@@ -40,7 +40,7 @@ class _Inicio extends State<Inicio> {
                   flex: 2,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.greenAccent,
+                      color: Color.fromARGB(255, 191, 167, 138),
                       border: BoxBorder.all(
                         color: Colors.black,
                         width: 1,
@@ -75,7 +75,7 @@ class _Inicio extends State<Inicio> {
                   flex: 7,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 132, 216, 94),
+                      color: Color.fromARGB(255, 255, 235, 211),
                       border: BoxBorder.all(
                         color: Colors.black,
                         width: 1,
@@ -83,6 +83,7 @@ class _Inicio extends State<Inicio> {
                       ),
                     ),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ViewReport(
                           reporte: viewModel.obtenerPorId(mostrando),

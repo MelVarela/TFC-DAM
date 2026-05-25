@@ -17,34 +17,78 @@ class _Login extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Correo:",
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          width: MediaQuery.of(context).size.width * 0.5,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 255, 235, 211),
+              border: BoxBorder.all(
+                color: Colors.black,
+                width: 1,
+                style: BorderStyle.solid,
               ),
-              onSubmitted: (correo) => {nombre = correo},
+              borderRadius: BorderRadius.circular(16),
             ),
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Contraseña:",
-              ),
-              obscureText: true,
-              onSubmitted: (contra) => {contrasinal = contra},
-            ),
-            ElevatedButton(
-              onPressed: () {
-                /*
+
+            child: Padding(
+              padding: EdgeInsetsGeometry.all(32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+
+                  Text(
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    "Login"
+                    ),
+
+                  Padding(
+                    padding: EdgeInsetsGeometry.all(16),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Correo:",
+                        fillColor: Color.fromARGB(255, 212, 241, 255),
+                      ),
+                      onSubmitted: (correo) => {nombre = correo},
+                    ),
+                  ),
+
+                  Padding(
+                    padding: EdgeInsetsGeometry.all(16),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "Contraseña:",
+                      ),
+                      obscureText: true,
+                      onSubmitted: (contra) => {contrasinal = contra},
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      /*
                 En un despliegue real, aquí haríamos la conexión con la API para comprobar que las credenciales son correctas
                 Como no disponemos de la conexion con la API, simplemente asumiremos que lo son
                 */
-                Navigator.pushNamed(context, '/reportes');
-              },
-              child: Text("Login"),
+                      Navigator.pushNamed(context, '/reportes');
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(Colors.black), //Color.fromRGBO(108, 150, 170, 255)
+                      foregroundColor: WidgetStateProperty.all(Colors.white), //Color.fromRGBO(212, 241, 255, 255)
+                      textStyle: WidgetStateProperty.all(TextStyle(
+                        color: Colors.black
+                      ))
+                    ),
+                    child: Text("Login"),
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -24,14 +24,15 @@ class ReporteCard extends StatelessWidget {
           padding: EdgeInsetsGeometry.all(8),
           child: Container(
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 57, 123, 167),
+              color: Color.fromARGB(255, 212, 241, 255),
+              borderRadius: BorderRadius.circular(8),
               border: BoxBorder.all(
                 color: Colors.black,
                 width: 1,
                 style: BorderStyle.solid,
               ),
             ),
-            child: Text("${reporte.tipo}: ${reporte.texto}"),
+            child: Padding(padding: EdgeInsetsGeometry.all(8), child: Text("${reporte.tipo}: ${reporte.texto}"),),
           ),
         ),
       );
