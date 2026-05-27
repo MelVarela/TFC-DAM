@@ -38,6 +38,8 @@ interface CharacterRepository {
 
     suspend fun updateItem(item: LocalInventory) : RepositoryResult
 
+    suspend fun isPending(char: String, obj: String) : Boolean
+
     suspend fun deleteItem(item: LocalInventory) : RepositoryResult
 
     suspend fun getItemsOf(char: String) : List<LocalObject>
@@ -121,6 +123,15 @@ class DefaultCharacterRepository(
             Log.e(TAG, e.message ?: NO_ERR)
             if(item.pendingDelete) return RepositoryResult.Error("Error eliminando la relacion con el objeto '${item.obxecto}'.")
             else return RepositoryResult.Error("Error actualizando la relacion con elobjeto '${item.obxecto}'.")
+        }
+    }
+
+    override suspend fun isPending(char: String, obj: String): Boolean {
+        try{
+            return local.isPending(char, obj).first()
+        }catch (e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return false
         }
     }
 

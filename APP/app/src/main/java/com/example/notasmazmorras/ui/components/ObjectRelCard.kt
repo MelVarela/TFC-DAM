@@ -18,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -42,6 +44,9 @@ fun ObjectRelCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = CardDefaults.elevatedShape,
         onClick = {  },
+        colors = CardDefaults.cardColors(
+            containerColor = Color(229, 246, 255, 255)
+        )
     ){
         Column (
             modifier = Modifier.padding(12.dp),
@@ -68,7 +73,13 @@ fun ObjectRelCard(
                         .clip(CircleShape)
                 )
 
-                Text(obxecto.name)
+                Text(
+                    text = obxecto.name,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(
+                        horizontal = 4.dp
+                    )
+                )
 
                 Column(
                     verticalArrangement = Arrangement.SpaceAround,

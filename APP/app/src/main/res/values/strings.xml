@@ -78,4 +78,15 @@
     <string name="clase">Class</string>
     <string name="sub_class">Subclass</string>
     <string name="inventory">Inventory</string>
+    <string name="logo" translatable="false">Logo</string>
+    <string name="log_in">Log In</string>
+    <string name="password_confirm">Confirm password</string>
+    <string name="campaigns">Campaigns</string>
+    <string name="no_content">No content available</string>
+    <string name="no_campaigns">You currently have no campaigns. Try adding one with the \'+\' button!</string>
+    <string name="no_notes">This item doesn\'t have any notes yet.</string>
+    <string name="no_characters">This campaign doesn\'t have any characters yet.</string>
+    <string name="no_creatures">This campaign doesn\'t havy any creatures yet.</string>
+    <string name="no_places">This campaign doesn\'t have any locations yet.</string>
+    <string name="no_objects">This campaign doesn\'t have any objects yet.</string>
 </resources>

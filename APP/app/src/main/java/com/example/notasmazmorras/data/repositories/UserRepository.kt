@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.notasmazmorras.data.model.UserAccount
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalUser
+import com.example.notasmazmorras.data.model.local.toAccount
 import com.example.notasmazmorras.data.model.local.toRemote
 import com.example.notasmazmorras.data.model.remote.Credentials
 import com.example.notasmazmorras.data.model.remote.RemoteCharacter
@@ -30,6 +31,8 @@ interface UserRepository {
     // Sincronización
 
     suspend fun syncFromServer(email: String): RepositoryResult
+
+    suspend fun uploadPendingChanges() : RepositoryResult
 
     suspend fun login(credentials : Credentials) : Boolean
 
@@ -91,7 +94,6 @@ class DefaultUserRepository(
         }
     }
 
-    /*
     override suspend fun uploadPendingChanges(): RepositoryResult {
         var toSync = local.getUsersToSync()
 
@@ -104,8 +106,8 @@ class DefaultUserRepository(
                     local.delete(it)
                 }else if(it.email.substring(0, 1) == "l"){
 
-                    var resposta : RemoteUser =
-                        remote.createUser(it.toRemote())
+                    var resposta : LocalUser =
+                        remote.createUser(it.toAccount()).toLocal()
                     local.delete(it)
                     local.insert(it.copy((resposta.email ?: "0"), pendingSync = false))
 
@@ -122,14 +124,13 @@ class DefaultUserRepository(
 
         return RepositoryResult.Success("Cambios sincronizados con éxito.")
     }
-    */
 
     override suspend fun syncFromServer(email: String): RepositoryResult {
         try{
             var user = remote.getUser(email)
             var ids = local.getUserEmails()
 
-            if(ids.first().contains(user.email)){
+            if(!ids.first().contains(user.email)){
                 local.insert(user.toLocal())
             }else{
                 local.update(user.toLocal())

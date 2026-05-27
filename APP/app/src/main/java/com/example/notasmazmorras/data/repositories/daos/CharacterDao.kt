@@ -84,4 +84,7 @@ interface CharacterDao {
     @Query("SELECT * FROM objects o INNER JOIN inventories i ON i.obxecto = o.id WHERE character = :char AND i.pendingDelete = 0 ")
     fun getObjectsOf(char: String): Flow<List<LocalObject>>
 
+    @Query("SELECT pendingDelete FROM inventories WHERE character = :char AND obxecto = :obj")
+    fun isPending(char: String, obj: String): Flow<Boolean>
+
 }

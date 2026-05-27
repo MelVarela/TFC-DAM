@@ -74,12 +74,25 @@ class CharacterViewmodel (
     }
 
     fun addObjectTo(char: String, obj: String) = viewModelScope.launch {
-        characterRepository.addItem(
-            LocalInventory(
-                character = char,
-                obxecto = obj
+        if(characterRepository.isPending(
+            char, obj
+        )){
+            characterRepository.updateItem(
+                LocalInventory(
+                    character = char,
+                    obxecto = obj
+                )
             )
-        )
+            _objetos.value = characterRepository.getItemsOf(char)
+        }else{
+            characterRepository.addItem(
+                LocalInventory(
+                    character = char,
+                    obxecto = obj
+                )
+            )
+            _objetos.value = characterRepository.getItemsOf(char)
+        }
     }
 
     fun getObjectsFor(char: String) = viewModelScope.launch {
@@ -87,8 +100,8 @@ class CharacterViewmodel (
     }
 
     fun deleteInventory(inv: LocalInventory) = viewModelScope.launch {
-        Log.d("DB", "Deleting: $inv")
         characterRepository.deleteItem(inv)
+        _objetos.value = characterRepository.getItemsOf(inv.character)
     }
 
     companion object {

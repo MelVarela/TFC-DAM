@@ -2,11 +2,14 @@ package com.example.notasmazmorras.ui.views.campaign
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -21,9 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notasmazmorras.R
+import com.example.notasmazmorras.ui.components.NavigationMenu
+import com.example.notasmazmorras.ui.views.system.HomeScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,28 +40,20 @@ fun ChangeSchedule(
     schedule: String,
     navController: NavController
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.change_schedule_title)) },
-                navigationIcon = {
-                    IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
-                    }
-                }
-            )
-        }
-    ){ contentPadding ->
-        Column(
-            modifier = Modifier.padding(contentPadding),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            ChangeScheduleScreen(
-                onDone = onDone,
-                schedule = schedule
-            )
-        }
+    NavigationMenu(
+        mostrarMenu = false,
+        goBack = true,
+        onBack = {
+            navController.popBackStack()
+        },
+        navController = navController,
+        floatingAction = false,
+        onFloating = {}
+    ) {
+        ChangeScheduleScreen(
+            onDone = onDone,
+            schedule = schedule
+        )
     }
 }
 
@@ -72,10 +72,29 @@ fun ChangeScheduleScreen(
     var sabado by remember { mutableStateOf(schedule.contains("sabado")) }
     var domingo by remember { mutableStateOf(schedule.contains("domingo")) }
 
-    Column {
-        Text(stringResource(R.string.days_available))
-        Row {
-            Column {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                PaddingValues(6.dp)
+            )
+    ){
+
+        Text(
+            text = stringResource(R.string.days_available),
+            fontWeight = FontWeight.Bold
+        )
+
+        Row(
+            modifier = Modifier.padding(8.dp)
+        ){
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(4.dp)
+            ){
                 Checkbox(
                     checked = lunes,
                     onCheckedChange = { lunes = it }
@@ -83,7 +102,11 @@ fun ChangeScheduleScreen(
                 Text(stringResource(R.string.monday))
             }
 
-            Column {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(4.dp)
+            ){
                 Checkbox(
                     checked = martes,
                     onCheckedChange = { martes = it }
@@ -91,7 +114,11 @@ fun ChangeScheduleScreen(
                 Text(stringResource(R.string.tuesday))
             }
 
-            Column {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(4.dp)
+            ){
                 Checkbox(
                     checked = miercoles,
                     onCheckedChange = { miercoles = it }
@@ -99,7 +126,11 @@ fun ChangeScheduleScreen(
                 Text(stringResource(R.string.wednesaday))
             }
 
-            Column {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(4.dp)
+            ){
                 Checkbox(
                     checked = jueves,
                     onCheckedChange = { jueves = it }
@@ -108,8 +139,14 @@ fun ChangeScheduleScreen(
             }
 
         }
-        Row {
-            Column {
+        Row(
+            modifier = Modifier.padding(8.dp)
+        ){
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(4.dp)
+            ){
                 Checkbox(
                     checked = viernes,
                     onCheckedChange = { viernes = it }
@@ -117,7 +154,11 @@ fun ChangeScheduleScreen(
                 Text(stringResource(R.string.friday))
             }
 
-            Column {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(4.dp)
+            ){
                 Checkbox(
                     checked = sabado,
                     onCheckedChange = { sabado = it }
@@ -125,12 +166,16 @@ fun ChangeScheduleScreen(
                 Text(stringResource(R.string.saturday))
             }
 
-            Column {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(4.dp)
+            ){
                 Checkbox(
                     checked = domingo,
                     onCheckedChange = { domingo = it }
                 )
-                Text(stringResource(R.string.friday))
+                Text(stringResource(R.string.sunday))
             }
         }
 
@@ -147,7 +192,11 @@ fun ChangeScheduleScreen(
                 if(domingo) str = str.plus("domingo/")
 
                 onDone(str)
-            }
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
         ) { Text(stringResource(R.string.done)) }
     }
 

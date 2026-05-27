@@ -2,96 +2,194 @@ package com.example.notasmazmorras.ui.views.campaign
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.R
+import com.example.notasmazmorras.ui.components.NavigationMenu
+import com.example.notasmazmorras.ui.views.system.HomeScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Campaign(
     campaign: LocalCampaign?,
-    onBack: () -> Unit,
     onSync: () -> Unit,
     onUserRelations: (String) -> Unit,
     navController: NavController
 ) {
 
     if(campaign == null) {
-        onBack()
+        navController.popBackStack()
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(campaign?.name ?: "Error") },
-                navigationIcon = {
-                    IconButton(onClick = {onBack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
-                    }
-                }
-            )
-        }
-    ){ contentPadding ->
-        Column(
-            modifier = Modifier.padding(contentPadding),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+    NavigationMenu(
+        mostrarMenu = true,
+        goBack = false,
+        onBack = {},
+        navController = navController,
+        floatingAction = false,
+        onFloating = {}
+    ) {
+        CampaignScreen(
+            campaign = campaign,
+            onSync = onSync,
+            onUserRelations = onUserRelations,
+            navController = navController,
+        )
+    }
+}
+
+@Composable
+fun CampaignScreen(
+    campaign: LocalCampaign?,
+    onSync: () -> Unit,
+    onUserRelations: (String) -> Unit,
+    navController: NavController
+){
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(16.dp).fillMaxWidth()
+    ){
+
+        Row(
+
         ){
+
             Button(
-                onClick = {navController.navigate("campaign/${campaign!!.id}/calendar")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/calendar")},
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                shape = RoundedCornerShape(8),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(128.dp)
+                    .width(128.dp)
             ) {
                 Text(stringResource(R.string.calendar))
             }
             Button(
-                onClick = {onUserRelations("campaign/${campaign!!.id}/players")}
+                onClick = {onUserRelations("campaign/${campaign!!.id}/players")},
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                shape = RoundedCornerShape(8),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(128.dp)
+                    .width(128.dp)
             ) {
                 Text(stringResource(R.string.players))
             }
+
+        }
+
+        Row(
+
+        ){
+
             Button(
-                onClick = {navController.navigate("notes/${campaign!!.id}/notes")}
+                onClick = {navController.navigate("notes/${campaign!!.id}/notes")},
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                shape = RoundedCornerShape(8),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(128.dp)
+                    .width(128.dp)
             ) {
                 Text(stringResource(R.string.notes))
             }
             Button(
-                onClick = {navController.navigate("campaign/${campaign!!.id}/characters")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/characters")},
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                shape = RoundedCornerShape(8),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(128.dp)
+                    .width(128.dp)
             ) {
                 Text(stringResource(R.string.characters))
             }
+
+        }
+
+        Row(
+
+        ){
+
             Button(
-                onClick = {navController.navigate("campaign/${campaign!!.id}/objects")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/objects")},
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                shape = RoundedCornerShape(8),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(128.dp)
+                    .width(128.dp)
             ) {
                 Text(stringResource(R.string.objects))
             }
             Button(
-                onClick = {navController.navigate("campaign/${campaign!!.id}/creatures")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/creatures")},
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                shape = RoundedCornerShape(8),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(128.dp)
+                    .width(128.dp)
             ) {
                 Text(stringResource(R.string.creatures))
             }
+
+        }
+
+        Row(
+
+        ){
+
             Button(
-                onClick = {navController.navigate("campaign/${campaign!!.id}/map")}
+                onClick = {navController.navigate("campaign/${campaign!!.id}/map")},
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                shape = RoundedCornerShape(8),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(128.dp)
+                    .width(128.dp)
             ) {
                 Text(stringResource(R.string.map))
             }
             Button(
-                onClick = { onSync() }
+                onClick = { onSync() },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                shape = RoundedCornerShape(8),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .height(128.dp)
+                    .width(128.dp)
             ) {
                 Icon(Icons.Default.Sync, contentDescription = "Sync")
             }
+
         }
+
     }
 }

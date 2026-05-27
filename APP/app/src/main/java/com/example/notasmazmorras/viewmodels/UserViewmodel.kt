@@ -41,16 +41,15 @@ class UserViewmodel(
         userRepository.deleteUser(user)
     }
 
-    /*
     fun sync(email: String) = viewModelScope.launch {
         userRepository.uploadPendingChanges()
         userRepository.syncFromServer(email)
     }
-    */
 
     fun login(email: String, password: String) = viewModelScope.launch {
         try{
             _authenticated.value = userRepository.login(Credentials(email, password))
+            userRepository.syncFromServer(email)
         }catch(e: Throwable){
             Log.d("ERR", "Bad password.")
         }

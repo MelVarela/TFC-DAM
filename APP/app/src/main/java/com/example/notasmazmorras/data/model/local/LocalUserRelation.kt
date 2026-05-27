@@ -16,15 +16,6 @@ import java.util.Date
 
 @Entity(
     tableName = "user_relations",
-    foreignKeys = [
-        ForeignKey(
-            entity = LocalCampaign::class,
-            parentColumns = ["id"],
-            childColumns = ["campaign"],
-            onDelete = CASCADE,
-            onUpdate = CASCADE
-        )
-    ],
     indices = [
         Index(value = ["user"]),
         Index(value = ["campaign"])

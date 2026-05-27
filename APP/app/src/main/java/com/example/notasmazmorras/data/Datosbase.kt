@@ -37,7 +37,7 @@ import com.example.notasmazmorras.data.repositories.daos.UserRelationDao
     LocalInventory::class,
     SysTable::class,
 
-], version = 11)
+], version = 12)
 abstract class Datosbase : RoomDatabase() {
 
     abstract fun campaignDao() : CampaignDao

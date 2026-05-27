@@ -1,15 +1,20 @@
 package com.example.notasmazmorras.ui.views.system
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -21,11 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.remote.Suggestion
+import com.example.notasmazmorras.ui.components.NavigationMenu
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,30 +50,20 @@ fun ReportSuggest(
         text = stringResource(R.string.suggestion)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text) },
-                navigationIcon = {
-                    IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
-                    }
-                }
-            )
-        }
-    ){ contentPadding ->
-        Column(
-            modifier = Modifier.padding(contentPadding),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            ReportSuggestScreen(
-                type = type,
-                text = text,
-                onDone = onDone,
-                Modifier
-            )
-        }
+    NavigationMenu(
+        mostrarMenu = true,
+        goBack = false,
+        onBack = {},
+        navController = navController,
+        floatingAction = false,
+        onFloating = {}
+    ) {
+        ReportSuggestScreen(
+            type = type,
+            text = text,
+            onDone = onDone,
+            Modifier
+        )
     }
 }
 
@@ -79,7 +77,7 @@ fun ReportSuggestScreen(
     var content by remember { mutableStateOf("") }
 
     Column(
-        modifier = modifier,
+        modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
@@ -89,7 +87,15 @@ fun ReportSuggestScreen(
             onValueChange = {content = it},
             label = { Text(text) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            singleLine = true,
+            minLines = 5,
+            maxLines = 5,
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(),
+            modifier = Modifier.border(
+                width = 1.dp,
+                color = Color(5, 35, 51, 255),
+                shape = RoundedCornerShape(4)
+            )
         )
         Button(
             onClick = {
@@ -98,7 +104,11 @@ fun ReportSuggestScreen(
                     type = type,
                     content = content
                 ))
-            }
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
         ) { Text(stringResource(R.string.done)) }
 
     }

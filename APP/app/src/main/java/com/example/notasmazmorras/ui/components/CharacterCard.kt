@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -53,7 +54,10 @@ fun CharacterCard(
             .padding(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         shape = CardDefaults.elevatedShape,
-        onClick = { onSelect(character.id) }
+        onClick = { onSelect(character.id) },
+        colors = CardDefaults.cardColors(
+            containerColor = Color(229, 246, 255, 255)
+        )
     ) {
         Column (
             modifier = Modifier.padding(12.dp),
@@ -81,7 +85,13 @@ fun CharacterCard(
                         .clip(CircleShape)
                 )
 
-                Text(character.name)
+                Text(
+                    text = character.name,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(
+                        horizontal = 4.dp
+                    )
+                )
 
                 Box(
                     modifier = Modifier.width(120.dp)

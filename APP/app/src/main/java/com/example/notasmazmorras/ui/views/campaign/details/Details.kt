@@ -3,6 +3,8 @@ package com.example.notasmazmorras.ui.views.campaign.details
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -12,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import com.example.notasmazmorras.R
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -28,10 +31,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.notasmazmorras.ui.components.NavigationMenu
+import com.example.notasmazmorras.ui.views.system.HomeScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,40 +53,29 @@ fun Details(
     picture: String,
     onNotes: () -> Unit,
     onBack: () -> Unit,
+    navController: NavController
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(title) },
-                navigationIcon = {
-                    IconButton(onClick = {onBack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
-                    }
-                }
-            )
-        }
-    ){ contentPadding ->
-        Column(
-            modifier = Modifier.padding(contentPadding),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            Button(
-                onClick = { onNotes() }
-            ) {
-                Text(stringResource(R.string.see_notes))
-            }
-            DetailsScreen(
-                caracteristicas = caracteristicas,
-                title = title,
-                maxPg = maxPg,
-                pg = pg,
-                onAddObject = onAddObject,
-                charId = charId,
-                picture = picture
-            )
-        }
+
+    NavigationMenu(
+        mostrarMenu = false,
+        goBack = true,
+        onBack = {onBack()},
+        navController = navController,
+        floatingAction = false,
+        onFloating = {}
+    ) {
+        DetailsScreen(
+            caracteristicas = caracteristicas,
+            title = title,
+            maxPg = maxPg,
+            pg = pg,
+            onAddObject = onAddObject,
+            charId = charId,
+            picture = picture,
+            onNotes = onNotes
+        )
     }
+
 }
 
 @Composable
@@ -89,14 +86,36 @@ fun DetailsScreen(
     pg: Int?,
     onAddObject: (String) -> Unit,
     charId: String,
-    picture: String
+    picture: String,
+    onNotes: () -> Unit
 ){
 
     Column(
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                PaddingValues(
+                    horizontal = 16.dp
+                )
+            )
     ){
-        Text(text = title)
+        Button(
+            onClick = { onNotes() },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.see_notes))
+        }
+
+        Text(
+            text = title,
+            fontWeight = FontWeight.Bold,
+            fontSize = 32.sp
+        )
 
         AsyncImage(
             model = ImageRequest.Builder(context = LocalContext.current)
@@ -129,7 +148,11 @@ fun DetailsScreen(
             Button(
                 onClick = {
                     onAddObject(charId)
-                }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
             ) {Text(stringResource(R.string.add_object))}
         }
 
@@ -139,7 +162,16 @@ fun DetailsScreen(
         ){
             items(caracteristicas.toList()){ pair ->
 
-                Text("${pair.first}: ${pair.second}")
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.Start
+                ){
+                    Text(
+                        text = pair.first,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(text = pair.second)
+                }
 
             }
         }

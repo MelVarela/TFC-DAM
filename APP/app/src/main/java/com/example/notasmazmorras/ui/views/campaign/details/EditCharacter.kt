@@ -9,18 +9,24 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -33,9 +39,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.example.notasmazmorras.data.model.local.LocalCharacter
@@ -43,6 +53,8 @@ import com.example.notasmazmorras.viewmodels.UploadState
 import androidx.core.net.toUri
 import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.remote.DndClass
+import com.example.notasmazmorras.ui.components.NavigationMenu
+import com.example.notasmazmorras.ui.views.system.HomeScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,36 +70,26 @@ fun EditCharacter(
     onClasSelected: (String) -> Unit,
     navController: NavController
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.edit_character)) },
-                navigationIcon = {
-                    IconButton(onClick = {navController.popBackStack()}) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.go_back))
-                    }
-                }
-            )
-        }
-    ){ contentPadding ->
-        Column(
-            modifier = Modifier.padding(contentPadding),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ){
-            EditCharacterScreen(
-                onDone = onDone,
-                uploadImage = uploadImage,
-                uploadState = uploadState,
-                characterId = characterId,
-                characters = characters,
-                campaign = campaign,
-                clases = clases,
-                subClases = subClases,
-                onClasSelected = onClasSelected,
-                modifier = Modifier
-            )
-        }
+    NavigationMenu(
+        mostrarMenu = false,
+        goBack = true,
+        onBack = {navController.popBackStack()},
+        navController = navController,
+        floatingAction = false,
+        onFloating = {}
+    ) {
+        EditCharacterScreen(
+            onDone = onDone,
+            uploadImage = uploadImage,
+            uploadState = uploadState,
+            characterId = characterId,
+            characters = characters,
+            campaign = campaign,
+            clases = clases,
+            subClases = subClases,
+            onClasSelected = onClasSelected,
+            modifier = Modifier
+        )
     }
 }
 
@@ -186,29 +188,51 @@ fun EditCharacterScreen(
         }
     }
 
-    Scaffold(
-    ){ contentPadding ->
-        Column(
-            modifier = modifier
-                .padding(contentPadding),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ){
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .padding(horizontal = 32.dp, vertical = 64.dp)
+            .background(Color(229, 246, 255, 255))
+            .border(
+                width = 1.dp,
+                color = Color(5, 35, 51, 255),
+                shape = RoundedCornerShape(4)
+            ),
+    ){
 
-            TextField(
-                value = name,
-                onValueChange = {name = it},
-                label = { Text(stringResource(R.string.name)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                singleLine = true,
-            )
+        Text(
+            text = stringResource(R.string.edit_character),
+            fontWeight = FontWeight.Bold,
+            fontSize = 32.sp,
+            modifier = Modifier.padding(12.dp)
+        )
+
+        TextField(
+            value = name,
+            onValueChange = {name = it},
+            label = { Text(stringResource(R.string.name)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(),
+            modifier = Modifier.padding(8.dp)
+        )
+
+        Column {
 
             Button(
-                onClick = {desplegado = !desplegado}
+                onClick = {desplegado = !desplegado},
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
             ) {Text(clase)}
+
             DropdownMenu(
                 expanded = desplegado,
-                onDismissRequest = {}
+                onDismissRequest = {},
+                modifier = Modifier.fillMaxWidth()
             ) {
 
                 clases.forEach { claseI ->
@@ -224,12 +248,22 @@ fun EditCharacterScreen(
 
             }
 
+        }
+
+        Column {
+
             Button(
-                onClick = {desplegadoSubclase = !desplegadoSubclase}
+                onClick = {desplegadoSubclase = !desplegadoSubclase},
+                colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
             ) {Text(subclase)}
+
             DropdownMenu(
                 expanded = desplegadoSubclase,
-                onDismissRequest = {}
+                onDismissRequest = {},
+                modifier = Modifier.fillMaxWidth()
             ) {
 
                 if(subClases.isNotEmpty()){
@@ -254,79 +288,94 @@ fun EditCharacterScreen(
 
             }
 
-            TextField(
-                value = maxPg.toString(),
-                onValueChange = {maxPg = Integer.parseInt(if(it != "") it else "0")},
-                label = { Text(stringResource(R.string.max_pg)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true,
-            )
-
-            TextField(
-                value = pg.toString(),
-                onValueChange = {pg = Integer.parseInt(if(it != "") it else "0")},
-                label = { Text(stringResource(R.string.pg)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true,
-            )
-
-            Button(
-                onClick = {
-                    imagePickerLauncher.launch(
-                        PickVisualMediaRequest(
-                            ActivityResultContracts.PickVisualMedia.ImageOnly
-                        )
-                    )
-                }
-            ) {
-                Text(stringResource(R.string.select_photo))
-            }
-
-            AsyncImage(
-                model = selectedImageUri,
-                contentDescription = ""
-            )
-
-            Button(
-                onClick = {
-                    if(!fotoCambiada || fotoActual == null){
-
-                        if(characterId != null){
-                            onDone(LocalCharacter(
-                                characterId,
-                                name,
-                                clase,
-                                subclase,
-                                maxPg,
-                                pg,
-                                fotoNull,
-                                campaign,
-                                true
-                            ))
-                        }else{
-                            onDone(LocalCharacter(
-                                "local_${System.nanoTime()}char",
-                                name,
-                                clase,
-                                subclase,
-                                maxPg,
-                                pg,
-                                fotoNull,
-                                campaign,
-                                true
-                            ))
-                        }
-
-                    }else{
-                        uploadImage(fotoActual)
-                    }
-                }
-            ) { Text(stringResource(R.string.done)) }
-
-            if(uploadState.isLoading){
-                Text(stringResource(R.string.loading))
-            }
-
         }
+
+        TextField(
+            value = maxPg.toString(),
+            onValueChange = {maxPg = Integer.parseInt(if(it != "") it else "0")},
+            label = { Text(stringResource(R.string.max_pg)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(),
+            modifier = Modifier.padding(8.dp)
+        )
+
+        TextField(
+            value = pg.toString(),
+            onValueChange = {pg = Integer.parseInt(if(it != "") it else "0")},
+            label = { Text(stringResource(R.string.pg)) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            singleLine = true,
+            shape = RoundedCornerShape(12.dp),
+            colors = OutlinedTextFieldDefaults.colors(),
+            modifier = Modifier.padding(8.dp)
+        )
+
+        Button(
+            onClick = {
+                imagePickerLauncher.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                    )
+                )
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+        ) {
+            Text(stringResource(R.string.select_photo))
+        }
+
+        AsyncImage(
+            model = selectedImageUri,
+            contentDescription = ""
+        )
+
+        Button(
+            onClick = {
+                if(!fotoCambiada || fotoActual == null){
+
+                    if(characterId != null){
+                        onDone(LocalCharacter(
+                            characterId,
+                            name,
+                            clase,
+                            subclase,
+                            maxPg,
+                            pg,
+                            fotoNull,
+                            campaign,
+                            true
+                        ))
+                    }else{
+                        onDone(LocalCharacter(
+                            "local_${System.nanoTime()}char",
+                            name,
+                            clase,
+                            subclase,
+                            maxPg,
+                            pg,
+                            fotoNull,
+                            campaign,
+                            true
+                        ))
+                    }
+
+                }else{
+                    uploadImage(fotoActual)
+                }
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+        ) { Text(stringResource(R.string.done)) }
+
+        if(uploadState.isLoading){
+            Text(stringResource(R.string.loading))
+        }
+
     }
 }

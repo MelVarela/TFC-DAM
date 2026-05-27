@@ -51,7 +51,6 @@ import com.example.notasmazmorras.viewmodels.UserViewmodel
 import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.local.LocalInventory
 import com.example.notasmazmorras.ui.views.campaign.details.AddObject
-import kotlinx.coroutines.flow.first
 
 @Composable
 fun AppNavigation(
@@ -76,6 +75,7 @@ fun AppNavigation(
     val objects by objectViewmodel.objects.collectAsState()
     val places by placeViewmodel.places.collectAsState()
     val inventories by characterViewmodel.objectsInventory.collectAsState()
+    val users by userViewmodel.users.collectAsState()
 
     NavHost(
         navController = navController,
@@ -99,7 +99,8 @@ fun AppNavigation(
                 },
                 onCreate = {
                     navController.navigate("createAccount")
-                }
+                },
+                navController = navController
             )
         }
 
@@ -146,16 +147,14 @@ fun AppNavigation(
                         }
                     }
                 },
-                onInvitations = {
-                    campaignViewmodel.syncPending(systemViewmodel.currentUser.value)
-                    navController.navigate("invitations")
-                },
-                name = systemViewmodel.currentUser.collectAsState().value,
-                navController
+                navController = navController
             )
         }
 
         composable(route = "invitations"){
+
+            campaignViewmodel.syncPending(systemViewmodel.currentUser.collectAsState().value)
+
             Invitations(
                 invitations = userRelations.filter { !it.isAccepted },
                 onAccepted = {
@@ -200,9 +199,6 @@ fun AppNavigation(
                     campaignViewmodel.setCurrentCampaign("", "")
                     navController.navigate("login")
                 },
-                onLangChange = {
-                    lg -> systemViewmodel.changeLanguage(lg)
-                },
                 navController
             )
         }
@@ -210,8 +206,19 @@ fun AppNavigation(
         composable(
             route = "account/{id}",
             arguments = listOf(navArgument("id"){type = NavType.StringType})
-        ){
-            Account(navController)
+        ){ backStackEntry ->
+            val id = backStackEntry.arguments?.getString("id")
+            if(id != null && id == "0"){
+                Account(
+                    account = users.firstOrNull { it.email == systemViewmodel.currentUser.value },
+                    navController
+                )
+            }else{
+                Account(
+                    account = null,
+                    navController
+                )
+            }
         }
 
         composable(route = "createCampaign"){
@@ -250,7 +257,6 @@ fun AppNavigation(
 
             Campaign(
                 campaign = campaigns.firstOrNull{ it.id == id },
-                onBack = {navController.navigate("home")},
                 onSync = {
                     campaignViewmodel.sync(systemViewmodel.currentUser.value)
                     campaignViewmodel.syncRelations(id)
@@ -378,7 +384,8 @@ fun AppNavigation(
                         Log.e("ERROR", e.message.toString())
                         navController.navigate("home")
                     }
-                }
+                },
+                navController = navController
             )
         }
 
@@ -399,7 +406,8 @@ fun AppNavigation(
                     navController.navigate("notes/${note.owner}/notes")
                 },
                 owner = "",
-                isDm = campaignViewmodel.isDm.collectAsState().value
+                isDm = campaignViewmodel.isDm.collectAsState().value,
+                navController
             )
         }
 
@@ -417,7 +425,8 @@ fun AppNavigation(
                     navController.navigate("notes/${note.owner}/notes")
                 },
                 owner = id!!,
-                isDm = campaignViewmodel.isDm.collectAsState().value
+                isDm = campaignViewmodel.isDm.collectAsState().value,
+                navController
             )
         }
 
@@ -751,7 +760,8 @@ fun AppNavigation(
                     navController.navigate("addObject/${chara.id}")
                 },
                 charId = chara.id,
-                onBack = { navController.navigate("campaign/${chara.campaign}/characters") }
+                onBack = { navController.navigate("campaign/${chara.campaign}/characters") },
+                navController = navController
             )
         }
 
@@ -772,14 +782,13 @@ fun AppNavigation(
                 objects = objects,
                 onObjectSelected = { obj ->
                     characterViewmodel.addObjectTo(charId, obj)
-                    characterViewmodel.getObjectsFor(charId)
                 },
                 onDelete = { obj ->
                     characterViewmodel.deleteInventory(inventories
                         .firstOrNull { it.obxecto == obj && it.character == charId } ?: LocalInventory("", ""))
-                    characterViewmodel.getObjectsFor(charId)
                 },
                 objectsInInventory = characterViewmodel.objetos.collectAsState().value,
+                navController = navController
             )
         }
 
@@ -805,7 +814,8 @@ fun AppNavigation(
                 onNotes = { navController.navigate("notes/${creature.id}/notes") },
                 onAddObject = {},
                 charId = "",
-                onBack = { navController.navigate("campaign/${creature.campaign}/creatures") }
+                onBack = { navController.navigate("campaign/${creature.campaign}/creatures") },
+                navController = navController
             )
         }
 
@@ -831,7 +841,8 @@ fun AppNavigation(
                 onNotes = { navController.navigate("notes/${obxecto.id}/notes") },
                 onAddObject = {},
                 charId = "",
-                onBack = { navController.navigate("campaign/${obxecto.campaign}/objects") }
+                onBack = { navController.navigate("campaign/${obxecto.campaign}/objects") },
+                navController = navController
             )
         }
 
@@ -855,7 +866,8 @@ fun AppNavigation(
                 onNotes = { navController.navigate("notes/${place.id}/notes") },
                 onAddObject = {},
                 charId = "",
-                onBack = { navController.navigate("campaign/${place.campaign}/map") }
+                onBack = { navController.navigate("campaign/${place.campaign}/map") },
+                navController = navController
             )
         }
 

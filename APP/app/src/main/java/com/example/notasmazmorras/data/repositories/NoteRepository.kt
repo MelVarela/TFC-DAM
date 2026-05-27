@@ -76,9 +76,11 @@ class DefaultNoteRepository(
     }
 
     override suspend fun setEditing(note: LocalNote, state: Boolean) {
-        remote.updateNote(
-            note.copy(isEditing = state).toRemote()
-        )
+        if(note.id.substring(0, 1) != "l"){
+            remote.updateNote(
+                note.copy(isEditing = state).toRemote()
+            )
+        }
     }
 
     override suspend fun uploadPendingChanges(): RepositoryResult {

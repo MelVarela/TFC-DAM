@@ -2,6 +2,7 @@ package com.example.notasmazmorras.data.model.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.notasmazmorras.data.model.UserAccount
 import com.example.notasmazmorras.data.model.remote.RemoteUser
 
 @Entity(tableName = "users")
@@ -18,6 +19,14 @@ data class LocalUser(
 fun LocalUser.toRemote() : RemoteUser =
     RemoteUser(
         email = email,
+        name = name,
+        profilePicture = profilePicture
+    )
+
+fun LocalUser.toAccount() : UserAccount =
+    UserAccount(
+        email = email,
+        password = "",
         name = name,
         profilePicture = profilePicture
     )
