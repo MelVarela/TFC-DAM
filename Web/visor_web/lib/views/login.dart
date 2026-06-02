@@ -10,6 +10,7 @@ class Login extends StatefulWidget {
 class _Login extends State<Login> {
   String nombre = "";
   String contrasinal = "";
+  bool failedLogin = false;
 
   _Login();
 
@@ -53,7 +54,12 @@ class _Login extends State<Login> {
                         hintText: "Correo:",
                         fillColor: Color.fromARGB(255, 212, 241, 255),
                       ),
-                      onSubmitted: (correo) => {nombre = correo},
+                      onChanged:  (correo) => {setState(() {
+                        nombre = correo;
+                      })},
+                      onSubmitted: (correo) => {setState(() {
+                        nombre = correo;
+                      })},
                     ),
                   ),
 
@@ -65,16 +71,28 @@ class _Login extends State<Login> {
                         hintText: "Contraseña:",
                       ),
                       obscureText: true,
-                      onSubmitted: (contra) => {contrasinal = contra},
+                      onChanged: (contra) => {setState(() {
+                        contrasinal = contra;
+                      })},
+                      onSubmitted: (contra) => {setState(() {
+                        contrasinal = contra;
+                      })},
                     ),
                   ),
+                  (failedLogin) ? Text("Las credenciales no son correctas.") : Text(""),
                   ElevatedButton(
                     onPressed: () {
                       /*
                 En un despliegue real, aquí haríamos la conexión con la API para comprobar que las credenciales son correctas
                 Como no disponemos de la conexion con la API, simplemente asumiremos que lo son
                 */
-                      Navigator.pushNamed(context, '/reportes');
+                      if(nombre != "" && contrasinal != ""){
+                        Navigator.pushNamed(context, '/reportes');
+                      }else{
+                        setState(() {
+                          failedLogin = true;
+                        });
+                      }
                     },
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(Colors.black), //Color.fromRGBO(108, 150, 170, 255)
