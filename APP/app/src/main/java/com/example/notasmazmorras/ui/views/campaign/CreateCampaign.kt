@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -56,7 +57,7 @@ import com.example.notasmazmorras.ui.views.system.HomeScreen
 @Composable
 fun CreateCampaign(
     onDone: (LocalCampaign) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     navController: NavController
 ) {
@@ -82,12 +83,12 @@ fun CreateCampaign(
 @Composable
 fun CreateCampaignScreen(
     onDone: (LocalCampaign) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     modifier : Modifier
 ){
 
-    val ctx = LocalContext.current.contentResolver
+    val ctx = LocalContext.current
 
     var name by remember { mutableStateOf("") }
 
@@ -103,10 +104,10 @@ fun CreateCampaignScreen(
 
             if (Build.VERSION.SDK_INT < 28) {
                 fotoActual =
-                    MediaStore.Images.Media.getBitmap(ctx, it)
+                    MediaStore.Images.Media.getBitmap(ctx.contentResolver, it)
             } else {
                 if(it != null){
-                    val source = ImageDecoder.createSource(ctx, it)
+                    val source = ImageDecoder.createSource(ctx.contentResolver, it)
                     fotoActual = ImageDecoder.decodeBitmap(source)
                 }
             }
@@ -193,7 +194,7 @@ fun CreateCampaignScreen(
                 if(name.isNotEmpty()){
                     blankName = false
                     if(fotoActual != null){
-                        uploadImage(fotoActual)
+                        uploadImage(fotoActual, ctx)
                     }else{
                         onDone(
                             LocalCampaign(

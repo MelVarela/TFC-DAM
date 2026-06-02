@@ -96,4 +96,5 @@
     <string name="blank_name">Por favor, inserta un nome.</string>
     <string name="blank_invite">Por favor, inserta o correo do usuario que queres invitar.</string>
     <string name="no_invites">Ainda non tes convidacións. Pídelle ós teus amigos que te conviden.</string>
+    <string name="no_conexion">Erro conectándose ó servidor. Revisa a conexión ou proba de novo mais tarde.</string>
 </resources>

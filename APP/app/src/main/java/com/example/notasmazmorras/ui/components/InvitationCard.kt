@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.components
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -27,10 +29,12 @@ import com.example.notasmazmorras.R
 @Composable
 fun InvitationCard(
     userRelation: LocalUserRelation,
-    onAccepted: (LocalUserRelation) -> Unit,
-    onRejected: (LocalUserRelation) -> Unit,
+    onAccepted: (LocalUserRelation, Context) -> Unit,
+    onRejected: (LocalUserRelation, Context) -> Unit,
     modifier: Modifier
 ){
+
+    var context = LocalContext.current
 
     Card(
         modifier = modifier
@@ -64,10 +68,10 @@ fun InvitationCard(
             }
 
             Row {
-                IconButton(onClick = { onAccepted(userRelation) }) {
+                IconButton(onClick = { onAccepted(userRelation, context) }) {
                     Icon(Icons.Outlined.PersonAdd, contentDescription = stringResource(R.string.accept))
                 }
-                IconButton(onClick = { onRejected(userRelation) }) {
+                IconButton(onClick = { onRejected(userRelation, context) }) {
                     Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.reject))
                 }
             }

@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.system
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -22,8 +24,8 @@ import com.example.notasmazmorras.R
 @Composable
 fun Invitations(
     invitations: List<LocalUserRelation>,
-    onAccepted: (LocalUserRelation) -> Unit,
-    onRejected: (LocalUserRelation) -> Unit,
+    onAccepted: (LocalUserRelation, Context) -> Unit,
+    onRejected: (LocalUserRelation, Context) -> Unit,
     navController: NavController
 ) {
     NavigationMenu(
@@ -45,9 +47,10 @@ fun Invitations(
 @Composable
 fun InvitationScreen(
     invitations: List<LocalUserRelation>,
-    onAccepted: (LocalUserRelation) -> Unit,
-    onRejected: (LocalUserRelation) -> Unit,
+    onAccepted: (LocalUserRelation, Context) -> Unit,
+    onRejected: (LocalUserRelation, Context) -> Unit,
 ){
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,

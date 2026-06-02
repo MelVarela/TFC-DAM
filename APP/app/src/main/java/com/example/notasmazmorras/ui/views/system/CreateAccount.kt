@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.system
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -51,9 +52,9 @@ import com.example.notasmazmorras.viewmodels.UploadState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAccount(
-    onDone: (UserAccount) -> Unit,
+    onDone: (UserAccount, Context) -> Unit,
     onSucces: (UserAccount) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     createStatus: CreateState,
     navController: NavController
@@ -83,14 +84,14 @@ fun CreateAccount(
 
 @Composable
 fun CreateAccountScreen(
-    onDone: (UserAccount) -> Unit,
+    onDone: (UserAccount, Context) -> Unit,
     onSucces: (UserAccount) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     createStatus: CreateState,
 ){
 
-    val ctx = LocalContext.current.contentResolver
+    val ctx = LocalContext.current
 
     var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -112,10 +113,10 @@ fun CreateAccountScreen(
 
             if (Build.VERSION.SDK_INT < 28) {
                 fotoActual =
-                    MediaStore.Images.Media.getBitmap(ctx, it)
+                    MediaStore.Images.Media.getBitmap(ctx.contentResolver, it)
             } else {
                 if(it != null){
-                    val source = ImageDecoder.createSource(ctx, it)
+                    val source = ImageDecoder.createSource(ctx.contentResolver, it)
                     fotoActual = ImageDecoder.decodeBitmap(source)
                 }
             }
@@ -132,7 +133,7 @@ fun CreateAccountScreen(
             password = password,
             name = userName,
             profilePicture = uploadState.url
-        ))
+        ), ctx)
     }
 
     if(createStatus.created){
@@ -276,14 +277,14 @@ fun CreateAccountScreen(
                             if(password == passwordConfirm){
                                 badPassword = false
                                 if(fotoActual != null){
-                                    uploadImage(fotoActual)
+                                    uploadImage(fotoActual, ctx)
                                 }else{
                                     onDone(UserAccount(
                                         email = email,
                                         password = password,
                                         name = userName,
                                         profilePicture = ""
-                                    ))
+                                    ), ctx)
                                 }
                             }else{
                                 badPassword = true

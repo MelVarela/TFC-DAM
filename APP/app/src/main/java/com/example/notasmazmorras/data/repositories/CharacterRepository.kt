@@ -98,11 +98,25 @@ class DefaultCharacterRepository(
     }
 
     override suspend fun getClases(): List<DndClass> {
-        return remote.getClases()
+        try{
+            return remote.getClases()
+        }catch (e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return listOf(DndClass(
+                "none",
+                "---",
+                listOf("---")
+            ))
+        }
     }
 
     override suspend fun getSubclasesFor(clase: String): List<String> {
-        return remote.getClasesFor(clase)
+        try{
+            return remote.getClasesFor(clase)
+        }catch (e : Throwable){
+            Log.e(TAG, e.message ?: NO_ERR)
+            return listOf("---")
+        }
     }
 
     override suspend fun addItem(item: LocalInventory): RepositoryResult {

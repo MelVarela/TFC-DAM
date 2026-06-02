@@ -1,6 +1,8 @@
 package com.example.notasmazmorras.viewmodels
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -12,6 +14,7 @@ import com.example.notasmazmorras.NotasMazmorrasApplication
 import com.example.notasmazmorras.data.repositories.CampaignRepository
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalUser
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
@@ -93,7 +96,6 @@ class CampaignViewmodel (
     }
 
     fun createCampaign(campaign: LocalCampaign, user: String) = viewModelScope.launch {
-        Log.d("DB", "Insertando datos")
         campaignRepository.insertCampaign(campaign)
         userRelationRepository.insertUserRelation(
             LocalUserRelation(
@@ -104,17 +106,15 @@ class CampaignViewmodel (
                 campaign = campaign.id
             )
         )
-        Log.d("DB", "Creando campaña remoto.")
         var result : RepositoryResult = campaignRepository.uploadPendingChanges()
         when(result){
             is RepositoryResult.Success -> {
-                Log.d("DB", "Subindo resto de datos.")
                 userRelationRepository.uploadPendingChanges()
                 campaignRepository.syncFromServer(user)
             }
 
             is RepositoryResult.Error -> {
-                Log.d("DB", "Error creating campaing.\nCampaignViewmodel 103")
+                Log.d("DB", "Error creating campaing.\nCampaignViewmodel createCampaign")
             }
         }
     }
@@ -151,22 +151,30 @@ class CampaignViewmodel (
         }
     }
 
-    fun invitePlayer(userRelation: LocalUserRelation) = viewModelScope.launch {
-        userRelationRepository.invitePlayer(userRelation)
+    fun invitePlayer(userRelation: LocalUserRelation, context: Context) = viewModelScope.launch {
+        userRelationRepository.invitePlayer(userRelation, context)
     }
 
-    fun accept(invite: LocalUserRelation) = viewModelScope.launch {
-        userRelationRepository.updateUserRelation(
-            invite.copy(
-                isAccepted = true
+    fun accept(invite: LocalUserRelation, context: Context) = viewModelScope.launch {
+        if(userRelationRepository.isConected()){
+            userRelationRepository.updateUserRelation(
+                invite.copy(
+                    isAccepted = true
+                )
             )
-        )
-        syncRelations(invite.campaign)
+            syncRelations(invite.campaign)
+        }else{
+            Toast.makeText(context, context.getString(R.string.no_conexion), Toast.LENGTH_LONG).show()
+        }
     }
 
-    fun reject(invite: LocalUserRelation) = viewModelScope.launch {
-        userRelationRepository.deleteUserRelation(invite)
-        syncRelations(invite.campaign)
+    fun reject(invite: LocalUserRelation, context: Context) = viewModelScope.launch {
+        if(userRelationRepository.isConected()){
+            userRelationRepository.deleteUserRelation(invite)
+            syncRelations(invite.campaign)
+        }else{
+            Toast.makeText(context, context.getString(R.string.no_conexion), Toast.LENGTH_LONG).show()
+        }
     }
 
     companion object {

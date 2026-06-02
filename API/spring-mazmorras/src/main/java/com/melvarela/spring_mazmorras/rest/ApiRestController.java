@@ -102,6 +102,11 @@ public class ApiRestController {
     @Autowired
     DndApiService dndApiService;
 
+    @GetMapping("isUp")
+    public ResponseEntity<SingleStringDto> isUp(){
+        return new ResponseEntity<>(new SingleStringDto("Yep"), HttpStatus.OK);
+    }
+
     //Login
     @PostMapping("login")
     public ResponseEntity<LoginDto> login(@RequestBody UserDto user){

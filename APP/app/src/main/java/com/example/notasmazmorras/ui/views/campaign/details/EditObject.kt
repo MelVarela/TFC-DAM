@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign.details
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -57,7 +58,7 @@ import com.example.notasmazmorras.viewmodels.UploadState
 @Composable
 fun EditObject(
     onDone: (LocalObject) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     objects: List<LocalObject>,
     objectId: String?,
@@ -79,7 +80,6 @@ fun EditObject(
             objects = objects,
             objectId = objectId,
             campaign = campaign,
-            modifier = Modifier
         )
     }
 }
@@ -87,15 +87,14 @@ fun EditObject(
 @Composable
 fun EditObjectScreen(
     onDone: (LocalObject) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     objects: List<LocalObject>,
     objectId: String?,
     campaign: String,
-    modifier : Modifier
 ){
 
-    val ctx = LocalContext.current.contentResolver
+    val ctx = LocalContext.current
 
     var name by remember { mutableStateOf("") }
     var cost by remember { mutableStateOf("0") }
@@ -117,10 +116,10 @@ fun EditObjectScreen(
 
             if (Build.VERSION.SDK_INT < 28) {
                 fotoActual =
-                    MediaStore.Images.Media.getBitmap(ctx, it)
+                    MediaStore.Images.Media.getBitmap(ctx.contentResolver, it)
             } else {
                 if(it != null){
-                    val source = ImageDecoder.createSource(ctx, it)
+                    val source = ImageDecoder.createSource(ctx.contentResolver, it)
                     fotoActual = ImageDecoder.decodeBitmap(source)
                 }
             }
@@ -260,7 +259,7 @@ fun EditObjectScreen(
                         }
 
                     }else{
-                        uploadImage(fotoActual)
+                        uploadImage(fotoActual, ctx)
                     }
                 }else{
                     blankName = true

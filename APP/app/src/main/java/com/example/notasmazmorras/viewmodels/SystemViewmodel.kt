@@ -1,6 +1,8 @@
 package com.example.notasmazmorras.viewmodels
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -8,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.notasmazmorras.NotasMazmorrasApplication
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.local.SysTable
 import com.example.notasmazmorras.data.model.remote.Suggestion
 import com.example.notasmazmorras.data.repositories.ImageUploadResult
@@ -128,7 +131,7 @@ class SystemViewmodel(
         systemRepository.sendReport(report)
     }
 
-    fun uploadImage(image: Bitmap){
+    fun uploadImage(image: Bitmap, context: Context){
 
         _uploadState.value = _uploadState.value.copy(
             uploadStarted = true,
@@ -154,13 +157,17 @@ class SystemViewmodel(
 
                 is ImageUploadResult.Error -> {
 
+                    Toast.makeText(context, context.getString(R.string.no_conexion), Toast.LENGTH_LONG).show()
+
                     _uploadState.update {
                         it.copy(
                             isLoading = false,
                             error = resultado.message,
-                            url = ""
+                            url = "http://10.0.2.2:8080/api/v1/images/1225.png"
                         )
                     }
+
+                    finishUpload()
 
                 }
 

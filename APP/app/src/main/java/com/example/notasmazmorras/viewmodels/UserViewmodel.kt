@@ -1,6 +1,8 @@
 package com.example.notasmazmorras.viewmodels
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -8,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.notasmazmorras.NotasMazmorrasApplication
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.UserAccount
 import com.example.notasmazmorras.data.model.local.LocalUser
 import com.example.notasmazmorras.data.model.remote.Credentials
@@ -53,17 +56,21 @@ class UserViewmodel(
         userRepository.syncFromServer(email)
     }
 
-    fun login(email: String, password: String) = viewModelScope.launch {
+    fun login(email: String, password: String, context : Context) = viewModelScope.launch {
         try{
-            _authenticated.value = userRepository.login(Credentials(email, password))
-            userRepository.syncFromServer(email)
+            if(userRepository.checkConnection()){
+                _authenticated.value = userRepository.login(Credentials(email, password))
+                userRepository.syncFromServer(email)
+            }else{
+                Toast.makeText(context, context.getString(R.string.no_conexion), Toast.LENGTH_LONG).show()
+            }
         }catch(e: Throwable){
-            Log.d("ERR", "Bad password.")
+            Log.d("ERR", "Unknown error.")
         }
 
     }
 
-    fun createUser(user: UserAccount){
+    fun createUser(user: UserAccount, context : Context){
 
         _createState.value = _createState.value.copy(
             isLoading = true,
@@ -71,35 +78,43 @@ class UserViewmodel(
         )
 
         viewModelScope.launch {
-            val resultado = userRepository.createUser(user)
-            when(resultado){
 
-                is CreateUserResult.Success -> {
+            if(userRepository.checkConnection()){
 
-                    _createState.update {
-                        it.copy(
-                            isLoading = false,
-                            creationStarted = false,
-                            created = true,
-                            badEmail = resultado.badEmail
-                        )
+                val resultado = userRepository.createUser(user)
+                when(resultado){
+
+                    is CreateUserResult.Success -> {
+
+                        _createState.update {
+                            it.copy(
+                                isLoading = false,
+                                creationStarted = false,
+                                created = true,
+                                badEmail = resultado.badEmail
+                            )
+                        }
+
+                    }
+
+                    is CreateUserResult.Error -> {
+
+                        _createState.update {
+                            it.copy(
+                                isLoading = false,
+                                creationStarted = false,
+                                badEmail = resultado.badEmail
+                            )
+                        }
+
                     }
 
                 }
 
-                is CreateUserResult.Error -> {
-
-                    _createState.update {
-                        it.copy(
-                            isLoading = false,
-                            creationStarted = false,
-                            badEmail = resultado.badEmail
-                        )
-                    }
-
-                }
-
+            }else{
+                Toast.makeText(context, context.getString(R.string.no_conexion), Toast.LENGTH_LONG).show()
             }
+
         }
 
     }

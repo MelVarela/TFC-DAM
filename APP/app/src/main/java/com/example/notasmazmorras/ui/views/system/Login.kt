@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.system
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,7 +41,7 @@ fun Login(
     authenticated: Boolean,
     onSuccess: (String) -> Unit,
     onCreate: () -> Unit,
-    onLog: (String, String) -> Unit,
+    onLog: (String, String, Context) -> Unit,
     navController: NavController
 ) {
     NavigationMenu(
@@ -63,7 +65,7 @@ fun Login(
 fun LoginScreen(
     authenticated: Boolean,
     onSuccess: (String) -> Unit,
-    onLog: (String, String) -> Unit,
+    onLog: (String, String, Context) -> Unit,
     onCreate: () -> Unit,
 ){
 
@@ -71,6 +73,8 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
 
     var triedLogin by remember { mutableStateOf(false) }
+
+    var context = LocalContext.current
 
     if (authenticated) { onSuccess(email) }
 
@@ -127,7 +131,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 triedLogin = true
-                onLog(email, password)
+                onLog(email, password, context)
                       },
             colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
             modifier = Modifier

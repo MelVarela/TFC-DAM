@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign.details
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -18,18 +19,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.notasmazmorras.R
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,24 +37,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalCreature
 import com.example.notasmazmorras.ui.components.NavigationMenu
-import com.example.notasmazmorras.ui.views.system.HomeScreen
 import com.example.notasmazmorras.viewmodels.UploadState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditCreature(
     onDone: (LocalCreature) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     creatures: List<LocalCreature>,
     creatureId: String?,
@@ -81,7 +73,6 @@ fun EditCreature(
             creatures = creatures,
             creatureId = creatureId,
             campaign = campaign,
-            modifier = Modifier
         )
     }
 }
@@ -89,15 +80,14 @@ fun EditCreature(
 @Composable
 fun EditCreatureScreen(
     onDone: (LocalCreature) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     creatures: List<LocalCreature>,
     creatureId: String?,
     campaign: String,
-    modifier: Modifier
 ){
 
-    val ctx = LocalContext.current.contentResolver
+    val ctx = LocalContext.current
 
     var name by remember { mutableStateOf("") }
     var species by remember { mutableStateOf("") }
@@ -119,10 +109,10 @@ fun EditCreatureScreen(
 
             if (Build.VERSION.SDK_INT < 28) {
                 fotoActual =
-                    MediaStore.Images.Media.getBitmap(ctx, it)
+                    MediaStore.Images.Media.getBitmap(ctx.contentResolver, it)
             } else {
                 if(it != null){
-                    val source = ImageDecoder.createSource(ctx, it)
+                    val source = ImageDecoder.createSource(ctx.contentResolver, it)
                     fotoActual = ImageDecoder.decodeBitmap(source)
                 }
             }
@@ -262,7 +252,7 @@ fun EditCreatureScreen(
                         }
 
                     }else{
-                        uploadImage(fotoActual)
+                        uploadImage(fotoActual, ctx)
                     }
                 }else{
                     blankName = true

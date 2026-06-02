@@ -30,6 +30,8 @@ interface UserRepository {
 
     suspend fun createUser(user: UserAccount) : CreateUserResult
 
+    suspend fun checkConnection() : Boolean
+
     // Sincronización
 
     suspend fun syncFromServer(email: String): RepositoryResult
@@ -112,6 +114,15 @@ class DefaultUserRepository(
             return CreateUserResult.Error(
                 badEmail = false
             )
+        }
+    }
+
+    override suspend fun checkConnection(): Boolean {
+        try{
+            remote.getConection()
+            return true
+        }catch (e : Throwable){
+            return false
         }
     }
 

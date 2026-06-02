@@ -28,6 +28,11 @@ import retrofit2.http.Path
 
 interface ApiService {
 
+    //Check conection
+
+    @GET("isUp")
+    suspend fun getConection() : SingleString
+
     //Campañas
 
     @GET("campaigns/{email}")

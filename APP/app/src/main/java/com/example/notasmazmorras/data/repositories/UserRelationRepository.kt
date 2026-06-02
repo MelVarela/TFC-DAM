@@ -1,10 +1,11 @@
 package com.example.notasmazmorras.data.repositories
 
+import android.content.Context
 import android.util.Log
-import com.example.notasmazmorras.data.model.local.LocalCampaign
+import android.widget.Toast
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
 import com.example.notasmazmorras.data.model.local.toRemote
-import com.example.notasmazmorras.data.model.remote.RemoteCharacter
+import com.example.notasmazmorras.R
 import com.example.notasmazmorras.data.model.remote.RemoteUser
 import com.example.notasmazmorras.data.model.remote.RemoteUserRelation
 import com.example.notasmazmorras.data.model.remote.toLocal
@@ -25,7 +26,9 @@ interface UserRelationRepository {
 
     suspend fun deleteUserRelation(userRelation: LocalUserRelation): RepositoryResult
 
-    suspend fun invitePlayer(userRelation: LocalUserRelation): RepositoryResult
+    suspend fun invitePlayer(userRelation: LocalUserRelation, context: Context): RepositoryResult
+
+    suspend fun isConected() : Boolean
 
     // Sincronización
 
@@ -42,7 +45,7 @@ interface UserRelationRepository {
 
 class DefaultUserRelationRepository(
     private val local : UserRelationDao,
-    private val remote : ApiService
+    private val remote : ApiService,
 ) : UserRelationRepository {
 
     final val TAG = "userRelation_repository"
@@ -85,7 +88,7 @@ class DefaultUserRelationRepository(
         }
     }
 
-    override suspend fun invitePlayer(userRelation: LocalUserRelation): RepositoryResult {
+    override suspend fun invitePlayer(userRelation: LocalUserRelation, context: Context): RepositoryResult {
         try{
             if(checkEmailExists(userRelation.user)){
                 local.insert(userRelation)
@@ -94,9 +97,19 @@ class DefaultUserRelationRepository(
             }
             return RepositoryResult.Error("")
         }catch (e: Throwable){
+            Toast.makeText(context, context.getString(R.string.no_conexion), Toast.LENGTH_LONG).show()
             Log.e(TAG, "invitePLayer: " + (e.message ?: NO_ERR))
             e.printStackTrace()
             return RepositoryResult.Error("")
+        }
+    }
+
+    override suspend fun isConected(): Boolean {
+        try{
+            remote.getConection()
+            return true
+        }catch (e : Throwable){
+            return false
         }
     }
 

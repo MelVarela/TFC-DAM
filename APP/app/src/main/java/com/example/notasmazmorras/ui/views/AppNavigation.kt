@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -95,7 +96,7 @@ fun AppNavigation(
                     navController.navigate("home")
                 },
                 onLog = {
-                    email, password -> userViewmodel.login(email, password)
+                    email, password, context : Context -> userViewmodel.login(email, password, context)
                 },
                 onCreate = {
                     navController.navigate("createAccount")
@@ -106,8 +107,8 @@ fun AppNavigation(
 
         composable(route = "createAccount"){
             CreateAccount(
-                onDone = { userAccount ->
-                    userViewmodel.createUser(userAccount)
+                onDone = { userAccount, context : Context ->
+                    userViewmodel.createUser(userAccount, context)
                          },
                 onSucces = { userAccount ->
                     systemViewmodel.finishUpload()
@@ -117,8 +118,8 @@ fun AppNavigation(
                     navController.navigate("home")
                 },
                 uploadImage = {
-                        image -> if(image != null){
-                    systemViewmodel.uploadImage(image)
+                        image, context : Context -> if(image != null){
+                    systemViewmodel.uploadImage(image, context)
                 }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
@@ -164,11 +165,12 @@ fun AppNavigation(
             Invitations(
                 invitations = userRelations.filter { !it.isAccepted && it.user == systemViewmodel.currentUser.collectAsState().value },
                 onAccepted = {
-                    userRelation ->
-                        campaignViewmodel.accept(userRelation)
+                    userRelation, context : Context ->
+                        campaignViewmodel.accept(userRelation, context)
                 },
                 onRejected = {
-                        userRelation -> campaignViewmodel.reject(userRelation)
+                        userRelation, context : Context ->
+                            campaignViewmodel.reject(userRelation, context)
                 },
                 navController
             )
@@ -239,8 +241,8 @@ fun AppNavigation(
                         navController.navigate("home")
                  },
                 uploadImage = {
-                    image -> if(image != null){
-                        systemViewmodel.uploadImage(image)
+                    image, context : Context -> if(image != null){
+                        systemViewmodel.uploadImage(image, context)
                     }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
@@ -341,8 +343,8 @@ fun AppNavigation(
             route = "invitePlayer"
         ){
             InvitePlayer(
-                onDone = { relation ->
-                    campaignViewmodel.invitePlayer(relation)
+                onDone = { relation, context : Context ->
+                    campaignViewmodel.invitePlayer(relation, context)
                     navController.navigate("campaign/${campaignViewmodel.currentCampaign.value}/players")
                 },
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
@@ -550,8 +552,8 @@ fun AppNavigation(
                     navController.navigate("campaign/${character.campaign}/characters")
                 },
                 uploadImage = {
-                        image -> if(image != null){
-                        systemViewmodel.uploadImage(image)
+                        image, context : Context -> if(image != null){
+                        systemViewmodel.uploadImage(image, context)
                     }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
@@ -578,8 +580,8 @@ fun AppNavigation(
                     navController.navigate("campaign/${character.campaign}/characters")
                 },
                 uploadImage = {
-                        image -> if(image != null){
-                        systemViewmodel.uploadImage(image)
+                        image, context : Context -> if(image != null){
+                        systemViewmodel.uploadImage(image, context)
                     }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
@@ -607,8 +609,8 @@ fun AppNavigation(
                     navController.navigate("campaign/${obxecto.campaign}/objects")
                 },
                 uploadImage = {
-                        image -> if(image != null){
-                        systemViewmodel.uploadImage(image)
+                        image, context : Context -> if(image != null){
+                        systemViewmodel.uploadImage(image, context)
                     }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
@@ -629,8 +631,8 @@ fun AppNavigation(
                     navController.navigate("campaign/${obxecto.campaign}/objects")
                 },
                 uploadImage = {
-                        image -> if(image != null){
-                        systemViewmodel.uploadImage(image)
+                        image, context : Context -> if(image != null){
+                        systemViewmodel.uploadImage(image, context)
                     }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
@@ -653,8 +655,8 @@ fun AppNavigation(
                     navController.navigate("campaign/${creature.campaign}/creatures")
                 },
                 uploadImage = {
-                        image -> if(image != null){
-                        systemViewmodel.uploadImage(image)
+                        image, context : Context -> if(image != null){
+                        systemViewmodel.uploadImage(image, context)
                     }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
@@ -675,8 +677,8 @@ fun AppNavigation(
                     navController.navigate("campaign/${creature.campaign}/creatures")
                 },
                 uploadImage = {
-                        image -> if(image != null){
-                        systemViewmodel.uploadImage(image)
+                        image, context : Context -> if(image != null){
+                        systemViewmodel.uploadImage(image, context)
                     }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
@@ -699,8 +701,8 @@ fun AppNavigation(
                     navController.navigate("campaign/${place.campaign}/map")
                 },
                 uploadImage = {
-                        image -> if(image != null){
-                        systemViewmodel.uploadImage(image)
+                        image, context : Context -> if(image != null){
+                        systemViewmodel.uploadImage(image, context)
                     }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
@@ -721,8 +723,8 @@ fun AppNavigation(
                     navController.navigate("campaign/${place.campaign}/map")
                 },
                 uploadImage = {
-                        image -> if(image != null){
-                        systemViewmodel.uploadImage(image)
+                        image, context : Context -> if(image != null){
+                        systemViewmodel.uploadImage(image, context)
                     }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,

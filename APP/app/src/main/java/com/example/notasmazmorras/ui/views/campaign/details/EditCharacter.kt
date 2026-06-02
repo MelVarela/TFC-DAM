@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign.details
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -61,7 +62,7 @@ import com.example.notasmazmorras.ui.views.system.HomeScreen
 @Composable
 fun EditCharacter(
     onDone: (LocalCharacter) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     characters: List<LocalCharacter>,
     characterId: String?,
@@ -89,7 +90,6 @@ fun EditCharacter(
             clases = clases,
             subClases = subClases,
             onClasSelected = onClasSelected,
-            modifier = Modifier
         )
     }
 }
@@ -98,7 +98,7 @@ fun EditCharacter(
 @Composable
 fun EditCharacterScreen(
     onDone: (LocalCharacter) -> Unit,
-    uploadImage: (Bitmap?) -> Unit,
+    uploadImage: (Bitmap?, Context) -> Unit,
     uploadState: UploadState,
     characters: List<LocalCharacter>,
     characterId : String?,
@@ -106,7 +106,6 @@ fun EditCharacterScreen(
     clases: List<DndClass>,
     subClases: List<String>,
     onClasSelected: (String) -> Unit,
-    modifier: Modifier
 ){
 
     val context = LocalContext.current
@@ -379,7 +378,7 @@ fun EditCharacterScreen(
                         }
 
                     }else{
-                        uploadImage(fotoActual)
+                        uploadImage(fotoActual, context)
                     }
                 }else{
                     blankName = true

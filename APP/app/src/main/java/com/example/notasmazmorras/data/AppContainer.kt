@@ -1,6 +1,7 @@
 package com.example.notasmazmorras.data
 
 import android.content.Context
+import androidx.compose.ui.platform.LocalContext
 import com.example.notasmazmorras.data.repositories.CampaignRepository
 import com.example.notasmazmorras.data.repositories.CharacterRepository
 import com.example.notasmazmorras.data.repositories.CreatureRepository
@@ -26,6 +27,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 
 interface AppContainer {
     val campaignRepository : CampaignRepository
@@ -49,8 +51,12 @@ class AppDataContainer(private val context : Context) : AppContainer {
     }
 
     var interceptor : HttpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-    var client : OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
-
+    var client : OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(interceptor)
+        .readTimeout(5, TimeUnit.SECONDS)
+        .connectTimeout(5, TimeUnit.SECONDS)
+        .writeTimeout(5, TimeUnit.SECONDS)
+        .build()
     private val retrofit = Retrofit.Builder()
         .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .client(client)
@@ -108,7 +114,8 @@ class AppDataContainer(private val context : Context) : AppContainer {
     }
 
     override val userRelationRepository : UserRelationRepository by lazy {
-        DefaultUserRelationRepository(Datosbase.getDatabase(context).userRelationDao(), retrofitService)
+        DefaultUserRelationRepository(Datosbase.getDatabase(context).userRelationDao(), retrofitService
+        )
     }
 
     override val systemRepository : SystemRepository by lazy {
