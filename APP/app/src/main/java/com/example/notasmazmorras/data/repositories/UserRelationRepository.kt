@@ -111,7 +111,7 @@ class DefaultUserRelationRepository(
         try{
             toSync.first().map {
                 if(it.pendingDelete){
-                    remote.deleteRelation(it.user + "-" + it.campaign)
+                    remote.deleteRelation(it.user + "!" + it.campaign)
                     local.delete(it)
                 }else if(!it.existsRemote){
 

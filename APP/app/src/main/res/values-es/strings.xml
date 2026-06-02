@@ -94,4 +94,6 @@
     <string name="blank_password">Por favor, introduce una contraseña.</string>
     <string name="blank_user">Por favor, introduce un nombre de usuario.</string>
     <string name="blank_name">Por favor, introduce un nombre.</string>
+    <string name="blank_invite">Por favor, introduce el correo del usuario al que quieres invitar.</string>
+    <string name="no_invites">Aún no tienes invitaciones. Pídele a tus amigos que te inviten.</string>
 </resources>

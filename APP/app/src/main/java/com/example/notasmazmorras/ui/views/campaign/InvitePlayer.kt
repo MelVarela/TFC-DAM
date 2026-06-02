@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign
 
+import android.util.Patterns
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
@@ -66,6 +68,8 @@ fun InvitePlayerScreen(
 ){
     var player by remember { mutableStateOf("") }
 
+    var blankPlayer by remember { mutableStateOf(false) }
+    var badEmail by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -82,17 +86,42 @@ fun InvitePlayerScreen(
             colors = OutlinedTextFieldDefaults.colors(),
             modifier = Modifier.padding(8.dp)
         )
+
+        if(blankPlayer){
+            Text(
+                text = stringResource(R.string.blank_invite),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }else if(badEmail){
+            Text(
+                text = stringResource(R.string.bad_email_format),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
         Button(
             onClick = {
-                onDone(
-                    LocalUserRelation(
-                        isAccepted = false,
-                        role = "p",
-                        schedule = "",
-                        user = player,
-                        campaign = campaign
-                    )
-                )
+                if(player.isNotEmpty()){
+                    blankPlayer = false
+                    if(Patterns.EMAIL_ADDRESS.matcher(player).matches()){
+                        badEmail = false
+                        onDone(
+                            LocalUserRelation(
+                                isAccepted = false,
+                                role = "p",
+                                schedule = "",
+                                user = player,
+                                campaign = campaign
+                            )
+                        )
+                    }else{
+                        badEmail = true
+                    }
+                }else{
+                    blankPlayer = true
+                }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
             modifier = Modifier

@@ -63,8 +63,10 @@ fun RelationCard(
                 Text(stringResource(R.string.pending))
             }
 
-            IconButton(onClick = { onDelete(userRelation) }) {
-                Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
+            if(userRelation.role != "d"){
+                IconButton(onClick = { onDelete(userRelation) }) {
+                    Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
+                }
             }
         }
     }

@@ -30,21 +30,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.notasmazmorras.ui.components.NavigationMenu
-import com.example.notasmazmorras.ui.views.system.HomeScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Calendar(
     onChangeSchedule: () -> Unit,
     listSchedules: List<String>,
+    onBack: () -> Unit,
     navController: NavController
 ) {
     NavigationMenu(
         mostrarMenu = false,
         goBack = true,
-        onBack = {
-            navController.popBackStack()
-        },
+        onBack = {onBack()},
         navController = navController,
         floatingAction = false,
         onFloating = {}

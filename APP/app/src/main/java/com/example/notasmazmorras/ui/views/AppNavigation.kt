@@ -160,7 +160,7 @@ fun AppNavigation(
             campaignViewmodel.syncPending(systemViewmodel.currentUser.collectAsState().value)
 
             Invitations(
-                invitations = userRelations.filter { !it.isAccepted },
+                invitations = userRelations.filter { !it.isAccepted && it.user == systemViewmodel.currentUser.collectAsState().value },
                 onAccepted = {
                     userRelation -> campaignViewmodel.accept(userRelation)
                 },
@@ -286,6 +286,9 @@ fun AppNavigation(
                     navController.navigate("campaign/${campaignViewmodel.currentCampaign.value}/changeSchedule")
                 },
                 listSchedules = schedules,
+                onBack = {
+                    navController.navigate("campaign/${campaignViewmodel.currentCampaign.value}")
+                },
                 navController
             )
         }
@@ -335,7 +338,7 @@ fun AppNavigation(
             InvitePlayer(
                 onDone = { relation ->
                     campaignViewmodel.invitePlayer(relation)
-                    navController.navigate("campaign/${campaignViewmodel.currentCampaign.value}")
+                    navController.navigate("campaign/${campaignViewmodel.currentCampaign.value}/players")
                 },
                 campaign = campaignViewmodel.currentCampaign.collectAsState().value,
                 navController

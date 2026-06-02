@@ -687,7 +687,7 @@ public class ApiRestController {
     public ResponseEntity<UserRelationDto> deleteUserRelation(@PathVariable("id") String id){
         System.out.println("Delete user relation: " + id);
 
-        String[] idSplit = id.split("-");
+        String[] idSplit = id.split("!");
 
         try{
             return new ResponseEntity<>(UserRelationDtoMapper.userRelationEntityToDto(

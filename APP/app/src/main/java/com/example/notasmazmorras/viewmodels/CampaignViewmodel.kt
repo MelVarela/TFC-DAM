@@ -77,6 +77,8 @@ class CampaignViewmodel (
     fun deleteRelation(relation: LocalUserRelation) = viewModelScope.launch {
         if(relation.role != "d"){
             userRelationRepository.deleteUserRelation(relation)
+            userRelationRepository.uploadPendingChanges()
+            userRelationRepository.syncFromServer(relation.campaign)
         }
     }
 
