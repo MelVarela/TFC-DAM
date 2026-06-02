@@ -21,7 +21,7 @@ public class CreatureService {
     @Transactional
     public CreatureEntity createCreature(CreatureEntity creature){
         creature.setId(LocalDateTime.now().toString() + "crea");
-        if(creature.getPicture().equals("")) creature.setPicture("https://deltarune.com/assets/images/ie-info.png");
+        if(creature.getPicture().equals("")) creature.setPicture("http://10.0.2.2:8080/api/v1/images/1225.png");
         return repository.save(creature);
     }
 

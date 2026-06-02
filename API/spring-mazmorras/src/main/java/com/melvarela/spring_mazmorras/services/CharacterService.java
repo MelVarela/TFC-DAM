@@ -25,7 +25,7 @@ public class CharacterService {
     @Transactional
     public CharacterEntity createCharacter(CharacterEntity character){
         character.setId(LocalDateTime.now().toString() + "char");
-        if(character.getPicture().equals("")) character.setPicture("https://deltarune.com/assets/images/ie-info.png");
+        if(character.getPicture().equals("")) character.setPicture("http://10.0.2.2:8080/api/v1/images/1225.png");
         return repository.save(character);
     }
 

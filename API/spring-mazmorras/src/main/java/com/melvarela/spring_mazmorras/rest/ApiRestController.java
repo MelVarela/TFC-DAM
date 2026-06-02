@@ -766,7 +766,7 @@ public class ApiRestController {
         }catch(Exception e){
 
             System.err.println("Error: " + e.getMessage());
-            return new ResponseEntity<>(new SingleStringDto("https://deltarune.com/assets/images/ie-info.png"), HttpStatus.OK);
+            return new ResponseEntity<>(new SingleStringDto("http://10.0.2.2:8080/api/v1/images/1225.png"), HttpStatus.OK);
 
         }
     }

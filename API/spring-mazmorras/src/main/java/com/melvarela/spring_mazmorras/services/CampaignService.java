@@ -20,7 +20,7 @@ public class CampaignService {
     @Transactional
     public CampaignEntity createCampaign(CampaignEntity campaign){
         campaign.setId(LocalDateTime.now().toString() + "camp");
-        if((campaign.getProfilePicture()).equals("")) campaign.setProfilePicture("https://deltarune.com/assets/images/ie-info.png");
+        if((campaign.getProfilePicture()).equals("")) campaign.setProfilePicture("http://10.0.2.2:8080/api/v1/images/1225.png");
         return repository.save(campaign);
     }
 
