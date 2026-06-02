@@ -151,6 +151,8 @@ fun AppNavigation(
                         }
                     }
                 },
+                userRelations = userRelations,
+                currentUser = systemViewmodel.currentUser.collectAsState().value,
                 navController = navController
             )
         }
@@ -162,7 +164,8 @@ fun AppNavigation(
             Invitations(
                 invitations = userRelations.filter { !it.isAccepted && it.user == systemViewmodel.currentUser.collectAsState().value },
                 onAccepted = {
-                    userRelation -> campaignViewmodel.accept(userRelation)
+                    userRelation ->
+                        campaignViewmodel.accept(userRelation)
                 },
                 onRejected = {
                         userRelation -> campaignViewmodel.reject(userRelation)
@@ -259,9 +262,9 @@ fun AppNavigation(
                     campaignViewmodel.syncRelations(id)
                     characterViewmodel.sync(id)
                     creatureViewmodel.sync(id)
-                    noteViewmodel.sync(id)
                     objectViewmodel.sync(id)
                     placeViewmodel.sync(id)
+                    noteViewmodel.sync(id)
                 },
                 onUserRelations = {
                     url ->
@@ -320,7 +323,9 @@ fun AppNavigation(
             Players(
                 userRelations = userRelations.filter { it.campaign == campaignViewmodel.currentCampaign.value },
                 onDelete = {
-                    relation -> campaignViewmodel.deleteRelation(relation)
+                    relation ->
+                        campaignViewmodel.deleteRelation(relation)
+                        if(relation.user == systemViewmodel.currentUser.value) navController.navigate("home")
                 },
                 onUserSelected = {
                     user -> navController.navigate("account/$user")
@@ -352,6 +357,8 @@ fun AppNavigation(
             )
         ){ backStackEntry ->
             val ownerId = backStackEntry.arguments?.getString("owner")!!
+
+            noteViewmodel.sync(ownerId)
 
             Notes(
                 notes = notes.filter {

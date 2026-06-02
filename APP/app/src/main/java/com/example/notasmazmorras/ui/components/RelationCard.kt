@@ -54,7 +54,7 @@ fun RelationCard(
             )
 
             if(userRelation.isAccepted){
-                if(userRelation.role == "D"){
+                if(userRelation.role == "d"){
                     Text(stringResource(R.string.dm))
                 }else{
                     Text(stringResource(R.string.player))

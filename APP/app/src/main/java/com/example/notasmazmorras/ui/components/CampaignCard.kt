@@ -37,6 +37,7 @@ import com.example.notasmazmorras.data.model.local.LocalCampaign
 @Composable
 fun CampaignCard(
     campaign: LocalCampaign,
+    isDm: Boolean,
     onDelete: (LocalCampaign) -> Unit,
     onSelect: (String) -> Unit,
     modifier: Modifier = Modifier
@@ -93,13 +94,13 @@ fun CampaignCard(
                     horizontalAlignment = Alignment.End ,
                     modifier = Modifier.weight(0.2f)
                 ) {
-                    IconButton(onClick = { onDelete(campaign) }) {
-                        Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
+                    if(isDm){
+                        IconButton(onClick = { onDelete(campaign) }) {
+                            Icon(Icons.Outlined.Delete, contentDescription = stringResource(R.string.delete))
+                        }
                     }
                 }
-
             }
         }
     }
-
 }

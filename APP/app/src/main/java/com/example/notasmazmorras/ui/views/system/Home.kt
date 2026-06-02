@@ -14,6 +14,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +29,7 @@ import com.example.notasmazmorras.ui.components.CampaignCard
 import com.example.notasmazmorras.ui.components.EmptyListShow
 import com.example.notasmazmorras.ui.components.NavigationMenu
 import com.example.notasmazmorras.R
+import com.example.notasmazmorras.data.model.local.LocalUserRelation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,6 +38,8 @@ fun Home(
     onDelete: (LocalCampaign) -> Unit,
     onSelect: (String) -> Unit,
     onSync: () -> Unit,
+    userRelations: List<LocalUserRelation>,
+    currentUser: String,
     navController: NavController
 ) {
     NavigationMenu(
@@ -50,6 +57,8 @@ fun Home(
             onDelete = onDelete,
             onSelect = onSelect,
             onSync = onSync,
+            userRelations = userRelations,
+            currentUser = currentUser,
         )
     }
 }
@@ -60,7 +69,15 @@ fun HomeScreen(
     onDelete: (LocalCampaign) -> Unit,
     onSelect: (String) -> Unit,
     onSync: () -> Unit,
+    userRelations: List<LocalUserRelation>,
+    currentUser: String,
 ){
+
+    var firstLoad by remember { mutableStateOf(true) }
+    if(firstLoad){
+        firstLoad = false
+        onSync()
+    }
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -92,6 +109,7 @@ fun HomeScreen(
                 items(campaigns) { campaign ->
                     CampaignCard(
                         campaign = campaign,
+                        isDm = (userRelations.firstOrNull { it.campaign == campaign.id && it.user == currentUser }?.role == "d") ?: false,
                         onDelete = onDelete,
                         onSelect = onSelect
                     )
