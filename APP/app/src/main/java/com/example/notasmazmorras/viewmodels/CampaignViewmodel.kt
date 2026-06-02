@@ -15,6 +15,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.notasmazmorras.data.model.local.LocalCampaign
 import com.example.notasmazmorras.data.model.local.LocalUser
 import com.example.notasmazmorras.data.model.local.LocalUserRelation
+import com.example.notasmazmorras.data.repositories.RepositoryResult
 import com.example.notasmazmorras.data.repositories.UserRelationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -89,11 +90,31 @@ class CampaignViewmodel (
         userRelationRepository.syncFromServer(campaign)
     }
 
-    fun createCampaign(campaign: String, user: String) = viewModelScope.launch {
-        campaignRepository.uploadPendingChanges()
-        userRelationRepository.uploadPendingChanges()
-        campaignRepository.syncFromServer(user)
-        userRelationRepository.syncFromServer(campaign)
+    fun createCampaign(campaign: LocalCampaign, user: String) = viewModelScope.launch {
+        Log.d("DB", "Insertando datos")
+        campaignRepository.insertCampaign(campaign)
+        userRelationRepository.insertUserRelation(
+            LocalUserRelation(
+                isAccepted = true,
+                role = "d",
+                schedule = "",
+                user = user,
+                campaign = campaign.id
+            )
+        )
+        Log.d("DB", "Creando campaña remoto.")
+        var result : RepositoryResult = campaignRepository.uploadPendingChanges()
+        when(result){
+            is RepositoryResult.Success -> {
+                Log.d("DB", "Subindo resto de datos.")
+                userRelationRepository.uploadPendingChanges()
+                campaignRepository.syncFromServer(user)
+            }
+
+            is RepositoryResult.Error -> {
+                Log.d("DB", "Error creating campaing.\nCampaignViewmodel 103")
+            }
+        }
     }
 
     fun syncRelationsByUser(user: String) = viewModelScope.launch {

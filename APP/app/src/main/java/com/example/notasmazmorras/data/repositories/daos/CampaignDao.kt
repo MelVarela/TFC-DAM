@@ -29,6 +29,12 @@ interface CampaignDao {
     @Query("UPDATE campaigns SET id = :id WHERE id = :oldId")
     suspend fun updateLocal(id: String, oldId: String)
 
+    @Query("UPDATE user_relations SET campaign = :id WHERE campaign = :oldId")
+    suspend fun updateLocalRelations(id: String, oldId: String)
+
+    @Query("DELETE FROM user_relations WHERE campaign = :id")
+    suspend fun deleteRelations(id: String)
+
     @Query("DELETE FROM campaigns")
     suspend fun deleteAll()
 

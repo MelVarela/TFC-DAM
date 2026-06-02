@@ -50,6 +50,7 @@ class DefaultCampaignRepository(
     override fun getAllCampaigns(): Flow<List<LocalCampaign>> = local.getAllCampaigns()
 
     override suspend fun insertCampaign(campaign: LocalCampaign): RepositoryResult {
+        Log.d("DB", "Insertando campaña")
         try{
             local.insert(campaign.copy(pendingSync = true))
             return RepositoryResult.Success("Campaña '${campaign.name}' creada con éxito.")
@@ -86,9 +87,12 @@ class DefaultCampaignRepository(
         try{
             toSync.first().map { campaign ->
 
+                Log.d("DB", "Camp $campaign")
+
                 if(campaign.pendingDelete){
 
                     local.delete(campaign)
+                    local.deleteRelations(campaign.id)
                     if(campaign.id.substring(0, 1) != "l") remote.deleteCampaign(campaign.id)
 
                 }else if(campaign.id.substring(0, 1) == "l"){
@@ -97,6 +101,7 @@ class DefaultCampaignRepository(
                         remote.createCampaign(campaign.toRemote())
 
                     local.updateLocal((resposta.id ?: campaign.id), campaign.id)
+                    local.updateLocalRelations((resposta.id ?: campaign.id), campaign.id)
 
                     val nots = notes.getByOwner(campaign.id).first()
 
@@ -129,9 +134,6 @@ class DefaultCampaignRepository(
             val ids = local.getIds().first()
             var workedIds : List<String> = emptyList()
 
-            Log.d(TAG, campaigns.toString())
-            Log.d(TAG, ids.toString())
-
             var campaignsToUpdate : List<LocalCampaign> = ArrayList<LocalCampaign>()
             var campaignsToInsert : List<LocalCampaign> = ArrayList<LocalCampaign>()
 
@@ -148,6 +150,7 @@ class DefaultCampaignRepository(
                 if(!workedIds.contains(it) && it.substring(0, 1) != "l"){
                     Log.d("DEL", "Deleting $it")
                     local.deleteById(it)
+                    local.deleteRelations(it)
                 }
             }
 

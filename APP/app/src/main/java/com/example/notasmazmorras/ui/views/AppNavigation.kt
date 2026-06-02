@@ -229,18 +229,11 @@ fun AppNavigation(
             CreateCampaign(
                 onDone = {
                     campaign ->
-
-                        campaignViewmodel.insertCampaign(
-                            campaign,
-                            systemViewmodel.currentUser.value
-                        )
-
                         systemViewmodel.finishUpload()
 
-                        campaignViewmodel.createCampaign(campaign.id, systemViewmodel.currentUser.value)
+                        campaignViewmodel.createCampaign(campaign, systemViewmodel.currentUser.value)
 
-                        campaignViewmodel.setCurrentCampaign(campaign.id, systemViewmodel.currentUser.value)
-                        navController.navigate("campaign/" + campaign.id)
+                        navController.navigate("home")
                  },
                 uploadImage = {
                     image -> if(image != null){
