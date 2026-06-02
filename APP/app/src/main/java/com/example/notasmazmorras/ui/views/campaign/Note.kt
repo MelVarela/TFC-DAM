@@ -141,7 +141,7 @@ fun Note(
                     width = 1.dp,
                     color = Color(5, 35, 51, 255),
                     shape = RoundedCornerShape(4)
-                )
+                ).fillMaxWidth()
             )
         }
     }

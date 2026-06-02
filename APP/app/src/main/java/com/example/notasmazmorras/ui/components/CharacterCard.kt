@@ -87,10 +87,11 @@ fun CharacterCard(
 
                 Text(
                     text = character.name,
+                    softWrap = true,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(
                         horizontal = 4.dp
-                    )
+                    ).weight(1f)
                 )
 
                 Box(
