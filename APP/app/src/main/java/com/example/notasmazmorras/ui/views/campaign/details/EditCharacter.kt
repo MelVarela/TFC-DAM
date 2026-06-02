@@ -117,6 +117,7 @@ fun EditCharacterScreen(
     var subclase by remember { mutableStateOf(context.getString(R.string.char_sel_subclass)) }
     var maxPg by remember { mutableIntStateOf(0) }
     var pg by remember { mutableIntStateOf(0) }
+    var loadData by remember { mutableStateOf(false) }
 
     var desplegado by remember { mutableStateOf(false) }
     var desplegadoSubclase by remember { mutableStateOf(false) }
@@ -147,7 +148,8 @@ fun EditCharacterScreen(
         }
     )
 
-    if(characterId != null){
+    if(characterId != null && !loadData){
+        loadData = true
         val character : LocalCharacter = characters.first {it.id == characterId}
         name = character.name
         clase = character.clase

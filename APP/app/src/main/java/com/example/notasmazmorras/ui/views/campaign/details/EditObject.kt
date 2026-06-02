@@ -98,7 +98,8 @@ fun EditObjectScreen(
     val ctx = LocalContext.current.contentResolver
 
     var name by remember { mutableStateOf("") }
-    var cost by remember { mutableStateOf("") }
+    var cost by remember { mutableStateOf("0") }
+    var loadData by remember { mutableStateOf(false) }
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var fotoActual by remember { mutableStateOf<Bitmap?>(null) }
@@ -126,7 +127,7 @@ fun EditObjectScreen(
         }
     )
 
-    if(objectId != null){
+    if(objectId != null && !loadData){
         val obxecto : LocalObject = objects.first{it.id == objectId}
         name = obxecto.name
         cost = obxecto.cost.toString()

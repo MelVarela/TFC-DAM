@@ -101,6 +101,7 @@ fun EditCreatureScreen(
 
     var name by remember { mutableStateOf("") }
     var species by remember { mutableStateOf("") }
+    var loadData by remember { mutableStateOf(false) }
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var fotoActual by remember { mutableStateOf<Bitmap?>(null) }
@@ -128,7 +129,7 @@ fun EditCreatureScreen(
         }
     )
 
-    if(creatureId != null){
+    if(creatureId != null && !loadData){
         val creature : LocalCreature = creatures.first{it.id == creatureId}
         name = creature.name
         species = creature.species

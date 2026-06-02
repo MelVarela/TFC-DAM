@@ -98,6 +98,7 @@ fun EditMapScreen(
     val ctx = LocalContext.current.contentResolver
 
     var name by remember { mutableStateOf("") }
+    var loadData by remember { mutableStateOf(false) }
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var fotoActual by remember { mutableStateOf<Bitmap?>(null) }
@@ -125,7 +126,7 @@ fun EditMapScreen(
         }
     )
 
-    if(placeId != null){
+    if(placeId != null && !loadData){
         val place : LocalPlace = places.first{it.id == placeId}
         name = place.name
 
