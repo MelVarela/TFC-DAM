@@ -89,4 +89,10 @@
     <string name="no_creatures">This campaign doesn\'t havy any creatures yet.</string>
     <string name="no_places">This campaign doesn\'t have any locations yet.</string>
     <string name="no_objects">This campaign doesn\'t have any objects yet.</string>
+    <string name="bad_credentials">Incorrect credentials. Create an account if you don\'t already have one.</string>
+    <string name="bad_password">Passwords do not match!</string>
+    <string name="bad_email">An account with that email already exists.</string>
+    <string name="bad_email_format">Please, enter a valid email.</string>
+    <string name="blank_password">Plase, enter a password.</string>
+    <string name="blank_user">Please, enter a user name.</string>
 </resources>

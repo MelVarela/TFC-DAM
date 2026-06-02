@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -54,7 +55,6 @@ fun Login(
             onSuccess = onSuccess,
             onLog = onLog,
             onCreate = onCreate,
-            modifier = Modifier
         )
     }
 }
@@ -65,11 +65,12 @@ fun LoginScreen(
     onSuccess: (String) -> Unit,
     onLog: (String, String) -> Unit,
     onCreate: () -> Unit,
-    modifier: Modifier
 ){
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    var triedLogin by remember { mutableStateOf(false) }
 
     if (authenticated) { onSuccess(email) }
 
@@ -115,8 +116,19 @@ fun LoginScreen(
             modifier = Modifier.padding(8.dp)
         )
 
+        if(triedLogin && !authenticated){
+            Text(
+                text = stringResource(R.string.bad_credentials),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
         Button(
-            onClick = { onLog(email, password) },
+            onClick = {
+                triedLogin = true
+                onLog(email, password)
+                      },
             colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
             modifier = Modifier
                 .padding(8.dp)

@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Patterns
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -36,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -43,14 +45,17 @@ import coil3.compose.AsyncImage
 import com.example.notasmazmorras.data.model.UserAccount
 import com.example.notasmazmorras.R
 import com.example.notasmazmorras.ui.components.NavigationMenu
+import com.example.notasmazmorras.viewmodels.CreateState
 import com.example.notasmazmorras.viewmodels.UploadState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAccount(
     onDone: (UserAccount) -> Unit,
+    onSucces: (UserAccount) -> Unit,
     uploadImage: (Bitmap?) -> Unit,
     uploadState: UploadState,
+    createStatus: CreateState,
     navController: NavController
 ) {
     NavigationMenu(
@@ -67,9 +72,10 @@ fun CreateAccount(
         ){
             CreateAccountScreen(
                 onDone = onDone,
+                onSucces = onSucces,
                 uploadImage = uploadImage,
                 uploadState = uploadState,
-                modifier = Modifier
+                createStatus = createStatus
             )
         }
     }
@@ -78,9 +84,10 @@ fun CreateAccount(
 @Composable
 fun CreateAccountScreen(
     onDone: (UserAccount) -> Unit,
+    onSucces: (UserAccount) -> Unit,
     uploadImage: (Bitmap?) -> Unit,
     uploadState: UploadState,
-    modifier : Modifier,
+    createStatus: CreateState,
 ){
 
     val ctx = LocalContext.current.contentResolver
@@ -92,6 +99,11 @@ fun CreateAccountScreen(
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var fotoActual by remember { mutableStateOf<Bitmap?>(null) }
+
+    var badPassword by remember { mutableStateOf(false) }
+    var badEmail by remember { mutableStateOf(false) }
+    var blankPassword by remember { mutableStateOf(false) }
+    var blankUser by remember { mutableStateOf(false) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -116,6 +128,15 @@ fun CreateAccountScreen(
         }
 
         onDone(UserAccount(
+            email = email,
+            password = password,
+            name = userName,
+            profilePicture = uploadState.url
+        ))
+    }
+
+    if(createStatus.created){
+        onSucces(UserAccount(
             email = email,
             password = password,
             name = userName,
@@ -189,6 +210,40 @@ fun CreateAccountScreen(
             modifier = Modifier.padding(8.dp)
         )
 
+        if(badEmail){
+            Text(
+                text = stringResource(R.string.bad_email_format),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }else if(blankUser){
+            Text(
+                text = stringResource(R.string.blank_user),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }else if(blankPassword){
+            Text(
+                text = stringResource(R.string.blank_password),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }else if(badPassword){
+            Text(
+                text = stringResource(R.string.bad_password),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
+        if(createStatus.badEmail){
+            Text(
+                text = stringResource(R.string.bad_email),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
         Button(
             onClick = {
                 imagePickerLauncher.launch(
@@ -212,18 +267,37 @@ fun CreateAccountScreen(
 
         Button(
             onClick = {
-                if(password.equals(passwordConfirm)){
-                    if(fotoActual != null){
-                        uploadImage(fotoActual)
+                if(Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                    badEmail = false
+                    if(password.isNotEmpty()){
+                        blankPassword = false
+                        if(userName.isNotEmpty()){
+                            blankUser = false
+                            if(password == passwordConfirm){
+                                badPassword = false
+                                if(fotoActual != null){
+                                    uploadImage(fotoActual)
+                                }else{
+                                    onDone(UserAccount(
+                                        email = email,
+                                        password = password,
+                                        name = userName,
+                                        profilePicture = ""
+                                    ))
+                                }
+                            }else{
+                                badPassword = true
+                            }
+                        }else{
+                            blankUser = true
+                        }
                     }else{
-                        onDone(UserAccount(
-                            email = email,
-                            password = password,
-                            name = userName,
-                            profilePicture = ""
-                        ))
+                        blankPassword = true
                     }
+                }else{
+                    badEmail = true
                 }
+
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
             modifier = Modifier

@@ -106,19 +106,23 @@ fun AppNavigation(
 
         composable(route = "createAccount"){
             CreateAccount(
-                onDone = {
-                    userAccount ->
+                onDone = { userAccount ->
+                    userViewmodel.createUser(userAccount)
+                         },
+                onSucces = { userAccount ->
                     systemViewmodel.finishUpload()
+                    userViewmodel.finishCreation()
                     userViewmodel.insertUser(userAccount)
                     systemViewmodel.setLastSigned(userAccount.email)
                     navController.navigate("home")
-                         },
+                },
                 uploadImage = {
                         image -> if(image != null){
                     systemViewmodel.uploadImage(image)
                 }
                 },
                 uploadState = systemViewmodel.uploadState.collectAsState().value,
+                createStatus = userViewmodel.createState.collectAsState().value,
                 navController
             )
         }

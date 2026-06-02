@@ -87,4 +87,10 @@
     <string name="no_creatures">Ista campaña todavía non ten criaturas.</string>
     <string name="no_places">Ista campaña todavía non ten localizacións.</string>
     <string name="no_objects">Ista campaña todavía non ten obxectos.</string>
+    <string name="bad_credentials">Credenciais incorrectas. Crea unha conta se todavía non dispós dunha.</string>
+    <string name="bad_password">Os contrasinais non coinciden!</string>
+    <string name="bad_email">Xa existe unha conta con ise correo.</string>
+    <string name="bad_email_format">Por favor, introduce un formato de correo correcto.</string>
+    <string name="blank_password">Por favor, introduce un contrasinal.</string>
+    <string name="blank_user">Por favor, introduce un nome de usuario.</string>
 </resources>

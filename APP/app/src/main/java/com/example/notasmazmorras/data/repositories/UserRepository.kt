@@ -28,6 +28,8 @@ interface UserRepository {
 
     suspend fun checkEmailExists(email: String) : Boolean
 
+    suspend fun createUser(user: UserAccount) : CreateUserResult
+
     // Sincronización
 
     suspend fun syncFromServer(email: String): RepositoryResult
@@ -94,6 +96,25 @@ class DefaultUserRepository(
         }
     }
 
+    override suspend fun createUser(user: UserAccount): CreateUserResult {
+        try{
+            if(!checkEmailExists(user.email)){
+                remote.createUser(user)
+                return CreateUserResult.Success(
+                    badEmail = false
+                )
+            }else{
+                return CreateUserResult.Error(
+                    badEmail = true
+                )
+            }
+        }catch (e : Throwable){
+            return CreateUserResult.Error(
+                badEmail = false
+            )
+        }
+    }
+
     override suspend fun uploadPendingChanges(): RepositoryResult {
         var toSync = local.getUsersToSync()
 
@@ -150,5 +171,17 @@ class DefaultUserRepository(
     override suspend fun reset() {
         local.deleteAll()
     }
+
+}
+
+sealed class CreateUserResult{
+
+    data class Error(
+        val badEmail : Boolean
+    ) : CreateUserResult()
+
+    data class Success(
+        var badEmail : Boolean
+    ) : CreateUserResult()
 
 }
