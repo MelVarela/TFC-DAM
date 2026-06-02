@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -105,7 +106,9 @@ fun EditCreatureScreen(
     var fotoActual by remember { mutableStateOf<Bitmap?>(null) }
     var fotoCambiada by remember { mutableStateOf(false) }
 
-    var fotoNull : String = "https://deltarune.com/assets/images/ie-info.png"
+    var fotoNull : String = "http://10.0.2.2:8080/api/v1/images/1225.png"
+
+    var blankName by remember { mutableStateOf(false) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -223,32 +226,45 @@ fun EditCreatureScreen(
             contentDescription = ""
         )
 
+        if(blankName){
+            Text(
+                text = stringResource(R.string.blank_name),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
         Button(
             onClick = {
-                if(!fotoCambiada || fotoActual == null){
+                if(name.isNotEmpty()){
+                    blankName = false
+                    if(!fotoCambiada || fotoActual == null){
 
-                    if(creatureId != null){
-                        onDone(LocalCreature(
-                            creatureId,
-                            name,
-                            species,
-                            fotoNull,
-                            campaign,
-                            true
-                        ))
+                        if(creatureId != null){
+                            onDone(LocalCreature(
+                                creatureId,
+                                name,
+                                species,
+                                fotoNull,
+                                campaign,
+                                true
+                            ))
+                        }else{
+                            onDone(LocalCreature(
+                                "local_${System.nanoTime()}crea",
+                                name,
+                                species,
+                                fotoNull,
+                                campaign,
+                                true
+                            ))
+                        }
+
                     }else{
-                        onDone(LocalCreature(
-                            "local_${System.nanoTime()}crea",
-                            name,
-                            species,
-                            fotoNull,
-                            campaign,
-                            true
-                        ))
+                        uploadImage(fotoActual)
                     }
-
                 }else{
-                    uploadImage(fotoActual)
+                    blankName = true
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),

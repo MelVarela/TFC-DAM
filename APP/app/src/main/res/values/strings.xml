@@ -95,4 +95,5 @@
     <string name="bad_email_format">Please, enter a valid email.</string>
     <string name="blank_password">Plase, enter a password.</string>
     <string name="blank_user">Please, enter a user name.</string>
+    <string name="blank_name">Plase, insert a name.</string>
 </resources>

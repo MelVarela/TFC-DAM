@@ -44,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -124,7 +125,9 @@ fun EditCharacterScreen(
     var fotoActual by remember { mutableStateOf<Bitmap?>(null) }
     var fotoCambiada by remember { mutableStateOf(false) }
 
-    var fotoNull : String = "https://deltarune.com/assets/images/ie-info.png"
+    var fotoNull : String = "http://10.0.2.2:8080/api/v1/images/1225.png"
+
+    var blankName by remember { mutableStateOf(false) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -312,6 +315,14 @@ fun EditCharacterScreen(
             modifier = Modifier.padding(8.dp)
         )
 
+        if(blankName){
+            Text(
+                text = stringResource(R.string.blank_name),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
         Button(
             onClick = {
                 imagePickerLauncher.launch(
@@ -335,36 +346,41 @@ fun EditCharacterScreen(
 
         Button(
             onClick = {
-                if(!fotoCambiada || fotoActual == null){
+                if(name.isNotEmpty()){
+                    blankName = false
+                    if(!fotoCambiada || fotoActual == null){
 
-                    if(characterId != null){
-                        onDone(LocalCharacter(
-                            characterId,
-                            name,
-                            clase,
-                            subclase,
-                            maxPg,
-                            pg,
-                            fotoNull,
-                            campaign,
-                            true
-                        ))
+                        if(characterId != null){
+                            onDone(LocalCharacter(
+                                characterId,
+                                name,
+                                clase,
+                                subclase,
+                                maxPg,
+                                pg,
+                                fotoNull,
+                                campaign,
+                                true
+                            ))
+                        }else{
+                            onDone(LocalCharacter(
+                                "local_${System.nanoTime()}char",
+                                name,
+                                clase,
+                                subclase,
+                                maxPg,
+                                pg,
+                                fotoNull,
+                                campaign,
+                                true
+                            ))
+                        }
+
                     }else{
-                        onDone(LocalCharacter(
-                            "local_${System.nanoTime()}char",
-                            name,
-                            clase,
-                            subclase,
-                            maxPg,
-                            pg,
-                            fotoNull,
-                            campaign,
-                            true
-                        ))
+                        uploadImage(fotoActual)
                     }
-
                 }else{
-                    uploadImage(fotoActual)
+                    blankName = true
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),

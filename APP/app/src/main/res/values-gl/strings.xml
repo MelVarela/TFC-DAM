@@ -93,4 +93,5 @@
     <string name="bad_email_format">Por favor, introduce un formato de correo correcto.</string>
     <string name="blank_password">Por favor, introduce un contrasinal.</string>
     <string name="blank_user">Por favor, introduce un nome de usuario.</string>
+    <string name="blank_name">Por favor, inserta un nome.</string>
 </resources>

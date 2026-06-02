@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -92,6 +93,8 @@ fun CreateCampaignScreen(
 
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var fotoActual by remember { mutableStateOf<Bitmap?>(null) }
+
+    var blankName by remember { mutableStateOf(false) }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -177,21 +180,33 @@ fun CreateCampaignScreen(
             contentDescription = ""
         )
 
+        if(blankName){
+            Text(
+                text = stringResource(R.string.blank_name),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
         Button(
             onClick = {
-                if(fotoActual != null){
-                    uploadImage(fotoActual)
-                }else{
-                    onDone(
-                        LocalCampaign(
-                            "local_${System.nanoTime()}camp",
-                            name,
-                            "",
-                            true
+                if(name.isNotEmpty()){
+                    blankName = false
+                    if(fotoActual != null){
+                        uploadImage(fotoActual)
+                    }else{
+                        onDone(
+                            LocalCampaign(
+                                "local_${System.nanoTime()}camp",
+                                name,
+                                "",
+                                true
+                            )
                         )
-                    )
+                    }
+                }else{
+                    blankName = true
                 }
-
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(77, 126, 153, 255)),
             modifier = Modifier
