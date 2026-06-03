@@ -1,5 +1,6 @@
 package com.example.notasmazmorras.ui.views.campaign.details
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -51,7 +53,8 @@ fun AddObject(
             objects = objects,
             onObjectSelected = onObjectSelected,
             onDelete = onDelete,
-            objectsInInventory = objectsInInventory
+            objectsInInventory = objectsInInventory,
+            onBack = onBack
         )
     }
 
@@ -62,10 +65,16 @@ fun AddObjectScreen(
     objects: List<LocalObject>,
     onObjectSelected: (String) -> Unit,
     onDelete: (String) -> Unit,
-    objectsInInventory: List<LocalObject>
+    objectsInInventory: List<LocalObject>,
+    onBack: () -> Unit
 ){
 
     var desplegado by remember { mutableStateOf(false) }
+
+    if(objects.isEmpty()){
+        Toast.makeText(LocalContext.current, stringResource(R.string.no_char_obj), Toast.LENGTH_LONG).show()
+        onBack()
+    }
 
     Column(
         verticalArrangement = Arrangement.Top,

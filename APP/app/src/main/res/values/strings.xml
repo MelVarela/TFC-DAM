@@ -99,4 +99,5 @@
     <string name="blank_invite">Please, insert the email of the user you want to invite.</string>
     <string name="no_invites">You have no invitations yet. Ask your friends to invite you.</string>
     <string name="no_conexion">Error conecting to server. Check internet conection or try again later.</string>
+    <string name="no_char_obj">No objects to add.</string>
 </resources>

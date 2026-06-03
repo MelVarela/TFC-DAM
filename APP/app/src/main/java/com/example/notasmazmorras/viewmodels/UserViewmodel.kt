@@ -41,6 +41,7 @@ class UserViewmodel(
 
     fun insertUser(user: UserAccount) = viewModelScope.launch {
         userRepository.insertUser(user)
+        userRepository.syncFromServer(user.email)
     }
 
     fun updateUser(user: LocalUser) = viewModelScope.launch {

@@ -58,7 +58,7 @@ fun Note(
 
     var name by remember { mutableStateOf(context.getString(R.string.new_note)) }
     var content by remember { mutableStateOf("") }
-    var dmOnly by remember { mutableStateOf(false) }
+    var dmOnly by remember { mutableStateOf(note?.isDm ?: false) }
 
     if(note != null){
         name = note.name

@@ -76,7 +76,7 @@ fun HomeScreen(
     var firstLoad by remember { mutableStateOf(true) }
     if(firstLoad){
         firstLoad = false
-        onSync()
+        //onSync()
     }
 
     Column(

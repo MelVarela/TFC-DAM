@@ -50,7 +50,6 @@ class DefaultCampaignRepository(
     override fun getAllCampaigns(): Flow<List<LocalCampaign>> = local.getAllCampaigns()
 
     override suspend fun insertCampaign(campaign: LocalCampaign): RepositoryResult {
-        Log.d("DB", "Insertando campaña")
         try{
             local.insert(campaign.copy(pendingSync = true))
             return RepositoryResult.Success("Campaña '${campaign.name}' creada con éxito.")
@@ -87,7 +86,7 @@ class DefaultCampaignRepository(
         try{
             toSync.first().map { campaign ->
 
-                Log.d("DB", "Camp $campaign")
+                Log.d("DB", campaign.toString())
 
                 if(campaign.pendingDelete){
 
@@ -97,11 +96,18 @@ class DefaultCampaignRepository(
 
                 }else if(campaign.id.substring(0, 1) == "l"){
 
+                    Log.d("DB", "Posting because local")
+
                     val resposta : RemoteCampaign =
                         remote.createCampaign(campaign.toRemote())
 
+                    Log.d("DB", "Response gotten")
+
                     local.updateLocal((resposta.id ?: campaign.id), campaign.id)
+                    Log.d("DB", "Can anybody hear me...?")
                     local.updateLocalRelations((resposta.id ?: campaign.id), campaign.id)
+
+                    Log.d("DB", "Local id changed")
 
                     val nots = notes.getByOwner(campaign.id).first()
 
